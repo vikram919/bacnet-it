@@ -116,8 +116,8 @@ public class ConfiguratorCoAP {
 		/*
 		 *********************** Initialize the directory service (not used in this example)
 		 */
-		final DiscoveryConfig ds = new DiscoveryConfig("DNSSD", "1.1.1.1", "itb.bacnet.ch.", "bds._sub._bacnet._tcp.",
-				"dev._sub._bacnet._tcp.", "obj._sub._bacnet._tcp.", false);
+		final DiscoveryConfig ds = new DiscoveryConfig("DNSSD", "1.1.1.1", "itb.bacnet.ch.", "bds._sub._bacnet._udp.",
+				"dev._sub._bacnet._udp.", "obj._sub._bacnet._udp.", false);
 
 		try {
 			DirectoryService.init();
@@ -162,12 +162,6 @@ public class ConfiguratorCoAP {
 					new BACnetEID(2001), new BACnetEID(1001), whoIsRequest);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-
-		// Wait until close
-		try {
-			System.in.read();
-		} catch (Exception e) {
 		}
 
 	}

@@ -14,6 +14,7 @@ import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.CoapServer;
+import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +30,19 @@ public class TransportCoapBinding implements ASEService {
 	private TransportBindingService transportBindingService;
 	private static Logger LOG = LoggerFactory.getLogger(TransportCoapBinding.class);
 
-	CoapClient client;
-	CoapServer server;
+	private CoapClient client;
+	private CoapServer server;
 
 	public void init() {
-		server.start();
+		this.server.start();
+	}
+
+	public void destroyCoapServer() {
+		this.server.stop();
+	}
+
+	public void destroyCoapClient() {
+		this.client.shutdown();
 	}
 
 	@Override
@@ -65,6 +74,7 @@ public class TransportCoapBinding implements ASEService {
 					TPDU tpdu = (TPDU) in.readObject();
 					transportBindingService.onIndication(tpdu,
 							new InetSocketAddress(exchange.getSourceAddress(), exchange.getSourcePort()));
+					exchange.respond(ResponseCode.CHANGED);
 
 				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
@@ -91,6 +101,9 @@ public class TransportCoapBinding implements ASEService {
 			client.post(new CoapHandler() {
 				@Override
 				public void onLoad(CoapResponse response) {
+					if(response.getCode()!=ResponseCode.CHANGED) {
+						System.out.println("ERROR RESPONSE!");
+					}
 				}
 
 				@Override
@@ -106,15 +119,10 @@ public class TransportCoapBinding implements ASEService {
 			} catch (IOException ex) {
 			}
 		}
-		
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-		}
 	}
 
 	public void createCoapClient() {
-		client = new CoapClient();
+		this.client = new CoapClient();
 	}
 
 }
