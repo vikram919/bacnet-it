@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ByteBufLogger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.transportbinding.util</a> &gt; <span class="el_source">ByteBufLogger.java</span></div><h1>ByteBufLogger.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.transportbinding.util;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Random;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+
+public class ByteBufLogger extends ChannelDuplexHandler {
+
+    private final OutputStreamWriter writer;
+<span class="nc" id="L18">    private final static Random random = new Random();</span>
+
+    public ByteBufLogger() throws IOException {
+<span class="nc" id="L21">        this(generateFileName());</span>
+<span class="nc" id="L22">    }</span>
+
+<span class="nc" id="L24">    public ByteBufLogger(final String logFilePath) throws IOException {</span>
+<span class="nc" id="L25">        writer = new OutputStreamWriter(new FileOutputStream(logFilePath),</span>
+                StandardCharsets.UTF_8);
+        // writer = new FileWriter(logFilePath);
+<span class="nc" id="L28">        System.out.println(&quot;Created new binary log file: &quot; + logFilePath);</span>
+<span class="nc" id="L29">    }</span>
+
+    private static String generateFileName() {
+<span class="nc" id="L32">        return &quot;outer-channel-&quot; + Integer.toHexString(random.nextInt())</span>
+                + &quot;.log&quot;;
+    }
+
+    @Override
+    public void channelUnregistered(final ChannelHandlerContext ctx)
+            throws Exception {
+<span class="nc" id="L39">        writer.flush();</span>
+<span class="nc" id="L40">        writer.close();</span>
+<span class="nc" id="L41">        System.out.println(&quot;outer writer closed&quot;);</span>
+<span class="nc" id="L42">        super.channelUnregistered(ctx);</span>
+<span class="nc" id="L43">    }</span>
+
+    @Override
+    public void write(final ChannelHandlerContext ctx, final Object msg,
+            final ChannelPromise promise) throws Exception {
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        if (msg instanceof ByteBuf) {</span>
+<span class="nc" id="L49">            System.out.println(&quot;Outer channel write: &quot; + msg);</span>
+<span class="nc" id="L50">            final ByteBuf byteBuf = ((ByteBuf) msg);</span>
+<span class="nc" id="L51">            final byte[] bytes = new byte[byteBuf.readableBytes()];</span>
+<span class="nc" id="L52">            byteBuf.getBytes(0, bytes);</span>
+<span class="nc" id="L53">            writer.write(&quot;out;&quot; + System.currentTimeMillis() + &quot;;&quot;</span>
+<span class="nc" id="L54">                    + Arrays.toString(bytes) + &quot;\n&quot;);</span>
+<span class="nc" id="L55">            writer.flush();</span>
+        }
+<span class="nc" id="L57">        super.write(ctx, msg, promise);</span>
+<span class="nc" id="L58">    }</span>
+
+    @Override
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg)
+            throws Exception {
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (msg instanceof ByteBuf) {</span>
+<span class="nc" id="L64">            System.out.println(&quot;Outer channel read: &quot; + msg);</span>
+<span class="nc" id="L65">            final ByteBuf byteBuf = ((ByteBuf) msg);</span>
+<span class="nc" id="L66">            final byte[] bytes = new byte[byteBuf.readableBytes()];</span>
+<span class="nc" id="L67">            byteBuf.getBytes(0, bytes);</span>
+<span class="nc" id="L68">            writer.write(&quot;in;&quot; + System.currentTimeMillis() + &quot;;&quot;</span>
+<span class="nc" id="L69">                    + Arrays.toString(bytes) + &quot;\n&quot;);</span>
+<span class="nc" id="L70">            writer.flush();</span>
+        }
+<span class="nc" id="L72">        super.channelRead(ctx, msg);</span>
+<span class="nc" id="L73">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

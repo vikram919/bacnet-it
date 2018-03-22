@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LogData.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">LogData.java</span></div><h1>LogData.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.BitString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Boolean;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Enumerated;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Null;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Real;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.SignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class LogData extends BaseType {
+    private static final long serialVersionUID = -1976023645603339559L;
+
+    public static Choice booleanElement(final Boolean datum) {
+<span class="nc" id="L43">        return new Choice(0, datum);</span>
+    }
+
+    public static Choice realElement(final Real datum) {
+<span class="nc" id="L47">        return new Choice(1, datum);</span>
+    }
+
+    public static Choice enumElement(final Enumerated datum) {
+<span class="nc" id="L51">        return new Choice(2, datum);</span>
+    }
+
+    public static Choice unsignedElement(final UnsignedInteger datum) {
+<span class="nc" id="L55">        return new Choice(3, datum);</span>
+    }
+
+    public static Choice signedElement(final SignedInteger datum) {
+<span class="nc" id="L59">        return new Choice(4, datum);</span>
+    }
+
+    public static Choice bitstringElement(final BitString datum) {
+<span class="nc" id="L63">        return new Choice(5, datum);</span>
+    }
+
+    public static Choice nullElement(final Null datum) {
+<span class="nc" id="L67">        return new Choice(6, datum);</span>
+    }
+
+    public static Choice failureElement(final BACnetError datum) {
+<span class="nc" id="L71">        return new Choice(7, datum);</span>
+    }
+
+    public static Choice anyElement(final BaseType datum) {
+<span class="nc" id="L75">        return new Choice(8, datum);</span>
+    }
+
+    private static List&lt;Class&lt;? extends Encodable&gt;&gt; classes;
+
+    static {
+<span class="nc" id="L81">        classes = new ArrayList&lt;Class&lt;? extends Encodable&gt;&gt;();</span>
+<span class="nc" id="L82">        classes.add(Boolean.class);</span>
+<span class="nc" id="L83">        classes.add(Real.class);</span>
+<span class="nc" id="L84">        classes.add(Enumerated.class);</span>
+<span class="nc" id="L85">        classes.add(UnsignedInteger.class);</span>
+<span class="nc" id="L86">        classes.add(SignedInteger.class);</span>
+<span class="nc" id="L87">        classes.add(BitString.class);</span>
+<span class="nc" id="L88">        classes.add(Null.class);</span>
+<span class="nc" id="L89">        classes.add(BACnetError.class);</span>
+<span class="nc" id="L90">        classes.add(Encodable.class);</span>
+<span class="nc" id="L91">    }</span>
+
+    private final LogStatus logStatus;
+
+    private final SequenceOf&lt;Choice&gt; logData;
+
+    private final Real timeChange;
+
+    public LogData(final LogStatus logStatus, final SequenceOf&lt;Choice&gt; logData,
+<span class="nc" id="L100">            final Real timeChange) {</span>
+<span class="nc" id="L101">        this.logStatus = logStatus;</span>
+<span class="nc" id="L102">        this.logData = logData;</span>
+<span class="nc" id="L103">        this.timeChange = timeChange;</span>
+<span class="nc" id="L104">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L108">        write(queue, logStatus, 0);</span>
+<span class="nc" id="L109">        write(queue, logData, 1);</span>
+<span class="nc" id="L110">        write(queue, timeChange, 2);</span>
+<span class="nc" id="L111">    }</span>
+
+    public LogStatus getLogStatus() {
+<span class="nc" id="L114">        return logStatus;</span>
+    }
+
+    public SequenceOf&lt;Choice&gt; getLogData() {
+<span class="nc" id="L118">        return logData;</span>
+    }
+
+    public Real getTimeChange() {
+<span class="nc" id="L122">        return timeChange;</span>
+    }
+
+    public int getChoiceType(final int indexBase1) {
+<span class="nc" id="L126">        return logData.get(indexBase1).getContextId();</span>
+    }
+
+    public Boolean getBoolean(final int indexBase1) {
+<span class="nc" id="L130">        return (Boolean) logData.get(indexBase1).getDatum();</span>
+    }
+
+    public Real getReal(final int indexBase1) {
+<span class="nc" id="L134">        return (Real) logData.get(indexBase1).getDatum();</span>
+    }
+
+    public Enumerated getEnumerated(final int indexBase1) {
+<span class="nc" id="L138">        return (Enumerated) logData.get(indexBase1).getDatum();</span>
+    }
+
+    public UnsignedInteger getUnsignedInteger(final int indexBase1) {
+<span class="nc" id="L142">        return (UnsignedInteger) logData.get(indexBase1).getDatum();</span>
+    }
+
+    public SignedInteger getSignedInteger(final int indexBase1) {
+<span class="nc" id="L146">        return (SignedInteger) logData.get(indexBase1).getDatum();</span>
+    }
+
+    public BitString getBitString(final int indexBase1) {
+<span class="nc" id="L150">        return (BitString) logData.get(indexBase1).getDatum();</span>
+    }
+
+    public Null getNull(final int indexBase1) {
+<span class="nc" id="L154">        return (Null) logData.get(indexBase1).getDatum();</span>
+    }
+
+    public BACnetError getBACnetError(final int indexBase1) {
+<span class="nc" id="L158">        return (BACnetError) logData.get(indexBase1).getDatum();</span>
+    }
+
+    public BaseType getAny(final int indexBase1) {
+<span class="nc" id="L162">        return (BaseType) logData.get(indexBase1).getDatum();</span>
+    }
+
+<span class="nc" id="L165">    public LogData(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L166">        logStatus = read(queue, LogStatus.class, 0);</span>
+<span class="nc" id="L167">        logData = readSequenceOfChoice(queue, classes, 1);</span>
+<span class="nc" id="L168">        timeChange = read(queue, Real.class, 2);</span>
+<span class="nc" id="L169">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L173">        final int prime = 31;</span>
+<span class="nc" id="L174">        int result = 1;</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        result = prime * result + ((logData == null) ? 0 : logData.hashCode());</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        result = prime * result</span>
+<span class="nc" id="L177">                + ((logStatus == null) ? 0 : logStatus.hashCode());</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        result = prime * result</span>
+<span class="nc" id="L179">                + ((timeChange == null) ? 0 : timeChange.hashCode());</span>
+<span class="nc" id="L180">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L186">            return true;</span>
+        }
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L189">            return false;</span>
+        }
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L192">            return false;</span>
+        }
+<span class="nc" id="L194">        final LogData other = (LogData) obj;</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (logData == null) {</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">            if (other.logData != null) {</span>
+<span class="nc" id="L197">                return false;</span>
+            }
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        } else if (!logData.equals(other.logData)) {</span>
+<span class="nc" id="L200">            return false;</span>
+        }
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        if (logStatus == null) {</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">            if (other.logStatus != null) {</span>
+<span class="nc" id="L204">                return false;</span>
+            }
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        } else if (!logStatus.equals(other.logStatus)) {</span>
+<span class="nc" id="L207">            return false;</span>
+        }
+<span class="nc bnc" id="L209" title="All 2 branches missed.">        if (timeChange == null) {</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">            if (other.timeChange != null) {</span>
+<span class="nc" id="L211">                return false;</span>
+            }
+<span class="nc bnc" id="L213" title="All 2 branches missed.">        } else if (!timeChange.equals(other.timeChange)) {</span>
+<span class="nc" id="L214">            return false;</span>
+        }
+<span class="nc" id="L216">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

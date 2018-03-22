@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransportProtocolType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.ase.network.transport</a> &gt; <span class="el_source">TransportProtocolType.java</span></div><h1>TransportProtocolType.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.ase.network.transport;
+
+<span class="nc" id="L3">public enum TransportProtocolType {</span>
+<span class="nc" id="L4">    WebSocket(&quot;WS&quot;), WebSocketSecure(&quot;WSS&quot;);</span>
+
+    private String name;
+
+<span class="nc" id="L8">    TransportProtocolType(final String name) {</span>
+<span class="nc" id="L9">        this.name = name.toLowerCase();</span>
+<span class="nc" id="L10">    }</span>
+
+    public String getName() {
+<span class="nc" id="L13">        return name;</span>
+    }
+
+    public static TransportProtocolType fromString(final String name) {
+<span class="nc" id="L17">        final String protocol = name.toLowerCase();</span>
+<span class="nc bnc" id="L18" title="All 2 branches missed.">        if (protocol != null) {</span>
+<span class="nc bnc" id="L19" title="All 2 branches missed.">            for (final TransportProtocolType tpt : TransportProtocolType</span>
+<span class="nc" id="L20">                    .values()) {</span>
+<span class="nc bnc" id="L21" title="All 2 branches missed.">                if (protocol.equalsIgnoreCase(tpt.name)) {</span>
+<span class="nc" id="L22">                    return tpt;</span>
+                }
+            }
+        }
+<span class="nc" id="L26">        throw new IllegalArgumentException(</span>
+                &quot;No TransportProtocolType with name &quot; + name + &quot; found&quot;);
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

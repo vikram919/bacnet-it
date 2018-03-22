@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.ase.application.transaction</a> &gt; <span class="el_source">TransactionManager.java</span></div><h1>TransactionManager.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.ase.application.transaction;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+
+import ch.fhnw.bacnetit.ase.encoding.UnsignedInteger8;
+import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
+import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataIndication;
+import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataRequest;
+
+/**
+ * Maintains incoming and outgoing communication of a BACnet/IT stack.
+ *
+ * @author IMVS, FHNW
+ *
+ */
+<span class="fc" id="L22">public class TransactionManager {</span>
+    /**
+     *
+     */
+
+<span class="fc" id="L27">    private final HashSet&lt;Integer&gt; uniqueIdSrcDst = new HashSet&lt;Integer&gt;();</span>
+
+    // Pool of maintained transactions
+<span class="fc" id="L30">    private final Map&lt;TransactionKey, Transaction&gt; transactions = new ConcurrentHashMap&lt;TransactionKey, Transaction&gt;();</span>
+
+    // private final List&lt;TransactionManagerListener&gt; listeners = new
+    // ArrayList&lt;TransactionManagerListener&gt;();
+
+    // Add a Transaction Manager Listener, e.g. the Logger nodejs application
+    // public void addListener(final TransactionManagerListener l) {
+    // listeners.add(l);
+    // }
+
+    public Transaction findTransaction(final TransactionKey key) {
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (transactions.containsKey(key)) {</span>
+<span class="fc" id="L42">            return transactions.get(key);</span>
+        } else {
+<span class="fc" id="L44">            return null;</span>
+        }
+    }
+
+    // public boolean changeTransactionState(final TransactionKey key,
+    // final TransactionState state) {
+    // final Transaction t = this.findTransaction(key);
+    // if (t == null) {
+    // return false;
+    // }
+    // t.setNewState(state);
+    // return true;
+    // }
+
+    public UnsignedInteger8 createOutboundTransaction(
+            final T_UnitDataRequest t_unitDataRequest) {
+        // T_UnitDataRequest does not contain an invokeId
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (t_unitDataRequest.getData().getInvokeId() == null) {</span>
+<span class="fc" id="L62">            final TransactionKey key = new TransactionKey(</span>
+<span class="fc" id="L63">                    t_unitDataRequest.getData().getSourceEID(),</span>
+<span class="fc" id="L64">                    t_unitDataRequest.getData().getDestinationEID(),</span>
+<span class="fc" id="L65">                    this.getUniqueInvokeId(</span>
+<span class="fc" id="L66">                            t_unitDataRequest.getData().getSourceEID(),</span>
+<span class="fc" id="L67">                            t_unitDataRequest.getData().getDestinationEID()),</span>
+                    TransactionKey.DIRECTION_OUT);
+            // Distinguish between a request that awaits an answer and a request
+            // that doesn't await an answer.
+<span class="fc" id="L71">            final Transaction t = new Transaction(</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">                    (t_unitDataRequest.getDataExpectingReply())</span>
+                            ? TransactionState.REQUESTED_WAITING
+                            : TransactionState.REQUESTED_DONE);
+<span class="fc" id="L75">            this.transactions.put(key, t);</span>
+            // LOG.debug(&quot;Created outbound transaction &quot; + key.getInvokeId());
+            // this.listeners.forEach(l -&gt; {
+            // try {
+            // l.onAdd(key, t);
+            // } catch (final Exception e) {
+            // // TODO Auto-generated catch block
+            // e.printStackTrace();
+            // }
+            // });
+<span class="fc" id="L85">            return key.getInvokeId();</span>
+        }
+        // T_UnitDataRequest does contain an invokeId
+        else {
+            // Check if it is an answer, so update the transaction state
+<span class="fc" id="L90">            final TransactionKey keyIfAnswer = new TransactionKey(</span>
+<span class="fc" id="L91">                    t_unitDataRequest.getData().getDestinationEID(),</span>
+<span class="fc" id="L92">                    t_unitDataRequest.getData().getSourceEID(),</span>
+<span class="fc" id="L93">                    t_unitDataRequest.getData().getInvokeId(),</span>
+                    TransactionKey.DIRECTION_IN);
+<span class="fc" id="L95">            final Transaction transactionToAnswer = this</span>
+<span class="fc" id="L96">                    .findTransaction(keyIfAnswer);</span>
+
+<span class="fc bfc" id="L98" title="All 2 branches covered.">            if (transactionToAnswer != null &amp;&amp; transactionToAnswer</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">                    .getState() == TransactionState.INDICATED_WAITING) {</span>
+                // transaction is a confirm
+<span class="fc" id="L101">                transactionToAnswer</span>
+<span class="fc" id="L102">                        .setNewState(TransactionState.INDICATED_DONE);</span>
+                // this.listeners.forEach(l -&gt; {
+                // try {
+                // l.onChange(keyIfAnswer, transactionToAnswer,
+                // TransactionState.INDICATED_WAITING);
+                // } catch (final Exception e) {
+                // // TODO Auto-generated catch block
+                // e.printStackTrace();
+                // }
+                // });
+<span class="fc" id="L112">                return t_unitDataRequest.getData().getInvokeId();</span>
+            } else {
+<span class="fc" id="L114">                final TransactionKey key = new TransactionKey(</span>
+<span class="fc" id="L115">                        t_unitDataRequest.getData().getSourceEID(),</span>
+<span class="fc" id="L116">                        t_unitDataRequest.getData().getDestinationEID(),</span>
+<span class="fc" id="L117">                        t_unitDataRequest.getData().getInvokeId(),</span>
+                        TransactionKey.DIRECTION_OUT);
+<span class="fc" id="L119">                this.transactions.put(key,</span>
+                        new Transaction(
+<span class="fc bfc" id="L121" title="All 2 branches covered.">                                t_unitDataRequest.getDataExpectingReply()</span>
+                                        ? TransactionState.REQUESTED_WAITING
+                                        : TransactionState.REQUESTED_DONE));
+                // transaction is new. most likely a resend after a timeout
+                // this.listeners.forEach(l -&gt; {
+                // try {
+                // l.onAdd(keyIfAnswer, new Transaction(
+                // (t_unitDataRequest.getDataExpectingReply())
+                // ? TransactionState.REQUESTED_WAITING
+                // : TransactionState.REQUESTED_DONE));
+                // // TODO: this behaviour is basically the same as if the
+                // // transaction had no invoke id -&gt; validate this
+                // } catch (final Exception e) {
+                // e.printStackTrace();
+                // }
+                // });
+<span class="fc" id="L137">                return t_unitDataRequest.getData().getInvokeId();</span>
+            }
+        }
+    }
+
+    public void createInboundTransaction(
+            final T_UnitDataIndication t_unitDataIndication) {
+
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (t_unitDataIndication.getData().getInvokeId() == null) {</span>
+<span class="nc" id="L146">            System.err.println(&quot;t_unitDataIndication has no invoke Id&quot;);</span>
+<span class="nc" id="L147">            return;</span>
+        }
+
+<span class="fc" id="L150">        final TransactionKey key = new TransactionKey(</span>
+<span class="fc" id="L151">                t_unitDataIndication.getData().getSourceEID(),</span>
+<span class="fc" id="L152">                t_unitDataIndication.getData().getDestinationEID(),</span>
+<span class="fc" id="L153">                t_unitDataIndication.getData().getInvokeId(),</span>
+                TransactionKey.DIRECTION_IN);
+
+        // Update an existing AWAIT-RESPONSE Transaction if one is available
+        // Change SRC and DEST
+<span class="fc" id="L158">        final TransactionKey changedKey = new TransactionKey(</span>
+<span class="fc" id="L159">                key.getDestination(), key.getSource(), key.getInvokeId(),</span>
+                TransactionKey.DIRECTION_OUT);
+<span class="fc" id="L161">        Transaction existingTransaction = findTransaction(changedKey);</span>
+
+        // Does the existing transaction awaits a response
+<span class="fc bfc" id="L164" title="All 2 branches covered.">        existingTransaction = (existingTransaction != null</span>
+                &amp;&amp; existingTransaction
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">                        .getState() == TransactionState.REQUESTED_WAITING)</span>
+                                ? existingTransaction : null;
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        if (existingTransaction != null) {</span>
+<span class="fc" id="L169">            existingTransaction.setNewState(TransactionState.REQUESTED_DONE);</span>
+            // for (final TransactionManagerListener l : this.listeners) {
+            // try {
+            // l.onChange(changedKey, existingTransaction,
+            // TransactionState.REQUESTED_WAITING);
+            // } catch (final Exception e) {
+            // // TODO Auto-generated catch block
+            // e.printStackTrace();
+            // }
+            // }
+        }
+        // Create a new Transaction entry for incoming request
+        // Distinguish between requests which demand for a response and request
+        // which don't.
+<span class="fc bfc" id="L183" title="All 2 branches covered.">        else if (t_unitDataIndication.getDataExpectingReply()) {</span>
+
+<span class="fc" id="L185">            final TransactionKey haveToResponseTransactionKey = new TransactionKey(</span>
+<span class="fc" id="L186">                    t_unitDataIndication.getData().getSourceEID(),</span>
+<span class="fc" id="L187">                    t_unitDataIndication.getData().getDestinationEID(),</span>
+<span class="fc" id="L188">                    t_unitDataIndication.getData().getInvokeId(),</span>
+                    TransactionKey.DIRECTION_IN);
+<span class="fc" id="L190">            final Transaction t = new Transaction(</span>
+                    TransactionState.INDICATED_WAITING);
+<span class="fc" id="L192">            this.transactions.put(haveToResponseTransactionKey, t);</span>
+            // this.listeners.forEach(l -&gt; {
+            // try {
+            // l.onAdd(haveToResponseTransactionKey, t);
+            // } catch (final Exception e) {
+            // // TODO Auto-generated catch block
+            // e.printStackTrace();
+            // }
+            // });
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">        } else if (!t_unitDataIndication.getDataExpectingReply()) {</span>
+<span class="fc" id="L202">            final TransactionKey noResponseTransactionKey = new TransactionKey(</span>
+<span class="fc" id="L203">                    t_unitDataIndication.getData().getSourceEID(),</span>
+<span class="fc" id="L204">                    t_unitDataIndication.getData().getDestinationEID(),</span>
+<span class="fc" id="L205">                    t_unitDataIndication.getData().getInvokeId(),</span>
+                    TransactionKey.DIRECTION_IN);
+<span class="fc" id="L207">            final Transaction t = new Transaction(</span>
+                    TransactionState.INDICATED_DONE);
+<span class="fc" id="L209">            this.transactions.put(noResponseTransactionKey, t);</span>
+            // this.listeners.forEach(l -&gt; {
+            // try {
+            // l.onAdd(noResponseTransactionKey, t);
+            // } catch (final Exception e) {
+            // // TODO Auto-generated catch block
+            // e.printStackTrace();
+            // }
+            // });
+        }
+
+<span class="fc" id="L220">    }</span>
+
+    /**
+     * Returns all Transactions as a collection ordered by time.
+     *
+     * @return all transactions as a collection ordered by time
+     */
+    public Collection&lt;Transaction&gt; getTransactionsSortedByTime() {
+<span class="fc" id="L228">        final ArrayList&lt;Transaction&gt; list = new ArrayList&lt;Transaction&gt;(</span>
+<span class="fc" id="L229">                transactions.values());</span>
+<span class="fc" id="L230">        Collections.sort(list);</span>
+<span class="fc" id="L231">        return list;</span>
+    }
+
+    protected UnsignedInteger8 getUniqueInvokeId(final BACnetEID source,
+            final BACnetEID dest) {
+<span class="fc" id="L236">        int x = 0;</span>
+<span class="fc bfc" id="L237" title="All 2 branches covered.">        while (this.uniqueIdSrcDst.contains(Objects.hash(x, source, dest))) {</span>
+<span class="fc" id="L238">            x++;</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">            if (x &gt; 254) {</span>
+                try {
+<span class="fc" id="L241">                    throw new Exception(</span>
+                            &quot;Inconsistency during unique id calculation&quot;);
+<span class="fc" id="L243">                } catch (final Exception e) {</span>
+<span class="fc" id="L244">                    System.err.println(e);</span>
+<span class="fc" id="L245">                    return null;</span>
+                }
+            }
+        }
+<span class="fc" id="L249">        this.uniqueIdSrcDst.add(Integer.valueOf(Objects.hash(x, source, dest)));</span>
+<span class="fc" id="L250">        return new UnsignedInteger8(x);</span>
+
+    }
+
+    public int size() {
+<span class="nc" id="L255">        return transactions.size();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

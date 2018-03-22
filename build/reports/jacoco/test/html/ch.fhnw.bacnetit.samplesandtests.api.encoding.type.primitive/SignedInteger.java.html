@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SignedInteger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive</a> &gt; <span class="el_source">SignedInteger.java</span></div><h1>SignedInteger.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive;
+
+import java.math.BigInteger;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class SignedInteger extends Primitive {
+    private static final long serialVersionUID = 3344404709705407437L;
+
+    public static final byte TYPE_ID = 3;
+
+    private int smallValue;
+
+    private BigInteger bigValue;
+
+<span class="nc" id="L38">    public SignedInteger(final int value) {</span>
+<span class="nc" id="L39">        smallValue = value;</span>
+<span class="nc" id="L40">    }</span>
+
+<span class="nc" id="L42">    public SignedInteger(final long value) {</span>
+<span class="nc" id="L43">        bigValue = BigInteger.valueOf(value);</span>
+<span class="nc" id="L44">    }</span>
+
+<span class="nc" id="L46">    public SignedInteger(final BigInteger value) {</span>
+<span class="nc" id="L47">        bigValue = value;</span>
+<span class="nc" id="L48">    }</span>
+
+    public int intValue() {
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (bigValue == null) {</span>
+<span class="nc" id="L52">            return smallValue;</span>
+        }
+<span class="nc" id="L54">        return bigValue.intValue();</span>
+    }
+
+    public long longValue() {
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (bigValue == null) {</span>
+<span class="nc" id="L59">            return smallValue;</span>
+        }
+<span class="nc" id="L61">        return bigValue.longValue();</span>
+    }
+
+    public BigInteger bigIntegerValue() {
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (bigValue == null) {</span>
+<span class="nc" id="L66">            return BigInteger.valueOf(smallValue);</span>
+        }
+<span class="nc" id="L68">        return bigValue;</span>
+    }
+
+    //
+    // Reading and writing
+    //
+<span class="nc" id="L74">    public SignedInteger(final ByteQueue queue) {</span>
+        // Read the data length value.
+<span class="nc" id="L76">        final int length = (int) readTag(queue);</span>
+
+<span class="nc" id="L78">        final byte[] bytes = new byte[length];</span>
+<span class="nc" id="L79">        queue.pop(bytes);</span>
+<span class="nc" id="L80">        final BigInteger bi = new BigInteger(bytes);</span>
+
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (length &lt; 5) {</span>
+<span class="nc" id="L83">            smallValue = bi.intValue();</span>
+        } else {
+<span class="nc" id="L85">            bigValue = bi;</span>
+        }
+<span class="nc" id="L87">    }</span>
+
+    @Override
+    public void writeImpl(final ByteQueue queue) {
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (bigValue == null) {</span>
+<span class="nc" id="L92">            long length = getLength();</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            while (length &gt; 0) {</span>
+<span class="nc" id="L94">                queue.push(smallValue &gt;&gt; (--length * 8));</span>
+            }
+<span class="nc" id="L96">        } else {</span>
+<span class="nc" id="L97">            queue.push(bigValue.toByteArray());</span>
+        }
+<span class="nc" id="L99">    }</span>
+
+    @Override
+    protected long getLength() {
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (bigValue == null) {</span>
+            int length;
+<span class="nc bnc" id="L105" title="All 4 branches missed.">            if (smallValue &lt; Byte.MAX_VALUE &amp;&amp; smallValue &gt; Byte.MIN_VALUE) {</span>
+<span class="nc" id="L106">                length = 1;</span>
+            }
+            // TODO, get answer from BACnet4j author
+<span class="nc bnc" id="L109" title="All 4 branches missed.">            else if (smallValue &lt; Short.MAX_VALUE</span>
+                    &amp;&amp; smallValue &gt; Short.MAX_VALUE) {
+<span class="nc" id="L111">                length = 2;</span>
+<span class="nc bnc" id="L112" title="All 4 branches missed.">            } else if (smallValue &lt; 8388607 &amp;&amp; smallValue &gt; -8388608) {</span>
+<span class="nc" id="L113">                length = 3;</span>
+            } else {
+<span class="nc" id="L115">                length = 4;</span>
+            }
+<span class="nc" id="L117">            return length;</span>
+        }
+<span class="nc" id="L119">        return bigValue.toByteArray().length;</span>
+    }
+
+    @Override
+    protected byte getTypeId() {
+<span class="nc" id="L124">        return TYPE_ID;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L129">        final int PRIME = 31;</span>
+<span class="nc" id="L130">        int result = 1;</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L132">                + ((bigValue == null) ? 0 : bigValue.hashCode());</span>
+<span class="nc" id="L133">        result = PRIME * result + smallValue;</span>
+<span class="nc" id="L134">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L140">            return true;</span>
+        }
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L143">            return false;</span>
+        }
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L146">            return false;</span>
+        }
+<span class="nc" id="L148">        final SignedInteger other = (SignedInteger) obj;</span>
+<span class="nc" id="L149">        return bigIntegerValue().equals(other.bigIntegerValue());</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (bigValue == null) {</span>
+<span class="nc" id="L155">            return Integer.toString(smallValue);</span>
+        }
+<span class="nc" id="L157">        return bigValue.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

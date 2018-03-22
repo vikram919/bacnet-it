@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GetEventInformation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.service.confirmed</a> &gt; <span class="el_source">GetEventInformation.java</span></div><h1>GetEventInformation.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.service.confirmed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class GetEventInformation extends ConfirmedRequestService {
+    private static final long serialVersionUID = 5920365345189498832L;
+
+    public static final byte TYPE_ID = 29;
+
+    private final BACnetObjectIdentifier lastReceivedObjectIdentifier;
+
+    public GetEventInformation(
+<span class="nc" id="L37">            final BACnetObjectIdentifier lastReceivedObjectIdentifier) {</span>
+<span class="nc" id="L38">        this.lastReceivedObjectIdentifier = lastReceivedObjectIdentifier;</span>
+<span class="nc" id="L39">    }</span>
+
+    @Override
+    public byte getChoiceId() {
+<span class="nc" id="L43">        return TYPE_ID;</span>
+    }
+
+    // @Override
+    // public AcknowledgementService handle(LocalDevice localDevice, Address
+    // from, OctetString linkService)
+    // throws BACnetException {
+    // throw new NotImplementedException();
+    // }
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L55">        writeOptional(queue, lastReceivedObjectIdentifier, 0);</span>
+<span class="nc" id="L56">    }</span>
+
+<span class="nc" id="L58">    GetEventInformation(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L59">        lastReceivedObjectIdentifier = readOptional(queue,</span>
+                BACnetObjectIdentifier.class, 0);
+<span class="nc" id="L61">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L65">        final int PRIME = 31;</span>
+<span class="nc" id="L66">        int result = 1;</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        result = PRIME * result + ((lastReceivedObjectIdentifier == null) ? 0</span>
+<span class="nc" id="L68">                : lastReceivedObjectIdentifier.hashCode());</span>
+<span class="nc" id="L69">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L75">            return true;</span>
+        }
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L78">            return false;</span>
+        }
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L81">            return false;</span>
+        }
+<span class="nc" id="L83">        final GetEventInformation other = (GetEventInformation) obj;</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (lastReceivedObjectIdentifier == null) {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (other.lastReceivedObjectIdentifier != null) {</span>
+<span class="nc" id="L86">                return false;</span>
+            }
+<span class="nc" id="L88">        } else if (!lastReceivedObjectIdentifier</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">                .equals(other.lastReceivedObjectIdentifier)) {</span>
+<span class="nc" id="L90">            return false;</span>
+        }
+<span class="nc" id="L92">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

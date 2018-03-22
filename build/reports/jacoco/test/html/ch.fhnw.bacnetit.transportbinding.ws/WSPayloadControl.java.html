@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WSPayloadControl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.transportbinding.ws</a> &gt; <span class="el_source">WSPayloadControl.java</span></div><h1>WSPayloadControl.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.transportbinding.ws;
+
+import ch.fhnw.bacnetit.ase.encoding.UnsignedInteger31;
+
+<span class="nc" id="L5">public class WSPayloadControl {</span>
+
+<span class="pc" id="L7">    public static enum PayloadType {</span>
+<span class="fc" id="L8">        CONTROLMESSAGE(64), TBPDU(0);</span>
+        int value;
+
+<span class="fc" id="L11">        PayloadType(final int i) {</span>
+<span class="fc" id="L12">            value = i;</span>
+<span class="fc" id="L13">        }</span>
+    }
+
+<span class="pc" id="L16">    static enum ExpectingReply {</span>
+<span class="fc" id="L17">        EXPECTING(4), NOTEXPECTING(0);</span>
+        int value;
+
+<span class="fc" id="L20">        ExpectingReply(final int i) {</span>
+<span class="fc" id="L21">            value = i;</span>
+<span class="fc" id="L22">        }</span>
+    }
+
+    /**
+     * Always returns version 1
+     *
+     * @return version 1
+     */
+    public static byte getVersionByte() {
+<span class="fc" id="L31">        return (byte) 1;</span>
+    }
+
+    public static byte getControlByte(final PayloadType payloadType,
+            final ExpectingReply expectingReply,
+            final UnsignedInteger31 networkPrority) {
+<span class="fc" id="L37">        return (byte) (payloadType.value | expectingReply.value</span>
+<span class="fc" id="L38">                | networkPrority.intValue());</span>
+    }
+
+    public static PayloadType getType(final byte controlByte) {
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if ((controlByte &amp; PayloadType.CONTROLMESSAGE.value) &gt; 0) {</span>
+<span class="nc" id="L43">            return PayloadType.CONTROLMESSAGE;</span>
+        } else {
+<span class="fc" id="L45">            return PayloadType.TBPDU;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

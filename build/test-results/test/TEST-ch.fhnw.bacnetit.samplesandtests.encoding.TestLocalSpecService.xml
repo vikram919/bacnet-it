@@ -1,0 +1,961 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ch.fhnw.bacnetit.samplesandtests.encoding.TestLocalSpecService" tests="8" skipped="0" failures="0" errors="0" timestamp="2018-03-21T20:19:17" hostname="DESKTOP-QBU1TN7" time="3.121">
+  <properties/>
+  <testcase name="TestLifeSafetyOperationRequest" classname="ch.fhnw.bacnetit.samplesandtests.encoding.TestLocalSpecService" time="1.98"/>
+  <testcase name="TestSubscribeCOVPropertyRequest" classname="ch.fhnw.bacnetit.samplesandtests.encoding.TestLocalSpecService" time="0.241"/>
+  <testcase name="TestAcknowledgeAlarmRequest" classname="ch.fhnw.bacnetit.samplesandtests.encoding.TestLocalSpecService" time="0.137"/>
+  <testcase name="TestConfirmedEventNotificationRequest" classname="ch.fhnw.bacnetit.samplesandtests.encoding.TestLocalSpecService" time="0.178"/>
+  <testcase name="TestConfirmedCovNotificationRequest" classname="ch.fhnw.bacnetit.samplesandtests.encoding.TestLocalSpecService" time="0.132"/>
+  <testcase name="TestSubscribeCOVRequest" classname="ch.fhnw.bacnetit.samplesandtests.encoding.TestLocalSpecService" time="0.158"/>
+  <testcase name="TestReadPropertyRequest" classname="ch.fhnw.bacnetit.samplesandtests.encoding.TestLocalSpecService" time="0.151"/>
+  <testcase name="TestWritePropertyRequest" classname="ch.fhnw.bacnetit.samplesandtests.encoding.TestLocalSpecService" time="0.141"/>
+  <system-out><![CDATA[21:19:17.730 [Test worker] DEBUG i.n.c.MultithreadEventLoopGroup - -Dio.netty.eventLoopThreads: 16
+21:19:17.882 [Test worker] DEBUG i.n.util.internal.PlatformDependent0 - java.nio.Buffer.address: available
+21:19:17.882 [Test worker] DEBUG i.n.util.internal.PlatformDependent0 - sun.misc.Unsafe.theUnsafe: available
+21:19:17.883 [Test worker] DEBUG i.n.util.internal.PlatformDependent0 - sun.misc.Unsafe.copyMemory: available
+21:19:17.884 [Test worker] DEBUG i.n.util.internal.PlatformDependent0 - java.nio.Bits.unaligned: true
+21:19:17.884 [Test worker] DEBUG i.n.util.internal.PlatformDependent0 - java.nio.DirectByteBuffer.<init>(long, int): available
+21:19:17.885 [Test worker] DEBUG i.n.util.internal.PlatformDependent - Platform: Windows
+21:19:17.887 [Test worker] DEBUG i.n.util.internal.PlatformDependent - Java version: 8
+21:19:17.888 [Test worker] DEBUG i.n.util.internal.PlatformDependent - -Dio.netty.noUnsafe: false
+21:19:17.888 [Test worker] DEBUG i.n.util.internal.PlatformDependent - sun.misc.Unsafe: available
+21:19:17.890 [Test worker] DEBUG i.n.util.internal.PlatformDependent - -Dio.netty.noJavassist: false
+21:19:17.894 [Test worker] DEBUG i.n.util.internal.PlatformDependent - Javassist: unavailable
+21:19:17.894 [Test worker] DEBUG i.n.util.internal.PlatformDependent - You don't have Javassist in your class path or you don't have enough permission to load dynamically generated classes.  Please check the configuration for better performance.
+21:19:17.894 [Test worker] DEBUG i.n.util.internal.PlatformDependent - -Dio.netty.tmpdir: C:\Users\vik\AppData\Local\Temp (java.io.tmpdir)
+21:19:17.895 [Test worker] DEBUG i.n.util.internal.PlatformDependent - -Dio.netty.bitMode: 64 (sun.arch.data.model)
+21:19:17.895 [Test worker] DEBUG i.n.util.internal.PlatformDependent - -Dio.netty.noPreferDirect: false
+21:19:17.895 [Test worker] DEBUG i.n.util.internal.PlatformDependent - io.netty.maxDirectMemory: 1773142016 bytes
+21:19:17.962 [Test worker] DEBUG io.netty.channel.nio.NioEventLoop - -Dio.netty.noKeySetOptimization: false
+21:19:17.963 [Test worker] DEBUG io.netty.channel.nio.NioEventLoop - -Dio.netty.selectorAutoRebuildThreshold: 512
+21:19:18.181 [Test worker] DEBUG io.netty.channel.DefaultChannelId - -Dio.netty.processId: 17856 (auto-detected)
+21:19:18.419 [Test worker] DEBUG io.netty.util.NetUtil - Loopback interface: lo (Software Loopback Interface 1, 127.0.0.1)
+21:19:18.421 [Test worker] DEBUG io.netty.util.NetUtil - \proc\sys\net\core\somaxconn: 200 (non-existent)
+21:19:18.754 [Test worker] DEBUG io.netty.channel.DefaultChannelId - -Dio.netty.machineId: 00:05:9a:ff:fe:3c:7a:00 (auto-detected)
+21:19:18.760 [Test worker] DEBUG i.n.util.internal.ThreadLocalRandom - -Dio.netty.initialSeedUniquifier: 0x51b62abadd9a8a0f
+21:19:18.806 [Test worker] DEBUG io.netty.util.ResourceLeakDetector - -Dio.netty.leakDetection.level: simple
+21:19:18.806 [Test worker] DEBUG io.netty.util.ResourceLeakDetector - -Dio.netty.leakDetection.maxRecords: 4
+21:19:18.913 [Test worker] DEBUG i.n.buffer.PooledByteBufAllocator - -Dio.netty.allocator.numHeapArenas: 16
+21:19:18.913 [Test worker] DEBUG i.n.buffer.PooledByteBufAllocator - -Dio.netty.allocator.numDirectArenas: 16
+21:19:18.914 [Test worker] DEBUG i.n.buffer.PooledByteBufAllocator - -Dio.netty.allocator.pageSize: 8192
+21:19:18.914 [Test worker] DEBUG i.n.buffer.PooledByteBufAllocator - -Dio.netty.allocator.maxOrder: 11
+21:19:18.914 [Test worker] DEBUG i.n.buffer.PooledByteBufAllocator - -Dio.netty.allocator.chunkSize: 16777216
+21:19:18.914 [Test worker] DEBUG i.n.buffer.PooledByteBufAllocator - -Dio.netty.allocator.tinyCacheSize: 512
+21:19:18.915 [Test worker] DEBUG i.n.buffer.PooledByteBufAllocator - -Dio.netty.allocator.smallCacheSize: 256
+21:19:18.915 [Test worker] DEBUG i.n.buffer.PooledByteBufAllocator - -Dio.netty.allocator.normalCacheSize: 64
+21:19:18.915 [Test worker] DEBUG i.n.buffer.PooledByteBufAllocator - -Dio.netty.allocator.maxCachedBufferCapacity: 32768
+21:19:18.915 [Test worker] DEBUG i.n.buffer.PooledByteBufAllocator - -Dio.netty.allocator.cacheTrimInterval: 8192
+21:19:18.965 [Test worker] DEBUG io.netty.buffer.ByteBufUtil - -Dio.netty.allocator.type: pooled
+21:19:18.966 [Test worker] DEBUG io.netty.buffer.ByteBufUtil - -Dio.netty.threadLocalDirectBufferSize: 65536
+21:19:18.967 [Test worker] DEBUG io.netty.buffer.ByteBufUtil - -Dio.netty.maxThreadLocalCharBufferSize: 16384
+21:19:19.015 [nioEventLoopGroup-3-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x53dbc572] REGISTERED
+21:19:19.019 [nioEventLoopGroup-3-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x53dbc572] BIND: 0.0.0.0/0.0.0.0:38080
+21:19:19.027 [nioEventLoopGroup-3-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x53dbc572, L:/0:0:0:0:0:0:0:0:38080] ACTIVE
+21:19:19.030 [nioEventLoopGroup-3-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xf8c6fca6] REGISTERED
+21:19:19.030 [nioEventLoopGroup-3-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xf8c6fca6] BIND: 0.0.0.0/0.0.0.0:38081
+21:19:19.031 [nioEventLoopGroup-3-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xf8c6fca6, L:/0:0:0:0:0:0:0:0:38081] ACTIVE
+21:19:19.076 [nioEventLoopGroup-5-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xfc401978] REGISTERED
+21:19:19.076 [nioEventLoopGroup-5-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xfc401978] BIND: 0.0.0.0/0.0.0.0:9090
+21:19:19.077 [nioEventLoopGroup-5-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xfc401978, L:/0:0:0:0:0:0:0:0:9090] ACTIVE
+21:19:19.078 [nioEventLoopGroup-5-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x39492e9a] REGISTERED
+21:19:19.079 [nioEventLoopGroup-5-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x39492e9a] BIND: 0.0.0.0/0.0.0.0:9091
+21:19:19.080 [nioEventLoopGroup-5-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x39492e9a, L:/0:0:0:0:0:0:0:0:9091] ACTIVE
+21:19:19.086 [Test worker] DEBUG c.f.b.t.a.TransportBindingInitializer - T_UnitData destination: ws://localhost:9091
+21:19:19.087 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - No connection to localhost/127.0.0.1:9091 found, creating new one...
+21:19:19.217 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Added ConnectionClientContext to connectionCache. localhost/127.0.0.1:9091,ch.fhnw.bacnetit.transportbinding.OutgoingConnectionHandler$ConnectionClientContext@7523a80b
+21:19:19.218 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Client ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@4d2da904 not connected. Connecting...
+21:19:19.363 [nioEventLoopGroup-2-1] DEBUG io.netty.buffer.AbstractByteBuf - -Dio.netty.buffer.bytebuf.checkAccessible: true
+21:19:19.369 [nioEventLoopGroup-2-1] DEBUG i.n.util.ResourceLeakDetectorFactory - Loaded default ResourceLeakDetector: io.netty.util.ResourceLeakDetector@5d73c4f1
+21:19:19.424 [nioEventLoopGroup-5-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x39492e9a, L:/0:0:0:0:0:0:0:0:9091] RECEIVED: [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729]
+21:19:19.435 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel bootstrapped [id: 0x6336f51c, L:/127.0.0.1:54729 - R:localhost/127.0.0.1:9091]
+21:19:19.442 [nioEventLoopGroup-2-1] DEBUG i.n.h.c.h.w.WebSocketClientHandshaker13 - WebSocket version 13 client handshake key: AedQ3ETm5xMfOl0Qu6dRWw==, expected response: v+M4FfhWBK1Na1TwcUklDf7/Ik8=
+21:19:19.444 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] REGISTERED
+21:19:19.448 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] ACTIVE
+21:19:19.457 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - class ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection
+21:19:19.457 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel set
+21:19:19.458 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone1
+21:19:19.463 [nioEventLoopGroup-2-1] DEBUG io.netty.util.Recycler - -Dio.netty.recycler.maxCapacity: 262144
+21:19:19.463 [nioEventLoopGroup-2-1] DEBUG io.netty.util.Recycler - -Dio.netty.recycler.linkCapacity: 16
+21:19:19.514 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Received HTTP request HttpObjectAggregator$AggregatedFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: CompositeByteBuf(ridx: 0, widx: 0, cap: 0, components=0))
+GET /websocket HTTP/1.1
+upgrade: websocket
+connection: upgrade
+sec-websocket-key: AedQ3ETm5xMfOl0Qu6dRWw==
+host: localhost:9091
+sec-websocket-origin: http://localhost:9091
+sec-websocket-version: 13
+content-length: 0
+21:19:19.525 [nioEventLoopGroup-4-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] WebSocket version V13 server handshake
+21:19:19.527 [nioEventLoopGroup-4-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - WebSocket version 13 server handshake key: AedQ3ETm5xMfOl0Qu6dRWw==, response: v+M4FfhWBK1Na1TwcUklDf7/Ik8=
+21:19:19.537 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] WRITE, DefaultFullHttpResponse(decodeResult: success, version: HTTP/1.1, content: UnpooledUnsafeHeapByteBuf(ridx: 0, widx: 0, cap: 0))
+HTTP/1.1 101 Switching Protocols
+upgrade: websocket
+connection: upgrade
+sec-websocket-accept: v+M4FfhWBK1Na1TwcUklDf7/Ik8=, 0B
+21:19:19.538 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] FLUSH
+21:19:19.541 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - WebSocket Server Handshake completed successfully
+21:19:19.546 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocket Client connected!
+21:19:19.547 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.ws.outgoing.WSConnection - Websocket connection initialized
+21:19:19.548 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@618a0263
+21:19:19.549 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@618a0263
+21:19:19.550 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocketConnectionHandler:
+21:19:19.550 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.ws.WSConnectionHandler - Fire User Event Trigger, dummy Control Message object
+21:19:19.550 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:19.551 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@61713ccd
+21:19:19.551 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:19.553 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] WRITE: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:19.554 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone2
+21:19:19.557 [nioEventLoopGroup-2-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:19.559 [nioEventLoopGroup-4-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:19.561 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection initiazized
+21:19:19.561 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - connection made ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@4d2da904
+21:19:19.566 [nioEventLoopGroup-4-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:19.566 [nioEventLoopGroup-2-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:19.568 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] FLUSH
+21:19:19.569 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:19.569 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] USER_EVENT: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:19.569 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:19.571 [nioEventLoopGroup-2-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:19.573 [nioEventLoopGroup-4-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:19.574 [nioEventLoopGroup-2-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:19.576 [nioEventLoopGroup-2-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:19.578 [nioEventLoopGroup-4-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:19.578 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@783a06b2
+21:19:19.578 [nioEventLoopGroup-4-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:19.578 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:19.579 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:19.579 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@7ad34b5f
+21:19:19.579 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:19.579 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@7ad34b5f
+21:19:19.580 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:19.580 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:19.580 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:19.583 [nioEventLoopGroup-2-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:19.584 [nioEventLoopGroup-2-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=36
+21:19:19.585 [nioEventLoopGroup-2-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:19.585 [nioEventLoopGroup-2-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:19.585 [nioEventLoopGroup-4-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:19.585 [nioEventLoopGroup-4-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=36
+21:19:19.586 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Successfully decoded new BACnetMessage: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:19.612 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] USER_EVENT: ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@7845fc09
+21:19:19.612 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@7845fc09
+21:19:19.612 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - (evt instanceof ConnectionClient) 
+21:19:19.612 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - /127.0.0.1:54729
+21:19:19.613 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Updated connection client for IP host to '/127.0.0.1:54729'
+21:19:19.613 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Register a incoming WebSocketFrame in the local dns
+21:19:19.613 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - SourceEID 1A 03 E9, URI: URI: WS://127.0.0.1:54729
+21:19:19.613 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 - R:/127.0.0.1:54729] RECEIVED: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:19.616 [nioEventLoopGroup-3-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x53dbc572, L:/0:0:0:0:0:0:0:0:38080] UNREGISTERED
+21:19:19.617 [nioEventLoopGroup-3-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xf8c6fca6, L:/0:0:0:0:0:0:0:0:38081] UNREGISTERED
+21:19:19.619 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 ! R:/127.0.0.1:54729] INACTIVE
+21:19:19.619 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - UnregisterEvent reveived from /127.0.0.1:54729
+21:19:19.619 [nioEventLoopGroup-4-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x18ec8a0b, L:/127.0.0.1:9091 ! R:/127.0.0.1:54729] USER_EVENT: REMOVE_CONNECTION_EVENT
+21:19:19.619 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received REMOVE_CONNECTION_EVENT
+21:19:19.619 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.a.TransportBindingInitializer - trigger REMOVE_CONNECTION_EVENT received
+21:19:19.623 [nioEventLoopGroup-4-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection null has been removed
+21:19:19.660 [nioEventLoopGroup-5-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x39492e9a, L:/0:0:0:0:0:0:0:0:9091] UNREGISTERED
+21:19:19.661 [nioEventLoopGroup-5-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xfc401978, L:/0:0:0:0:0:0:0:0:9090] UNREGISTERED
+21:19:19.733 [nioEventLoopGroup-10-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1f05a0ad] REGISTERED
+21:19:19.734 [nioEventLoopGroup-10-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1f05a0ad] BIND: 0.0.0.0/0.0.0.0:38080
+21:19:19.735 [nioEventLoopGroup-10-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1f05a0ad, L:/0:0:0:0:0:0:0:0:38080] ACTIVE
+21:19:19.736 [nioEventLoopGroup-10-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x8e285dd1] REGISTERED
+21:19:19.736 [nioEventLoopGroup-10-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x8e285dd1] BIND: 0.0.0.0/0.0.0.0:38081
+21:19:19.737 [nioEventLoopGroup-10-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x8e285dd1, L:/0:0:0:0:0:0:0:0:38081] ACTIVE
+21:19:19.779 [nioEventLoopGroup-12-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x489750f0] REGISTERED
+21:19:19.780 [nioEventLoopGroup-12-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x489750f0] BIND: 0.0.0.0/0.0.0.0:9090
+21:19:19.781 [nioEventLoopGroup-12-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x489750f0, L:/0:0:0:0:0:0:0:0:9090] ACTIVE
+21:19:19.797 [nioEventLoopGroup-12-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1174d177] REGISTERED
+21:19:19.797 [nioEventLoopGroup-12-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1174d177] BIND: 0.0.0.0/0.0.0.0:9091
+21:19:19.798 [nioEventLoopGroup-12-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1174d177, L:/0:0:0:0:0:0:0:0:9091] ACTIVE
+21:19:19.805 [Test worker] DEBUG c.f.b.t.a.TransportBindingInitializer - T_UnitData destination: ws://localhost:9091
+21:19:19.805 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - No connection to localhost/127.0.0.1:9091 found, creating new one...
+21:19:19.836 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Added ConnectionClientContext to connectionCache. localhost/127.0.0.1:9091,ch.fhnw.bacnetit.transportbinding.OutgoingConnectionHandler$ConnectionClientContext@2bac58b3
+21:19:19.836 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Client ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@6a186bae not connected. Connecting...
+21:19:19.839 [nioEventLoopGroup-12-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1174d177, L:/0:0:0:0:0:0:0:0:9091] RECEIVED: [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862]
+21:19:19.839 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel bootstrapped [id: 0x5bfb06fa, L:/127.0.0.1:54862 - R:localhost/127.0.0.1:9091]
+21:19:19.839 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - class ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection
+21:19:19.840 [nioEventLoopGroup-9-1] DEBUG i.n.h.c.h.w.WebSocketClientHandshaker13 - WebSocket version 13 client handshake key: xXHJ4ruLOhgekHAY8hjgMw==, expected response: yfedjsui+7QXB9J3s9MmTwbMFpc=
+21:19:19.840 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel set
+21:19:19.840 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone1
+21:19:19.843 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] REGISTERED
+21:19:19.844 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] ACTIVE
+21:19:19.845 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Received HTTP request HttpObjectAggregator$AggregatedFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: CompositeByteBuf(ridx: 0, widx: 0, cap: 0, components=0))
+GET /websocket HTTP/1.1
+upgrade: websocket
+connection: upgrade
+sec-websocket-key: xXHJ4ruLOhgekHAY8hjgMw==
+host: localhost:9091
+sec-websocket-origin: http://localhost:9091
+sec-websocket-version: 13
+content-length: 0
+21:19:19.846 [nioEventLoopGroup-11-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] WebSocket version V13 server handshake
+21:19:19.847 [nioEventLoopGroup-11-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - WebSocket version 13 server handshake key: xXHJ4ruLOhgekHAY8hjgMw==, response: yfedjsui+7QXB9J3s9MmTwbMFpc=
+21:19:19.847 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] WRITE, DefaultFullHttpResponse(decodeResult: success, version: HTTP/1.1, content: UnpooledUnsafeHeapByteBuf(ridx: 0, widx: 0, cap: 0))
+HTTP/1.1 101 Switching Protocols
+upgrade: websocket
+connection: upgrade
+sec-websocket-accept: yfedjsui+7QXB9J3s9MmTwbMFpc=, 0B
+21:19:19.848 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] FLUSH
+21:19:19.848 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - WebSocket Server Handshake completed successfully
+21:19:19.848 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@4c90fccb
+21:19:19.848 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@4c90fccb
+21:19:19.848 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:19.848 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] WRITE: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:19.849 [nioEventLoopGroup-11-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:19.849 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocket Client connected!
+21:19:19.849 [nioEventLoopGroup-11-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:19.849 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.ws.outgoing.WSConnection - Websocket connection initialized
+21:19:19.849 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone2
+21:19:19.849 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection initiazized
+21:19:19.849 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - connection made ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@6a186bae
+21:19:19.849 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] FLUSH
+21:19:19.849 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocketConnectionHandler:
+21:19:19.849 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.ws.WSConnectionHandler - Fire User Event Trigger, dummy Control Message object
+21:19:19.849 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@3d91c65f
+21:19:19.849 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:19.849 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] USER_EVENT: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:19.849 [nioEventLoopGroup-9-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:19.849 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:19.849 [nioEventLoopGroup-9-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:19.849 [nioEventLoopGroup-11-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:19.850 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:19.850 [nioEventLoopGroup-11-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:19.850 [nioEventLoopGroup-9-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:19.850 [nioEventLoopGroup-11-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:19.850 [nioEventLoopGroup-9-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:19.850 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@48af7181
+21:19:19.850 [nioEventLoopGroup-9-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=44
+21:19:19.850 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@48af7181
+21:19:19.851 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:19.851 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:19.851 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:19.852 [nioEventLoopGroup-11-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:19.852 [nioEventLoopGroup-11-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=44
+21:19:19.853 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:19.853 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Successfully decoded new BACnetMessage: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:19.853 [nioEventLoopGroup-9-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:19.853 [nioEventLoopGroup-9-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:19.853 [nioEventLoopGroup-9-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:19.854 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@39ae5535
+21:19:19.854 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:19.854 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:19.854 [nioEventLoopGroup-9-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:19.888 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] USER_EVENT: ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@40dff0d0
+21:19:19.889 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@40dff0d0
+21:19:19.889 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - (evt instanceof ConnectionClient) 
+21:19:19.889 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - /127.0.0.1:54862
+21:19:19.889 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Updated connection client for IP host to '/127.0.0.1:54862'
+21:19:19.890 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Register a incoming WebSocketFrame in the local dns
+21:19:19.891 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - SourceEID 1A 03 E9, URI: URI: WS://127.0.0.1:54862
+21:19:19.891 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 - R:/127.0.0.1:54862] RECEIVED: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:19.893 [nioEventLoopGroup-10-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1f05a0ad, L:/0:0:0:0:0:0:0:0:38080] UNREGISTERED
+21:19:19.893 [nioEventLoopGroup-10-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x8e285dd1, L:/0:0:0:0:0:0:0:0:38081] UNREGISTERED
+21:19:19.895 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 ! R:/127.0.0.1:54862] INACTIVE
+21:19:19.896 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - UnregisterEvent reveived from /127.0.0.1:54862
+21:19:19.896 [nioEventLoopGroup-11-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6727c3b7, L:/127.0.0.1:9091 ! R:/127.0.0.1:54862] USER_EVENT: REMOVE_CONNECTION_EVENT
+21:19:19.896 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received REMOVE_CONNECTION_EVENT
+21:19:19.896 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.a.TransportBindingInitializer - trigger REMOVE_CONNECTION_EVENT received
+21:19:19.899 [nioEventLoopGroup-11-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection null has been removed
+21:19:19.906 [nioEventLoopGroup-12-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x489750f0, L:/0:0:0:0:0:0:0:0:9090] UNREGISTERED
+21:19:19.906 [nioEventLoopGroup-12-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1174d177, L:/0:0:0:0:0:0:0:0:9091] UNREGISTERED
+21:19:19.929 [nioEventLoopGroup-16-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xead9d39c] REGISTERED
+21:19:19.929 [nioEventLoopGroup-16-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xead9d39c] BIND: 0.0.0.0/0.0.0.0:38080
+21:19:19.930 [nioEventLoopGroup-16-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xead9d39c, L:/0:0:0:0:0:0:0:0:38080] ACTIVE
+21:19:19.931 [nioEventLoopGroup-16-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x06b1fb86] REGISTERED
+21:19:19.931 [nioEventLoopGroup-16-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x06b1fb86] BIND: 0.0.0.0/0.0.0.0:38081
+21:19:19.931 [nioEventLoopGroup-16-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x06b1fb86, L:/0:0:0:0:0:0:0:0:38081] ACTIVE
+21:19:19.950 [nioEventLoopGroup-18-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x4b009c81] REGISTERED
+21:19:19.951 [nioEventLoopGroup-18-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x4b009c81] BIND: 0.0.0.0/0.0.0.0:9090
+21:19:19.951 [nioEventLoopGroup-18-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x4b009c81, L:/0:0:0:0:0:0:0:0:9090] ACTIVE
+21:19:19.953 [nioEventLoopGroup-18-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xad60ab86] REGISTERED
+21:19:19.953 [nioEventLoopGroup-18-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xad60ab86] BIND: 0.0.0.0/0.0.0.0:9091
+21:19:19.954 [nioEventLoopGroup-18-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xad60ab86, L:/0:0:0:0:0:0:0:0:9091] ACTIVE
+21:19:19.964 [Test worker] DEBUG c.f.b.t.a.TransportBindingInitializer - T_UnitData destination: ws://localhost:9091
+21:19:19.964 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - No connection to localhost/127.0.0.1:9091 found, creating new one...
+21:19:19.992 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Added ConnectionClientContext to connectionCache. localhost/127.0.0.1:9091,ch.fhnw.bacnetit.transportbinding.OutgoingConnectionHandler$ConnectionClientContext@5399f84b
+21:19:19.992 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Client ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@6db9ae77 not connected. Connecting...
+21:19:19.996 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel bootstrapped [id: 0xa78600a4, L:/127.0.0.1:54995 - R:localhost/127.0.0.1:9091]
+21:19:19.996 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - class ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection
+21:19:19.996 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel set
+21:19:19.996 [nioEventLoopGroup-18-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xad60ab86, L:/0:0:0:0:0:0:0:0:9091] RECEIVED: [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995]
+21:19:19.996 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone1
+21:19:19.996 [nioEventLoopGroup-15-1] DEBUG i.n.h.c.h.w.WebSocketClientHandshaker13 - WebSocket version 13 client handshake key: nvAMcJAa9B0IZ01FKJDLAQ==, expected response: 2lkflQYr133v05zl3iKDiR3mnoU=
+21:19:19.999 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] REGISTERED
+21:19:19.999 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] ACTIVE
+21:19:20.002 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Received HTTP request HttpObjectAggregator$AggregatedFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: CompositeByteBuf(ridx: 0, widx: 0, cap: 0, components=0))
+GET /websocket HTTP/1.1
+upgrade: websocket
+connection: upgrade
+sec-websocket-key: nvAMcJAa9B0IZ01FKJDLAQ==
+host: localhost:9091
+sec-websocket-origin: http://localhost:9091
+sec-websocket-version: 13
+content-length: 0
+21:19:20.003 [nioEventLoopGroup-17-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] WebSocket version V13 server handshake
+21:19:20.004 [nioEventLoopGroup-17-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - WebSocket version 13 server handshake key: nvAMcJAa9B0IZ01FKJDLAQ==, response: 2lkflQYr133v05zl3iKDiR3mnoU=
+21:19:20.004 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] WRITE, DefaultFullHttpResponse(decodeResult: success, version: HTTP/1.1, content: UnpooledUnsafeHeapByteBuf(ridx: 0, widx: 0, cap: 0))
+HTTP/1.1 101 Switching Protocols
+upgrade: websocket
+connection: upgrade
+sec-websocket-accept: 2lkflQYr133v05zl3iKDiR3mnoU=, 0B
+21:19:20.005 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] FLUSH
+21:19:20.006 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - WebSocket Server Handshake completed successfully
+21:19:20.006 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@6c803c45
+21:19:20.006 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@6c803c45
+21:19:20.006 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.006 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] WRITE: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.006 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocket Client connected!
+21:19:20.006 [nioEventLoopGroup-17-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.006 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.ws.outgoing.WSConnection - Websocket connection initialized
+21:19:20.007 [nioEventLoopGroup-17-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.007 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocketConnectionHandler:
+21:19:20.007 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.ws.WSConnectionHandler - Fire User Event Trigger, dummy Control Message object
+21:19:20.007 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@401b79d0
+21:19:20.007 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] FLUSH
+21:19:20.007 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.007 [nioEventLoopGroup-15-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.007 [nioEventLoopGroup-15-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.007 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] USER_EVENT: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.007 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.007 [nioEventLoopGroup-17-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.008 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:20.008 [nioEventLoopGroup-17-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.008 [nioEventLoopGroup-15-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.008 [nioEventLoopGroup-17-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.008 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@68bfa50d
+21:19:20.008 [nioEventLoopGroup-15-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.008 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@68bfa50d
+21:19:20.008 [nioEventLoopGroup-15-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.008 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.009 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@519efb7
+21:19:20.009 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.009 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.009 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.010 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.010 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.010 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone2
+21:19:20.010 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection initiazized
+21:19:20.010 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - connection made ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@6db9ae77
+21:19:20.011 [nioEventLoopGroup-15-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.011 [nioEventLoopGroup-15-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=66
+21:19:20.011 [nioEventLoopGroup-15-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.012 [nioEventLoopGroup-15-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.012 [nioEventLoopGroup-17-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.012 [nioEventLoopGroup-17-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=66
+21:19:20.012 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Successfully decoded new BACnetMessage: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.038 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] USER_EVENT: ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@2d65a852
+21:19:20.038 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@2d65a852
+21:19:20.038 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - (evt instanceof ConnectionClient) 
+21:19:20.038 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - /127.0.0.1:54995
+21:19:20.039 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Updated connection client for IP host to '/127.0.0.1:54995'
+21:19:20.039 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Register a incoming WebSocketFrame in the local dns
+21:19:20.039 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - SourceEID 1A 03 E9, URI: URI: WS://127.0.0.1:54995
+21:19:20.039 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 - R:/127.0.0.1:54995] RECEIVED: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.040 [nioEventLoopGroup-16-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x06b1fb86, L:/0:0:0:0:0:0:0:0:38081] UNREGISTERED
+21:19:20.040 [nioEventLoopGroup-16-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xead9d39c, L:/0:0:0:0:0:0:0:0:38080] UNREGISTERED
+21:19:20.040 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 ! R:/127.0.0.1:54995] INACTIVE
+21:19:20.041 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - UnregisterEvent reveived from /127.0.0.1:54995
+21:19:20.041 [nioEventLoopGroup-17-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa5518218, L:/127.0.0.1:9091 ! R:/127.0.0.1:54995] USER_EVENT: REMOVE_CONNECTION_EVENT
+21:19:20.041 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received REMOVE_CONNECTION_EVENT
+21:19:20.041 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.a.TransportBindingInitializer - trigger REMOVE_CONNECTION_EVENT received
+21:19:20.044 [nioEventLoopGroup-18-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x4b009c81, L:/0:0:0:0:0:0:0:0:9090] UNREGISTERED
+21:19:20.044 [nioEventLoopGroup-17-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection null has been removed
+21:19:20.044 [nioEventLoopGroup-18-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xad60ab86, L:/0:0:0:0:0:0:0:0:9091] UNREGISTERED
+21:19:20.104 [nioEventLoopGroup-22-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x506e39d9] REGISTERED
+21:19:20.104 [nioEventLoopGroup-22-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x506e39d9] BIND: 0.0.0.0/0.0.0.0:38080
+21:19:20.105 [nioEventLoopGroup-22-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x506e39d9, L:/0:0:0:0:0:0:0:0:38080] ACTIVE
+21:19:20.108 [nioEventLoopGroup-22-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xf8cfb8d3] REGISTERED
+21:19:20.108 [nioEventLoopGroup-22-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xf8cfb8d3] BIND: 0.0.0.0/0.0.0.0:38081
+21:19:20.109 [nioEventLoopGroup-22-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xf8cfb8d3, L:/0:0:0:0:0:0:0:0:38081] ACTIVE
+21:19:20.131 [nioEventLoopGroup-24-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xe3d09b09] REGISTERED
+21:19:20.131 [nioEventLoopGroup-24-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xe3d09b09] BIND: 0.0.0.0/0.0.0.0:9090
+21:19:20.132 [nioEventLoopGroup-24-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xe3d09b09, L:/0:0:0:0:0:0:0:0:9090] ACTIVE
+21:19:20.134 [nioEventLoopGroup-24-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x4dc3c614] REGISTERED
+21:19:20.134 [nioEventLoopGroup-24-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x4dc3c614] BIND: 0.0.0.0/0.0.0.0:9091
+21:19:20.135 [nioEventLoopGroup-24-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x4dc3c614, L:/0:0:0:0:0:0:0:0:9091] ACTIVE
+21:19:20.138 [Test worker] DEBUG c.f.b.t.a.TransportBindingInitializer - T_UnitData destination: ws://localhost:9091
+21:19:20.139 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - No connection to localhost/127.0.0.1:9091 found, creating new one...
+21:19:20.164 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Added ConnectionClientContext to connectionCache. localhost/127.0.0.1:9091,ch.fhnw.bacnetit.transportbinding.OutgoingConnectionHandler$ConnectionClientContext@72c37ed9
+21:19:20.165 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Client ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@3d58070d not connected. Connecting...
+21:19:20.173 [nioEventLoopGroup-24-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x4dc3c614, L:/0:0:0:0:0:0:0:0:9091] RECEIVED: [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128]
+21:19:20.174 [nioEventLoopGroup-21-1] DEBUG i.n.h.c.h.w.WebSocketClientHandshaker13 - WebSocket version 13 client handshake key: L5nKl835wweO2BCIdM5HFw==, expected response: K4nbjTDQuXCDlAcE0buYboso/uE=
+21:19:20.176 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel bootstrapped [id: 0xbb7bf8be, L:/127.0.0.1:55128 - R:localhost/127.0.0.1:9091]
+21:19:20.176 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - class ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection
+21:19:20.176 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel set
+21:19:20.177 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone1
+21:19:20.179 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] REGISTERED
+21:19:20.179 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] ACTIVE
+21:19:20.181 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Received HTTP request HttpObjectAggregator$AggregatedFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: CompositeByteBuf(ridx: 0, widx: 0, cap: 0, components=0))
+GET /websocket HTTP/1.1
+upgrade: websocket
+connection: upgrade
+sec-websocket-key: L5nKl835wweO2BCIdM5HFw==
+host: localhost:9091
+sec-websocket-origin: http://localhost:9091
+sec-websocket-version: 13
+content-length: 0
+21:19:20.181 [nioEventLoopGroup-23-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] WebSocket version V13 server handshake
+21:19:20.182 [nioEventLoopGroup-23-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - WebSocket version 13 server handshake key: L5nKl835wweO2BCIdM5HFw==, response: K4nbjTDQuXCDlAcE0buYboso/uE=
+21:19:20.183 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] WRITE, DefaultFullHttpResponse(decodeResult: success, version: HTTP/1.1, content: UnpooledUnsafeHeapByteBuf(ridx: 0, widx: 0, cap: 0))
+HTTP/1.1 101 Switching Protocols
+upgrade: websocket
+connection: upgrade
+sec-websocket-accept: K4nbjTDQuXCDlAcE0buYboso/uE=, 0B
+21:19:20.184 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] FLUSH
+21:19:20.185 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - WebSocket Server Handshake completed successfully
+21:19:20.185 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@2658ef15
+21:19:20.185 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@2658ef15
+21:19:20.185 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.185 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] WRITE: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.185 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocket Client connected!
+21:19:20.185 [nioEventLoopGroup-23-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.185 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone2
+21:19:20.185 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.ws.outgoing.WSConnection - Websocket connection initialized
+21:19:20.185 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection initiazized
+21:19:20.185 [nioEventLoopGroup-23-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.185 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - connection made ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@3d58070d
+21:19:20.186 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocketConnectionHandler:
+21:19:20.186 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] FLUSH
+21:19:20.186 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.ws.WSConnectionHandler - Fire User Event Trigger, dummy Control Message object
+21:19:20.186 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@315ba82c
+21:19:20.186 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.186 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] USER_EVENT: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.186 [nioEventLoopGroup-21-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.186 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.186 [nioEventLoopGroup-21-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.186 [nioEventLoopGroup-23-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.187 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:20.187 [nioEventLoopGroup-23-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.187 [nioEventLoopGroup-21-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.187 [nioEventLoopGroup-23-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.187 [nioEventLoopGroup-21-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.187 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@635a65ba
+21:19:20.187 [nioEventLoopGroup-21-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=72
+21:19:20.187 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@635a65ba
+21:19:20.187 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.188 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.188 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.188 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.188 [nioEventLoopGroup-21-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.189 [nioEventLoopGroup-23-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.189 [nioEventLoopGroup-21-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.189 [nioEventLoopGroup-23-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=72
+21:19:20.189 [nioEventLoopGroup-21-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.189 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@35643adf
+21:19:20.189 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.189 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Successfully decoded new BACnetMessage: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.189 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.189 [nioEventLoopGroup-21-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.215 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] USER_EVENT: ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@20322bbb
+21:19:20.215 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@20322bbb
+21:19:20.215 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - (evt instanceof ConnectionClient) 
+21:19:20.215 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - /127.0.0.1:55128
+21:19:20.215 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Updated connection client for IP host to '/127.0.0.1:55128'
+21:19:20.215 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Register a incoming WebSocketFrame in the local dns
+21:19:20.215 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - SourceEID 1A 03 E9, URI: URI: WS://127.0.0.1:55128
+21:19:20.216 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 - R:/127.0.0.1:55128] RECEIVED: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.217 [nioEventLoopGroup-22-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x506e39d9, L:/0:0:0:0:0:0:0:0:38080] UNREGISTERED
+21:19:20.217 [nioEventLoopGroup-22-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xf8cfb8d3, L:/0:0:0:0:0:0:0:0:38081] UNREGISTERED
+21:19:20.217 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 ! R:/127.0.0.1:55128] INACTIVE
+21:19:20.218 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - UnregisterEvent reveived from /127.0.0.1:55128
+21:19:20.218 [nioEventLoopGroup-23-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xbd516415, L:/127.0.0.1:9091 ! R:/127.0.0.1:55128] USER_EVENT: REMOVE_CONNECTION_EVENT
+21:19:20.218 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received REMOVE_CONNECTION_EVENT
+21:19:20.218 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.a.TransportBindingInitializer - trigger REMOVE_CONNECTION_EVENT received
+21:19:20.221 [nioEventLoopGroup-23-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection null has been removed
+21:19:20.223 [nioEventLoopGroup-24-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x4dc3c614, L:/0:0:0:0:0:0:0:0:9091] UNREGISTERED
+21:19:20.223 [nioEventLoopGroup-24-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xe3d09b09, L:/0:0:0:0:0:0:0:0:9090] UNREGISTERED
+21:19:20.254 [nioEventLoopGroup-28-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa23391f1] REGISTERED
+21:19:20.255 [nioEventLoopGroup-28-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa23391f1] BIND: 0.0.0.0/0.0.0.0:38080
+21:19:20.255 [nioEventLoopGroup-28-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa23391f1, L:/0:0:0:0:0:0:0:0:38080] ACTIVE
+21:19:20.257 [nioEventLoopGroup-28-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x2550d6c1] REGISTERED
+21:19:20.257 [nioEventLoopGroup-28-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x2550d6c1] BIND: 0.0.0.0/0.0.0.0:38081
+21:19:20.258 [nioEventLoopGroup-28-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x2550d6c1, L:/0:0:0:0:0:0:0:0:38081] ACTIVE
+21:19:20.282 [nioEventLoopGroup-30-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1d3af2e2] REGISTERED
+21:19:20.282 [nioEventLoopGroup-30-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1d3af2e2] BIND: 0.0.0.0/0.0.0.0:9090
+21:19:20.283 [nioEventLoopGroup-30-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1d3af2e2, L:/0:0:0:0:0:0:0:0:9090] ACTIVE
+21:19:20.285 [nioEventLoopGroup-30-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xccf799ca] REGISTERED
+21:19:20.285 [nioEventLoopGroup-30-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xccf799ca] BIND: 0.0.0.0/0.0.0.0:9091
+21:19:20.286 [nioEventLoopGroup-30-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xccf799ca, L:/0:0:0:0:0:0:0:0:9091] ACTIVE
+21:19:20.287 [Test worker] DEBUG c.f.b.t.a.TransportBindingInitializer - T_UnitData destination: ws://localhost:9091
+21:19:20.288 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - No connection to localhost/127.0.0.1:9091 found, creating new one...
+21:19:20.303 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Added ConnectionClientContext to connectionCache. localhost/127.0.0.1:9091,ch.fhnw.bacnetit.transportbinding.OutgoingConnectionHandler$ConnectionClientContext@69bd2aaa
+21:19:20.304 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Client ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@2019aad9 not connected. Connecting...
+21:19:20.308 [nioEventLoopGroup-30-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xccf799ca, L:/0:0:0:0:0:0:0:0:9091] RECEIVED: [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261]
+21:19:20.308 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel bootstrapped [id: 0x0b7135e3, L:/127.0.0.1:55261 - R:localhost/127.0.0.1:9091]
+21:19:20.308 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - class ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection
+21:19:20.309 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel set
+21:19:20.309 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone1
+21:19:20.309 [nioEventLoopGroup-27-1] DEBUG i.n.h.c.h.w.WebSocketClientHandshaker13 - WebSocket version 13 client handshake key: NgwvBdl8IMWq+i9REibajQ==, expected response: pVRhPSGiICnAiCVwhBPK86DOBF8=
+21:19:20.311 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] REGISTERED
+21:19:20.311 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] ACTIVE
+21:19:20.313 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Received HTTP request HttpObjectAggregator$AggregatedFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: CompositeByteBuf(ridx: 0, widx: 0, cap: 0, components=0))
+GET /websocket HTTP/1.1
+upgrade: websocket
+connection: upgrade
+sec-websocket-key: NgwvBdl8IMWq+i9REibajQ==
+host: localhost:9091
+sec-websocket-origin: http://localhost:9091
+sec-websocket-version: 13
+content-length: 0
+21:19:20.313 [nioEventLoopGroup-29-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] WebSocket version V13 server handshake
+21:19:20.313 [nioEventLoopGroup-29-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - WebSocket version 13 server handshake key: NgwvBdl8IMWq+i9REibajQ==, response: pVRhPSGiICnAiCVwhBPK86DOBF8=
+21:19:20.314 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] WRITE, DefaultFullHttpResponse(decodeResult: success, version: HTTP/1.1, content: UnpooledUnsafeHeapByteBuf(ridx: 0, widx: 0, cap: 0))
+HTTP/1.1 101 Switching Protocols
+upgrade: websocket
+connection: upgrade
+sec-websocket-accept: pVRhPSGiICnAiCVwhBPK86DOBF8=, 0B
+21:19:20.314 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] FLUSH
+21:19:20.315 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - WebSocket Server Handshake completed successfully
+21:19:20.315 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@af39fb7
+21:19:20.315 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@af39fb7
+21:19:20.315 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.315 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] WRITE: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.315 [nioEventLoopGroup-29-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.315 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocket Client connected!
+21:19:20.315 [nioEventLoopGroup-29-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.315 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.ws.outgoing.WSConnection - Websocket connection initialized
+21:19:20.316 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] FLUSH
+21:19:20.316 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocketConnectionHandler:
+21:19:20.316 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.ws.WSConnectionHandler - Fire User Event Trigger, dummy Control Message object
+21:19:20.316 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@77b5de82
+21:19:20.316 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.316 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] USER_EVENT: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.316 [nioEventLoopGroup-27-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.316 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.316 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone2
+21:19:20.316 [nioEventLoopGroup-27-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.316 [nioEventLoopGroup-29-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.317 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection initiazized
+21:19:20.317 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:20.317 [nioEventLoopGroup-29-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.318 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - connection made ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@2019aad9
+21:19:20.318 [nioEventLoopGroup-27-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.318 [nioEventLoopGroup-29-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.319 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@ecc0a31
+21:19:20.319 [nioEventLoopGroup-27-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.319 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@ecc0a31
+21:19:20.319 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.319 [nioEventLoopGroup-27-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.320 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.320 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.320 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@738a54ac
+21:19:20.320 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.320 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.320 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.321 [nioEventLoopGroup-27-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.321 [nioEventLoopGroup-27-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=34
+21:19:20.321 [nioEventLoopGroup-27-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.321 [nioEventLoopGroup-27-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.321 [nioEventLoopGroup-29-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.322 [nioEventLoopGroup-29-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=34
+21:19:20.322 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Successfully decoded new BACnetMessage: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.348 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] USER_EVENT: ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@40802199
+21:19:20.348 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@40802199
+21:19:20.348 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - (evt instanceof ConnectionClient) 
+21:19:20.348 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - /127.0.0.1:55261
+21:19:20.348 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Updated connection client for IP host to '/127.0.0.1:55261'
+21:19:20.348 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Register a incoming WebSocketFrame in the local dns
+21:19:20.349 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - SourceEID 1A 03 E9, URI: URI: WS://127.0.0.1:55261
+21:19:20.349 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 - R:/127.0.0.1:55261] RECEIVED: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.350 [nioEventLoopGroup-28-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x2550d6c1, L:/0:0:0:0:0:0:0:0:38081] UNREGISTERED
+21:19:20.350 [nioEventLoopGroup-28-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa23391f1, L:/0:0:0:0:0:0:0:0:38080] UNREGISTERED
+21:19:20.350 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 ! R:/127.0.0.1:55261] INACTIVE
+21:19:20.350 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - UnregisterEvent reveived from /127.0.0.1:55261
+21:19:20.351 [nioEventLoopGroup-29-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x94e9ba6e, L:/127.0.0.1:9091 ! R:/127.0.0.1:55261] USER_EVENT: REMOVE_CONNECTION_EVENT
+21:19:20.351 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received REMOVE_CONNECTION_EVENT
+21:19:20.351 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.a.TransportBindingInitializer - trigger REMOVE_CONNECTION_EVENT received
+21:19:20.353 [nioEventLoopGroup-29-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection null has been removed
+21:19:20.357 [nioEventLoopGroup-30-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xccf799ca, L:/0:0:0:0:0:0:0:0:9091] UNREGISTERED
+21:19:20.357 [nioEventLoopGroup-30-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x1d3af2e2, L:/0:0:0:0:0:0:0:0:9090] UNREGISTERED
+21:19:20.388 [nioEventLoopGroup-34-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x944ab071] REGISTERED
+21:19:20.389 [nioEventLoopGroup-34-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x944ab071] BIND: 0.0.0.0/0.0.0.0:38080
+21:19:20.390 [nioEventLoopGroup-34-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x944ab071, L:/0:0:0:0:0:0:0:0:38080] ACTIVE
+21:19:20.395 [nioEventLoopGroup-34-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xab520988] REGISTERED
+21:19:20.395 [nioEventLoopGroup-34-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xab520988] BIND: 0.0.0.0/0.0.0.0:38081
+21:19:20.396 [nioEventLoopGroup-34-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xab520988, L:/0:0:0:0:0:0:0:0:38081] ACTIVE
+21:19:20.428 [nioEventLoopGroup-36-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6ff6d8f3] REGISTERED
+21:19:20.429 [nioEventLoopGroup-36-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6ff6d8f3] BIND: 0.0.0.0/0.0.0.0:9090
+21:19:20.430 [nioEventLoopGroup-36-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6ff6d8f3, L:/0:0:0:0:0:0:0:0:9090] ACTIVE
+21:19:20.433 [nioEventLoopGroup-36-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x31407404] REGISTERED
+21:19:20.433 [nioEventLoopGroup-36-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x31407404] BIND: 0.0.0.0/0.0.0.0:9091
+21:19:20.434 [nioEventLoopGroup-36-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x31407404, L:/0:0:0:0:0:0:0:0:9091] ACTIVE
+21:19:20.435 [Test worker] DEBUG c.f.b.t.a.TransportBindingInitializer - T_UnitData destination: ws://localhost:9091
+21:19:20.436 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - No connection to localhost/127.0.0.1:9091 found, creating new one...
+21:19:20.460 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Added ConnectionClientContext to connectionCache. localhost/127.0.0.1:9091,ch.fhnw.bacnetit.transportbinding.OutgoingConnectionHandler$ConnectionClientContext@3a4b6316
+21:19:20.460 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Client ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@ed615fd not connected. Connecting...
+21:19:20.468 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel bootstrapped [id: 0xddcd62ac, L:/127.0.0.1:55394 - R:localhost/127.0.0.1:9091]
+21:19:20.469 [nioEventLoopGroup-36-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x31407404, L:/0:0:0:0:0:0:0:0:9091] RECEIVED: [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394]
+21:19:20.469 [nioEventLoopGroup-33-1] DEBUG i.n.h.c.h.w.WebSocketClientHandshaker13 - WebSocket version 13 client handshake key: ZU+WPAfrDbNgig+SYuKw5A==, expected response: Y/7mVYEjQYz2ztTzoLThS5Z7Vvg=
+21:19:20.471 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - class ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection
+21:19:20.472 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel set
+21:19:20.472 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone1
+21:19:20.476 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] REGISTERED
+21:19:20.477 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] ACTIVE
+21:19:20.479 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Received HTTP request HttpObjectAggregator$AggregatedFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: CompositeByteBuf(ridx: 0, widx: 0, cap: 0, components=0))
+GET /websocket HTTP/1.1
+upgrade: websocket
+connection: upgrade
+sec-websocket-key: ZU+WPAfrDbNgig+SYuKw5A==
+host: localhost:9091
+sec-websocket-origin: http://localhost:9091
+sec-websocket-version: 13
+content-length: 0
+21:19:20.479 [nioEventLoopGroup-35-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] WebSocket version V13 server handshake
+21:19:20.480 [nioEventLoopGroup-35-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - WebSocket version 13 server handshake key: ZU+WPAfrDbNgig+SYuKw5A==, response: Y/7mVYEjQYz2ztTzoLThS5Z7Vvg=
+21:19:20.481 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] WRITE, DefaultFullHttpResponse(decodeResult: success, version: HTTP/1.1, content: UnpooledUnsafeHeapByteBuf(ridx: 0, widx: 0, cap: 0))
+HTTP/1.1 101 Switching Protocols
+upgrade: websocket
+connection: upgrade
+sec-websocket-accept: Y/7mVYEjQYz2ztTzoLThS5Z7Vvg=, 0B
+21:19:20.481 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] FLUSH
+21:19:20.482 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - WebSocket Server Handshake completed successfully
+21:19:20.482 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@3eb851fd
+21:19:20.482 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@3eb851fd
+21:19:20.482 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.482 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] WRITE: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.483 [nioEventLoopGroup-35-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.483 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocket Client connected!
+21:19:20.483 [nioEventLoopGroup-35-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.483 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.ws.outgoing.WSConnection - Websocket connection initialized
+21:19:20.483 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone2
+21:19:20.483 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection initiazized
+21:19:20.483 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - connection made ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@ed615fd
+21:19:20.483 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocketConnectionHandler:
+21:19:20.483 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] FLUSH
+21:19:20.483 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.ws.WSConnectionHandler - Fire User Event Trigger, dummy Control Message object
+21:19:20.483 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@5311b9f6
+21:19:20.483 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.483 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] USER_EVENT: MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.483 [nioEventLoopGroup-33-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.483 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.483 [nioEventLoopGroup-33-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.483 [nioEventLoopGroup-35-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.484 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:20.484 [nioEventLoopGroup-35-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.484 [nioEventLoopGroup-33-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.484 [nioEventLoopGroup-35-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.485 [nioEventLoopGroup-33-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.485 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@3a87c2f2
+21:19:20.485 [nioEventLoopGroup-33-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=33
+21:19:20.485 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@3a87c2f2
+21:19:20.485 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.487 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.487 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.488 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.488 [nioEventLoopGroup-33-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.488 [nioEventLoopGroup-35-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.488 [nioEventLoopGroup-35-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=33
+21:19:20.488 [nioEventLoopGroup-33-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.488 [nioEventLoopGroup-33-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.489 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@572e274c
+21:19:20.489 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Successfully decoded new BACnetMessage: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.489 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.489 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.489 [nioEventLoopGroup-33-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.509 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] USER_EVENT: ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@626141eb
+21:19:20.510 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@626141eb
+21:19:20.510 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - (evt instanceof ConnectionClient) 
+21:19:20.510 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - /127.0.0.1:55394
+21:19:20.510 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Updated connection client for IP host to '/127.0.0.1:55394'
+21:19:20.510 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Register a incoming WebSocketFrame in the local dns
+21:19:20.510 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - SourceEID 1A 03 E9, URI: URI: WS://127.0.0.1:55394
+21:19:20.510 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 - R:/127.0.0.1:55394] RECEIVED: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 2001; InvokeID 0; Forwards null
+21:19:20.511 [nioEventLoopGroup-34-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xab520988, L:/0:0:0:0:0:0:0:0:38081] UNREGISTERED
+21:19:20.511 [nioEventLoopGroup-34-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x944ab071, L:/0:0:0:0:0:0:0:0:38080] UNREGISTERED
+21:19:20.511 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 ! R:/127.0.0.1:55394] INACTIVE
+21:19:20.512 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - UnregisterEvent reveived from /127.0.0.1:55394
+21:19:20.512 [nioEventLoopGroup-35-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x232c227e, L:/127.0.0.1:9091 ! R:/127.0.0.1:55394] USER_EVENT: REMOVE_CONNECTION_EVENT
+21:19:20.512 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received REMOVE_CONNECTION_EVENT
+21:19:20.512 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.a.TransportBindingInitializer - trigger REMOVE_CONNECTION_EVENT received
+21:19:20.515 [nioEventLoopGroup-35-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection null has been removed
+21:19:20.516 [nioEventLoopGroup-36-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x31407404, L:/0:0:0:0:0:0:0:0:9091] UNREGISTERED
+21:19:20.516 [nioEventLoopGroup-36-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x6ff6d8f3, L:/0:0:0:0:0:0:0:0:9090] UNREGISTERED
+21:19:20.539 [nioEventLoopGroup-40-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa1062cf9] REGISTERED
+21:19:20.540 [nioEventLoopGroup-40-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa1062cf9] BIND: 0.0.0.0/0.0.0.0:38080
+21:19:20.541 [nioEventLoopGroup-40-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa1062cf9, L:/0:0:0:0:0:0:0:0:38080] ACTIVE
+21:19:20.543 [nioEventLoopGroup-40-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xd24be876] REGISTERED
+21:19:20.543 [nioEventLoopGroup-40-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xd24be876] BIND: 0.0.0.0/0.0.0.0:38081
+21:19:20.543 [nioEventLoopGroup-40-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xd24be876, L:/0:0:0:0:0:0:0:0:38081] ACTIVE
+21:19:20.577 [nioEventLoopGroup-42-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x011d9519] REGISTERED
+21:19:20.578 [nioEventLoopGroup-42-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x011d9519] BIND: 0.0.0.0/0.0.0.0:9090
+21:19:20.579 [nioEventLoopGroup-42-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x011d9519, L:/0:0:0:0:0:0:0:0:9090] ACTIVE
+21:19:20.585 [nioEventLoopGroup-42-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x2a2b6952] REGISTERED
+21:19:20.585 [nioEventLoopGroup-42-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x2a2b6952] BIND: 0.0.0.0/0.0.0.0:9091
+21:19:20.586 [nioEventLoopGroup-42-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x2a2b6952, L:/0:0:0:0:0:0:0:0:9091] ACTIVE
+21:19:20.587 [Test worker] DEBUG c.f.b.t.a.TransportBindingInitializer - T_UnitData destination: ws://localhost:38081
+21:19:20.588 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - No connection to localhost/127.0.0.1:38081 found, creating new one...
+21:19:20.609 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Added ConnectionClientContext to connectionCache. localhost/127.0.0.1:38081,ch.fhnw.bacnetit.transportbinding.OutgoingConnectionHandler$ConnectionClientContext@7622e0b9
+21:19:20.609 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Client ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@6c1dc655 not connected. Connecting...
+21:19:20.613 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel bootstrapped [id: 0x9d2068d2, L:/127.0.0.1:55527 - R:localhost/127.0.0.1:38081]
+21:19:20.613 [nioEventLoopGroup-40-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xd24be876, L:/0:0:0:0:0:0:0:0:38081] RECEIVED: [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527]
+21:19:20.614 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - class ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection
+21:19:20.614 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel set
+21:19:20.614 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone1
+21:19:20.614 [nioEventLoopGroup-41-1] DEBUG i.n.h.c.h.w.WebSocketClientHandshaker13 - WebSocket version 13 client handshake key: Iqom8veE2Y1dAOTu3kLDDQ==, expected response: km3paujTEZ+U+B8/ZDVutwICdAM=
+21:19:20.617 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] REGISTERED
+21:19:20.618 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] ACTIVE
+21:19:20.619 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Received HTTP request HttpObjectAggregator$AggregatedFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: CompositeByteBuf(ridx: 0, widx: 0, cap: 0, components=0))
+GET /websocket HTTP/1.1
+upgrade: websocket
+connection: upgrade
+sec-websocket-key: Iqom8veE2Y1dAOTu3kLDDQ==
+host: localhost:38081
+sec-websocket-origin: http://localhost:38081
+sec-websocket-version: 13
+content-length: 0
+21:19:20.620 [nioEventLoopGroup-39-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] WebSocket version V13 server handshake
+21:19:20.621 [nioEventLoopGroup-39-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - WebSocket version 13 server handshake key: Iqom8veE2Y1dAOTu3kLDDQ==, response: km3paujTEZ+U+B8/ZDVutwICdAM=
+21:19:20.621 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] WRITE, DefaultFullHttpResponse(decodeResult: success, version: HTTP/1.1, content: UnpooledUnsafeHeapByteBuf(ridx: 0, widx: 0, cap: 0))
+HTTP/1.1 101 Switching Protocols
+upgrade: websocket
+connection: upgrade
+sec-websocket-accept: km3paujTEZ+U+B8/ZDVutwICdAM=, 0B
+21:19:20.622 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] FLUSH
+21:19:20.622 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - WebSocket Server Handshake completed successfully
+21:19:20.623 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@1a0e5cb0
+21:19:20.623 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@1a0e5cb0
+21:19:20.623 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.623 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] WRITE: MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:20.623 [nioEventLoopGroup-39-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.623 [nioEventLoopGroup-39-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.624 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] FLUSH
+21:19:20.624 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocket Client connected!
+21:19:20.624 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.ws.outgoing.WSConnection - Websocket connection initialized
+21:19:20.624 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] USER_EVENT: MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:20.624 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocketConnectionHandler:
+21:19:20.624 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:20.624 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.ws.WSConnectionHandler - Fire User Event Trigger, dummy Control Message object
+21:19:20.625 [nioEventLoopGroup-39-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.625 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@399cae5
+21:19:20.626 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.626 [nioEventLoopGroup-41-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.626 [nioEventLoopGroup-41-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.627 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.627 [nioEventLoopGroup-39-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.628 [nioEventLoopGroup-41-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.628 [nioEventLoopGroup-39-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.630 [nioEventLoopGroup-41-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.630 [nioEventLoopGroup-41-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.631 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@7a64e4e
+21:19:20.631 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.632 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.633 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@1e31cb29
+21:19:20.633 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.633 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@1e31cb29
+21:19:20.633 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.633 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.633 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.634 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone2
+21:19:20.634 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection initiazized
+21:19:20.634 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - connection made ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@6c1dc655
+21:19:20.636 [nioEventLoopGroup-41-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.636 [nioEventLoopGroup-41-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=33
+21:19:20.637 [nioEventLoopGroup-41-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 1002; InvokeID 0; Forwards null
+21:19:20.637 [nioEventLoopGroup-39-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.637 [nioEventLoopGroup-41-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.637 [nioEventLoopGroup-39-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=33
+21:19:20.638 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Successfully decoded new BACnetMessage: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 1002; InvokeID 0; Forwards null
+21:19:20.660 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] USER_EVENT: ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@2e5ab551
+21:19:20.661 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@2e5ab551
+21:19:20.661 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - (evt instanceof ConnectionClient) 
+21:19:20.661 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - /127.0.0.1:55527
+21:19:20.661 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Updated connection client for IP host to '/127.0.0.1:55527'
+21:19:20.661 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Register a incoming WebSocketFrame in the local dns
+21:19:20.661 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - SourceEID 1A 03 E9, URI: URI: WS://127.0.0.1:55527
+21:19:20.661 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 - R:/127.0.0.1:55527] RECEIVED: TPDU = Revision 2; Priority 0; SourceEID 1001; DestinationEID 1002; InvokeID 0; Forwards null
+21:19:20.662 [nioEventLoopGroup-40-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xd24be876, L:/0:0:0:0:0:0:0:0:38081] UNREGISTERED
+21:19:20.662 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 ! R:/127.0.0.1:55527] INACTIVE
+21:19:20.663 [nioEventLoopGroup-40-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xa1062cf9, L:/0:0:0:0:0:0:0:0:38080] UNREGISTERED
+21:19:20.663 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - UnregisterEvent reveived from /127.0.0.1:55527
+21:19:20.663 [nioEventLoopGroup-39-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xc5ce7cca, L:/127.0.0.1:38081 ! R:/127.0.0.1:55527] USER_EVENT: REMOVE_CONNECTION_EVENT
+21:19:20.663 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received REMOVE_CONNECTION_EVENT
+21:19:20.663 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.a.TransportBindingInitializer - trigger REMOVE_CONNECTION_EVENT received
+21:19:20.666 [nioEventLoopGroup-39-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection null has been removed
+21:19:20.667 [nioEventLoopGroup-42-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x2a2b6952, L:/0:0:0:0:0:0:0:0:9091] UNREGISTERED
+21:19:20.667 [nioEventLoopGroup-42-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x011d9519, L:/0:0:0:0:0:0:0:0:9090] UNREGISTERED
+21:19:20.704 [nioEventLoopGroup-46-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x3c03e6fc] REGISTERED
+21:19:20.705 [nioEventLoopGroup-46-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x3c03e6fc] BIND: 0.0.0.0/0.0.0.0:38080
+21:19:20.707 [nioEventLoopGroup-46-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x3c03e6fc, L:/0:0:0:0:0:0:0:0:38080] ACTIVE
+21:19:20.710 [nioEventLoopGroup-46-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xd97600a4] REGISTERED
+21:19:20.710 [nioEventLoopGroup-46-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xd97600a4] BIND: 0.0.0.0/0.0.0.0:38081
+21:19:20.711 [nioEventLoopGroup-46-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xd97600a4, L:/0:0:0:0:0:0:0:0:38081] ACTIVE
+21:19:20.739 [nioEventLoopGroup-48-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x0df65e5b] REGISTERED
+21:19:20.739 [nioEventLoopGroup-48-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x0df65e5b] BIND: 0.0.0.0/0.0.0.0:9090
+21:19:20.740 [nioEventLoopGroup-48-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x0df65e5b, L:/0:0:0:0:0:0:0:0:9090] ACTIVE
+21:19:20.742 [nioEventLoopGroup-48-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x947ac8d0] REGISTERED
+21:19:20.743 [nioEventLoopGroup-48-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x947ac8d0] BIND: 0.0.0.0/0.0.0.0:9091
+21:19:20.744 [nioEventLoopGroup-48-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x947ac8d0, L:/0:0:0:0:0:0:0:0:9091] ACTIVE
+21:19:20.745 [Test worker] DEBUG c.f.b.t.a.TransportBindingInitializer - T_UnitData destination: ws://localhost:38081
+21:19:20.745 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - No connection to localhost/127.0.0.1:38081 found, creating new one...
+21:19:20.767 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Added ConnectionClientContext to connectionCache. localhost/127.0.0.1:38081,ch.fhnw.bacnetit.transportbinding.OutgoingConnectionHandler$ConnectionClientContext@bd233b9
+21:19:20.767 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Client ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@386555ed not connected. Connecting...
+21:19:20.770 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel bootstrapped [id: 0x56d413f8, L:/127.0.0.1:55660 - R:localhost/127.0.0.1:38081]
+21:19:20.770 [nioEventLoopGroup-46-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xd97600a4, L:/0:0:0:0:0:0:0:0:38081] RECEIVED: [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660]
+21:19:20.770 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - class ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection
+21:19:20.770 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Channel set
+21:19:20.770 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone1
+21:19:20.771 [nioEventLoopGroup-47-1] DEBUG i.n.h.c.h.w.WebSocketClientHandshaker13 - WebSocket version 13 client handshake key: 6pU0t2gHZsWMcdTzqjYPfw==, expected response: ks2ztVet0qR7VnqjLqMzeJtzQ0U=
+21:19:20.772 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] REGISTERED
+21:19:20.772 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] ACTIVE
+21:19:20.774 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Received HTTP request HttpObjectAggregator$AggregatedFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: CompositeByteBuf(ridx: 0, widx: 0, cap: 0, components=0))
+GET /websocket HTTP/1.1
+upgrade: websocket
+connection: upgrade
+sec-websocket-key: 6pU0t2gHZsWMcdTzqjYPfw==
+host: localhost:38081
+sec-websocket-origin: http://localhost:38081
+sec-websocket-version: 13
+content-length: 0
+21:19:20.775 [nioEventLoopGroup-45-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] WebSocket version V13 server handshake
+21:19:20.777 [nioEventLoopGroup-45-1] DEBUG i.n.h.c.h.w.WebSocketServerHandshaker - WebSocket version 13 server handshake key: 6pU0t2gHZsWMcdTzqjYPfw==, response: ks2ztVet0qR7VnqjLqMzeJtzQ0U=
+21:19:20.777 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] WRITE, DefaultFullHttpResponse(decodeResult: success, version: HTTP/1.1, content: UnpooledUnsafeHeapByteBuf(ridx: 0, widx: 0, cap: 0))
+HTTP/1.1 101 Switching Protocols
+upgrade: websocket
+connection: upgrade
+sec-websocket-accept: ks2ztVet0qR7VnqjLqMzeJtzQ0U=, 0B
+21:19:20.778 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] FLUSH
+21:19:20.778 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - WebSocket Server Handshake completed successfully
+21:19:20.779 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocket Client connected!
+21:19:20.779 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@3633acf0
+21:19:20.779 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.ws.outgoing.WSConnection - Websocket connection initialized
+21:19:20.779 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@3633acf0
+21:19:20.779 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.779 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] WRITE: MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:20.779 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.ws.WSConnectionHandler - WebSocketConnectionHandler:
+21:19:20.779 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.ws.WSConnectionHandler - Fire User Event Trigger, dummy Control Message object
+21:19:20.780 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageInitEvent@2a9155ce
+21:19:20.780 [nioEventLoopGroup-45-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.780 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageInitEvent
+21:19:20.780 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - gone2
+21:19:20.780 [nioEventLoopGroup-45-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.780 [nioEventLoopGroup-47-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.780 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection initiazized
+21:19:20.780 [nioEventLoopGroup-47-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=9
+21:19:20.780 [Test worker] DEBUG c.f.b.t.OutgoingConnectionHandler - connection made ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@386555ed
+21:19:20.780 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] FLUSH
+21:19:20.780 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 2001 | 2002 | 
+List of GroupIDs: 
+21:19:20.780 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] USER_EVENT: MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:20.780 [nioEventLoopGroup-47-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.780 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received MessageType: ADDREMOTE
+List of BacnetEIDs: 1001 | 1002 | 
+List of GroupIDs: 
+21:19:20.780 [nioEventLoopGroup-45-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.781 [nioEventLoopGroup-47-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - Send websocket binary frame
+21:19:20.781 [nioEventLoopGroup-47-1] DEBUG i.n.h.c.h.w.WebSocket08FrameEncoder - Encoding WebSocket Frame opCode=2 length=46
+21:19:20.781 [nioEventLoopGroup-45-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.781 [nioEventLoopGroup-45-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.781 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] USER_EVENT: ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@320c2eee
+21:19:20.781 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received TPDU = Revision 2; Priority 0; SourceEID 2001; DestinationEID 1001; InvokeID 0; Forwards null
+21:19:20.781 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@320c2eee
+21:19:20.781 [nioEventLoopGroup-47-1] DEBUG c.f.b.transportbinding.ws.WSEncoder - WebSocket Request/Response to BACnet host was successful.
+21:19:20.781 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.783 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.783 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.783 [nioEventLoopGroup-45-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.783 [nioEventLoopGroup-45-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=46
+21:19:20.784 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Successfully decoded new BACnetMessage: TPDU = Revision 2; Priority 0; SourceEID 2001; DestinationEID 1001; InvokeID 0; Forwards null
+21:19:20.787 [nioEventLoopGroup-47-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame opCode=2
+21:19:20.787 [nioEventLoopGroup-47-1] DEBUG i.n.h.c.h.w.WebSocket08FrameDecoder - Decoding WebSocket Frame length=9
+21:19:20.787 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.ase.encoding.ControlMessageReceivedEvent@2eaec444
+21:19:20.787 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Got a ControlMessageReceivedEvent
+21:19:20.788 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.788 [nioEventLoopGroup-47-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Pass received control message to BACnetEntityHandler
+21:19:20.803 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] USER_EVENT: ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@37d3ffad
+21:19:20.803 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received ch.fhnw.bacnetit.transportbinding.ws.outgoing.WSConnection@37d3ffad
+21:19:20.803 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - (evt instanceof ConnectionClient) 
+21:19:20.803 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - /127.0.0.1:55660
+21:19:20.803 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Updated connection client for IP host to '/127.0.0.1:55660'
+21:19:20.803 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - Register a incoming WebSocketFrame in the local dns
+21:19:20.803 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - SourceEID 1A 07 D1, URI: URI: WS://127.0.0.1:55660
+21:19:20.804 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 - R:/127.0.0.1:55660] RECEIVED: TPDU = Revision 2; Priority 0; SourceEID 2001; DestinationEID 1001; InvokeID 0; Forwards null
+21:19:20.804 [nioEventLoopGroup-46-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x3c03e6fc, L:/0:0:0:0:0:0:0:0:38080] UNREGISTERED
+21:19:20.804 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 ! R:/127.0.0.1:55660] INACTIVE
+21:19:20.804 [nioEventLoopGroup-46-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0xd97600a4, L:/0:0:0:0:0:0:0:0:38081] UNREGISTERED
+21:19:20.804 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.w.i.WSConnectionServerHandler - UnregisterEvent reveived from /127.0.0.1:55660
+21:19:20.805 [nioEventLoopGroup-45-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x23c84990, L:/127.0.0.1:38081 ! R:/127.0.0.1:55660] USER_EVENT: REMOVE_CONNECTION_EVENT
+21:19:20.805 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - Host received REMOVE_CONNECTION_EVENT
+21:19:20.805 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.a.TransportBindingInitializer - trigger REMOVE_CONNECTION_EVENT received
+21:19:20.807 [nioEventLoopGroup-45-1] DEBUG c.f.b.t.OutgoingConnectionHandler - Connection null has been removed
+21:19:20.808 [nioEventLoopGroup-48-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x0df65e5b, L:/0:0:0:0:0:0:0:0:9090] UNREGISTERED
+21:19:20.808 [nioEventLoopGroup-48-1] DEBUG i.n.handler.logging.LoggingHandler - [id: 0x947ac8d0, L:/0:0:0:0:0:0:0:0:9091] UNREGISTERED
+]]></system-out>
+  <system-err><![CDATA[java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+java.io.FileNotFoundException: dummyKeystores\keyStoreDev1.jks (The system cannot find the path specified)
+]]></system-err>
+</testsuite>

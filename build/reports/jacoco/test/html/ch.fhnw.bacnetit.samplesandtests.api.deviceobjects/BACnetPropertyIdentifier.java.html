@@ -1,0 +1,1452 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BACnetPropertyIdentifier.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.deviceobjects</a> &gt; <span class="el_source">BACnetPropertyIdentifier.java</span></div><h1>BACnetPropertyIdentifier.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.deviceobjects;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Enumerated;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class BACnetPropertyIdentifier extends Enumerated {
+    private static final long serialVersionUID = 7289026444729646422L;
+
+<span class="fc" id="L31">    public static final BACnetPropertyIdentifier ackedTransitions = new BACnetPropertyIdentifier(</span>
+            0);
+
+<span class="fc" id="L34">    public static final BACnetPropertyIdentifier ackRequired = new BACnetPropertyIdentifier(</span>
+            1);
+
+<span class="fc" id="L37">    public static final BACnetPropertyIdentifier action = new BACnetPropertyIdentifier(</span>
+            2);
+
+<span class="fc" id="L40">    public static final BACnetPropertyIdentifier actionText = new BACnetPropertyIdentifier(</span>
+            3);
+
+<span class="fc" id="L43">    public static final BACnetPropertyIdentifier activeText = new BACnetPropertyIdentifier(</span>
+            4);
+
+<span class="fc" id="L46">    public static final BACnetPropertyIdentifier activeVtSessions = new BACnetPropertyIdentifier(</span>
+            5);
+
+<span class="fc" id="L49">    public static final BACnetPropertyIdentifier alarmValue = new BACnetPropertyIdentifier(</span>
+            6);
+
+<span class="fc" id="L52">    public static final BACnetPropertyIdentifier alarmValues = new BACnetPropertyIdentifier(</span>
+            7);
+
+<span class="fc" id="L55">    public static final BACnetPropertyIdentifier all = new BACnetPropertyIdentifier(</span>
+            8);
+
+<span class="fc" id="L58">    public static final BACnetPropertyIdentifier allWritesSuccessful = new BACnetPropertyIdentifier(</span>
+            9);
+
+<span class="fc" id="L61">    public static final BACnetPropertyIdentifier apduSegmentTimeout = new BACnetPropertyIdentifier(</span>
+            10);
+
+<span class="fc" id="L64">    public static final BACnetPropertyIdentifier apduTimeout = new BACnetPropertyIdentifier(</span>
+            11);
+
+<span class="fc" id="L67">    public static final BACnetPropertyIdentifier applicationSoftwareVersion = new BACnetPropertyIdentifier(</span>
+            12);
+
+<span class="fc" id="L70">    public static final BACnetPropertyIdentifier archive = new BACnetPropertyIdentifier(</span>
+            13);
+
+<span class="fc" id="L73">    public static final BACnetPropertyIdentifier bias = new BACnetPropertyIdentifier(</span>
+            14);
+
+<span class="fc" id="L76">    public static final BACnetPropertyIdentifier changeOfStateCount = new BACnetPropertyIdentifier(</span>
+            15);
+
+<span class="fc" id="L79">    public static final BACnetPropertyIdentifier changeOfStateTime = new BACnetPropertyIdentifier(</span>
+            16);
+
+<span class="fc" id="L82">    public static final BACnetPropertyIdentifier notificationClass = new BACnetPropertyIdentifier(</span>
+            17);
+
+<span class="fc" id="L85">    public static final BACnetPropertyIdentifier controlledVariableReference = new BACnetPropertyIdentifier(</span>
+            19);
+
+<span class="fc" id="L88">    public static final BACnetPropertyIdentifier controlledVariableUnits = new BACnetPropertyIdentifier(</span>
+            20);
+
+<span class="fc" id="L91">    public static final BACnetPropertyIdentifier controlledVariableValue = new BACnetPropertyIdentifier(</span>
+            21);
+
+<span class="fc" id="L94">    public static final BACnetPropertyIdentifier covIncrement = new BACnetPropertyIdentifier(</span>
+            22);
+
+<span class="fc" id="L97">    public static final BACnetPropertyIdentifier dateList = new BACnetPropertyIdentifier(</span>
+            23);
+
+<span class="fc" id="L100">    public static final BACnetPropertyIdentifier daylightSavingsStatus = new BACnetPropertyIdentifier(</span>
+            24);
+
+<span class="fc" id="L103">    public static final BACnetPropertyIdentifier deadband = new BACnetPropertyIdentifier(</span>
+            25);
+
+<span class="fc" id="L106">    public static final BACnetPropertyIdentifier derivativeConstant = new BACnetPropertyIdentifier(</span>
+            26);
+
+<span class="fc" id="L109">    public static final BACnetPropertyIdentifier derivativeConstantUnits = new BACnetPropertyIdentifier(</span>
+            27);
+
+<span class="fc" id="L112">    public static final BACnetPropertyIdentifier description = new BACnetPropertyIdentifier(</span>
+            28);
+
+<span class="fc" id="L115">    public static final BACnetPropertyIdentifier descriptionOfHalt = new BACnetPropertyIdentifier(</span>
+            29);
+
+<span class="fc" id="L118">    public static final BACnetPropertyIdentifier deviceAddressBinding = new BACnetPropertyIdentifier(</span>
+            30);
+
+<span class="fc" id="L121">    public static final BACnetPropertyIdentifier deviceType = new BACnetPropertyIdentifier(</span>
+            31);
+
+<span class="fc" id="L124">    public static final BACnetPropertyIdentifier effectivePeriod = new BACnetPropertyIdentifier(</span>
+            32);
+
+<span class="fc" id="L127">    public static final BACnetPropertyIdentifier elapsedActiveTime = new BACnetPropertyIdentifier(</span>
+            33);
+
+<span class="fc" id="L130">    public static final BACnetPropertyIdentifier errorLimit = new BACnetPropertyIdentifier(</span>
+            34);
+
+<span class="fc" id="L133">    public static final BACnetPropertyIdentifier eventEnable = new BACnetPropertyIdentifier(</span>
+            35);
+
+<span class="fc" id="L136">    public static final BACnetPropertyIdentifier eventState = new BACnetPropertyIdentifier(</span>
+            36);
+
+<span class="fc" id="L139">    public static final BACnetPropertyIdentifier eventType = new BACnetPropertyIdentifier(</span>
+            37);
+
+<span class="fc" id="L142">    public static final BACnetPropertyIdentifier exceptionSchedule = new BACnetPropertyIdentifier(</span>
+            38);
+
+<span class="fc" id="L145">    public static final BACnetPropertyIdentifier faultValues = new BACnetPropertyIdentifier(</span>
+            39);
+
+<span class="fc" id="L148">    public static final BACnetPropertyIdentifier feedbackValue = new BACnetPropertyIdentifier(</span>
+            40);
+
+<span class="fc" id="L151">    public static final BACnetPropertyIdentifier fileAccessMethod = new BACnetPropertyIdentifier(</span>
+            41);
+
+<span class="fc" id="L154">    public static final BACnetPropertyIdentifier fileSize = new BACnetPropertyIdentifier(</span>
+            42);
+
+<span class="fc" id="L157">    public static final BACnetPropertyIdentifier fileType = new BACnetPropertyIdentifier(</span>
+            43);
+
+<span class="fc" id="L160">    public static final BACnetPropertyIdentifier firmwareRevision = new BACnetPropertyIdentifier(</span>
+            44);
+
+<span class="fc" id="L163">    public static final BACnetPropertyIdentifier highLimit = new BACnetPropertyIdentifier(</span>
+            45);
+
+<span class="fc" id="L166">    public static final BACnetPropertyIdentifier inactiveText = new BACnetPropertyIdentifier(</span>
+            46);
+
+<span class="fc" id="L169">    public static final BACnetPropertyIdentifier inProcess = new BACnetPropertyIdentifier(</span>
+            47);
+
+<span class="fc" id="L172">    public static final BACnetPropertyIdentifier instanceOf = new BACnetPropertyIdentifier(</span>
+            48);
+
+<span class="fc" id="L175">    public static final BACnetPropertyIdentifier integralConstant = new BACnetPropertyIdentifier(</span>
+            49);
+
+<span class="fc" id="L178">    public static final BACnetPropertyIdentifier integralConstantUnits = new BACnetPropertyIdentifier(</span>
+            50);
+
+<span class="fc" id="L181">    public static final BACnetPropertyIdentifier limitEnable = new BACnetPropertyIdentifier(</span>
+            52);
+
+<span class="fc" id="L184">    public static final BACnetPropertyIdentifier listOfGroupMembers = new BACnetPropertyIdentifier(</span>
+            53);
+
+<span class="fc" id="L187">    public static final BACnetPropertyIdentifier listOfObjectPropertyReferences = new BACnetPropertyIdentifier(</span>
+            54);
+
+<span class="fc" id="L190">    public static final BACnetPropertyIdentifier listOfSessionKeys = new BACnetPropertyIdentifier(</span>
+            55);
+
+<span class="fc" id="L193">    public static final BACnetPropertyIdentifier localDate = new BACnetPropertyIdentifier(</span>
+            56);
+
+<span class="fc" id="L196">    public static final BACnetPropertyIdentifier localTime = new BACnetPropertyIdentifier(</span>
+            57);
+
+<span class="fc" id="L199">    public static final BACnetPropertyIdentifier location = new BACnetPropertyIdentifier(</span>
+            58);
+
+<span class="fc" id="L202">    public static final BACnetPropertyIdentifier lowLimit = new BACnetPropertyIdentifier(</span>
+            59);
+
+<span class="fc" id="L205">    public static final BACnetPropertyIdentifier manipulatedVariableReference = new BACnetPropertyIdentifier(</span>
+            60);
+
+<span class="fc" id="L208">    public static final BACnetPropertyIdentifier maximumOutput = new BACnetPropertyIdentifier(</span>
+            61);
+
+<span class="fc" id="L211">    public static final BACnetPropertyIdentifier maxApduLengthAccepted = new BACnetPropertyIdentifier(</span>
+            62);
+
+<span class="fc" id="L214">    public static final BACnetPropertyIdentifier maxInfoFrames = new BACnetPropertyIdentifier(</span>
+            63);
+
+<span class="fc" id="L217">    public static final BACnetPropertyIdentifier maxMaster = new BACnetPropertyIdentifier(</span>
+            64);
+
+<span class="fc" id="L220">    public static final BACnetPropertyIdentifier maxPresValue = new BACnetPropertyIdentifier(</span>
+            65);
+
+<span class="fc" id="L223">    public static final BACnetPropertyIdentifier minimumOffTime = new BACnetPropertyIdentifier(</span>
+            66);
+
+<span class="fc" id="L226">    public static final BACnetPropertyIdentifier minimumOnTime = new BACnetPropertyIdentifier(</span>
+            67);
+
+<span class="fc" id="L229">    public static final BACnetPropertyIdentifier minimumOutput = new BACnetPropertyIdentifier(</span>
+            68);
+
+<span class="fc" id="L232">    public static final BACnetPropertyIdentifier minPresValue = new BACnetPropertyIdentifier(</span>
+            69);
+
+<span class="fc" id="L235">    public static final BACnetPropertyIdentifier modelName = new BACnetPropertyIdentifier(</span>
+            70);
+
+<span class="fc" id="L238">    public static final BACnetPropertyIdentifier modificationDate = new BACnetPropertyIdentifier(</span>
+            71);
+
+<span class="fc" id="L241">    public static final BACnetPropertyIdentifier notifyType = new BACnetPropertyIdentifier(</span>
+            72);
+
+<span class="fc" id="L244">    public static final BACnetPropertyIdentifier numberOfApduRetries = new BACnetPropertyIdentifier(</span>
+            73);
+
+<span class="fc" id="L247">    public static final BACnetPropertyIdentifier numberOfStates = new BACnetPropertyIdentifier(</span>
+            74);
+
+<span class="fc" id="L250">    public static final BACnetPropertyIdentifier objectIdentifier = new BACnetPropertyIdentifier(</span>
+            75);
+
+<span class="fc" id="L253">    public static final BACnetPropertyIdentifier objectList = new BACnetPropertyIdentifier(</span>
+            76);
+
+<span class="fc" id="L256">    public static final BACnetPropertyIdentifier objectName = new BACnetPropertyIdentifier(</span>
+            77);
+
+<span class="fc" id="L259">    public static final BACnetPropertyIdentifier objectPropertyReference = new BACnetPropertyIdentifier(</span>
+            78);
+
+<span class="fc" id="L262">    public static final BACnetPropertyIdentifier objectType = new BACnetPropertyIdentifier(</span>
+            79);
+
+<span class="fc" id="L265">    public static final BACnetPropertyIdentifier optional = new BACnetPropertyIdentifier(</span>
+            80);
+
+<span class="fc" id="L268">    public static final BACnetPropertyIdentifier outOfService = new BACnetPropertyIdentifier(</span>
+            81);
+
+<span class="fc" id="L271">    public static final BACnetPropertyIdentifier outputUnits = new BACnetPropertyIdentifier(</span>
+            82);
+
+<span class="fc" id="L274">    public static final BACnetPropertyIdentifier eventParameters = new BACnetPropertyIdentifier(</span>
+            83);
+
+<span class="fc" id="L277">    public static final BACnetPropertyIdentifier polarity = new BACnetPropertyIdentifier(</span>
+            84);
+
+<span class="fc" id="L280">    public static final BACnetPropertyIdentifier presentValue = new BACnetPropertyIdentifier(</span>
+            85);
+
+<span class="fc" id="L283">    public static final BACnetPropertyIdentifier priority = new BACnetPropertyIdentifier(</span>
+            86);
+
+<span class="fc" id="L286">    public static final BACnetPropertyIdentifier priorityArray = new BACnetPropertyIdentifier(</span>
+            87);
+
+<span class="fc" id="L289">    public static final BACnetPropertyIdentifier priorityForWriting = new BACnetPropertyIdentifier(</span>
+            88);
+
+<span class="fc" id="L292">    public static final BACnetPropertyIdentifier processIdentifier = new BACnetPropertyIdentifier(</span>
+            89);
+
+<span class="fc" id="L295">    public static final BACnetPropertyIdentifier programChange = new BACnetPropertyIdentifier(</span>
+            90);
+
+<span class="fc" id="L298">    public static final BACnetPropertyIdentifier programLocation = new BACnetPropertyIdentifier(</span>
+            91);
+
+<span class="fc" id="L301">    public static final BACnetPropertyIdentifier programState = new BACnetPropertyIdentifier(</span>
+            92);
+
+<span class="fc" id="L304">    public static final BACnetPropertyIdentifier proportionalConstant = new BACnetPropertyIdentifier(</span>
+            93);
+
+<span class="fc" id="L307">    public static final BACnetPropertyIdentifier proportionalConstantUnits = new BACnetPropertyIdentifier(</span>
+            94);
+
+<span class="fc" id="L310">    public static final BACnetPropertyIdentifier protocolObjectTypesSupported = new BACnetPropertyIdentifier(</span>
+            96);
+
+<span class="fc" id="L313">    public static final BACnetPropertyIdentifier protocolServicesSupported = new BACnetPropertyIdentifier(</span>
+            97);
+
+<span class="fc" id="L316">    public static final BACnetPropertyIdentifier protocolVersion = new BACnetPropertyIdentifier(</span>
+            98);
+
+<span class="fc" id="L319">    public static final BACnetPropertyIdentifier readOnly = new BACnetPropertyIdentifier(</span>
+            99);
+
+<span class="fc" id="L322">    public static final BACnetPropertyIdentifier reasonForHalt = new BACnetPropertyIdentifier(</span>
+            100);
+
+<span class="fc" id="L325">    public static final BACnetPropertyIdentifier recipientList = new BACnetPropertyIdentifier(</span>
+            102);
+
+<span class="fc" id="L328">    public static final BACnetPropertyIdentifier reliability = new BACnetPropertyIdentifier(</span>
+            103);
+
+<span class="fc" id="L331">    public static final BACnetPropertyIdentifier relinquishDefault = new BACnetPropertyIdentifier(</span>
+            104);
+
+<span class="fc" id="L334">    public static final BACnetPropertyIdentifier required = new BACnetPropertyIdentifier(</span>
+            105);
+
+<span class="fc" id="L337">    public static final BACnetPropertyIdentifier resolution = new BACnetPropertyIdentifier(</span>
+            106);
+
+<span class="fc" id="L340">    public static final BACnetPropertyIdentifier segmentationSupported = new BACnetPropertyIdentifier(</span>
+            107);
+
+<span class="fc" id="L343">    public static final BACnetPropertyIdentifier setpoint = new BACnetPropertyIdentifier(</span>
+            108);
+
+<span class="fc" id="L346">    public static final BACnetPropertyIdentifier setpointReference = new BACnetPropertyIdentifier(</span>
+            109);
+
+<span class="fc" id="L349">    public static final BACnetPropertyIdentifier stateText = new BACnetPropertyIdentifier(</span>
+            110);
+
+<span class="fc" id="L352">    public static final BACnetPropertyIdentifier statusFlags = new BACnetPropertyIdentifier(</span>
+            111);
+
+<span class="fc" id="L355">    public static final BACnetPropertyIdentifier systemStatus = new BACnetPropertyIdentifier(</span>
+            112);
+
+<span class="fc" id="L358">    public static final BACnetPropertyIdentifier timeDelay = new BACnetPropertyIdentifier(</span>
+            113);
+
+<span class="fc" id="L361">    public static final BACnetPropertyIdentifier timeOfActiveTimeReset = new BACnetPropertyIdentifier(</span>
+            114);
+
+<span class="fc" id="L364">    public static final BACnetPropertyIdentifier timeOfStateCountReset = new BACnetPropertyIdentifier(</span>
+            115);
+
+<span class="fc" id="L367">    public static final BACnetPropertyIdentifier timeSynchronizationRecipients = new BACnetPropertyIdentifier(</span>
+            116);
+
+<span class="fc" id="L370">    public static final BACnetPropertyIdentifier units = new BACnetPropertyIdentifier(</span>
+            117);
+
+<span class="fc" id="L373">    public static final BACnetPropertyIdentifier updateInterval = new BACnetPropertyIdentifier(</span>
+            118);
+
+<span class="fc" id="L376">    public static final BACnetPropertyIdentifier utcOffset = new BACnetPropertyIdentifier(</span>
+            119);
+
+<span class="fc" id="L379">    public static final BACnetPropertyIdentifier vendorIdentifier = new BACnetPropertyIdentifier(</span>
+            120);
+
+<span class="fc" id="L382">    public static final BACnetPropertyIdentifier vendorName = new BACnetPropertyIdentifier(</span>
+            121);
+
+<span class="fc" id="L385">    public static final BACnetPropertyIdentifier vtClassesSupported = new BACnetPropertyIdentifier(</span>
+            122);
+
+<span class="fc" id="L388">    public static final BACnetPropertyIdentifier weeklySchedule = new BACnetPropertyIdentifier(</span>
+            123);
+
+<span class="fc" id="L391">    public static final BACnetPropertyIdentifier attemptedSamples = new BACnetPropertyIdentifier(</span>
+            124);
+
+<span class="fc" id="L394">    public static final BACnetPropertyIdentifier averageValue = new BACnetPropertyIdentifier(</span>
+            125);
+
+<span class="fc" id="L397">    public static final BACnetPropertyIdentifier bufferSize = new BACnetPropertyIdentifier(</span>
+            126);
+
+<span class="fc" id="L400">    public static final BACnetPropertyIdentifier clientCovIncrement = new BACnetPropertyIdentifier(</span>
+            127);
+
+<span class="fc" id="L403">    public static final BACnetPropertyIdentifier covResubscriptionInterval = new BACnetPropertyIdentifier(</span>
+            128);
+
+<span class="fc" id="L406">    public static final BACnetPropertyIdentifier eventTimeStamps = new BACnetPropertyIdentifier(</span>
+            130);
+
+<span class="fc" id="L409">    public static final BACnetPropertyIdentifier logBuffer = new BACnetPropertyIdentifier(</span>
+            131);
+
+<span class="fc" id="L412">    public static final BACnetPropertyIdentifier logDeviceObjectProperty = new BACnetPropertyIdentifier(</span>
+            132);
+
+<span class="fc" id="L415">    public static final BACnetPropertyIdentifier enable = new BACnetPropertyIdentifier(</span>
+            133);
+
+<span class="fc" id="L418">    public static final BACnetPropertyIdentifier logInterval = new BACnetPropertyIdentifier(</span>
+            134);
+
+<span class="fc" id="L421">    public static final BACnetPropertyIdentifier maximumValue = new BACnetPropertyIdentifier(</span>
+            135);
+
+<span class="fc" id="L424">    public static final BACnetPropertyIdentifier minimumValue = new BACnetPropertyIdentifier(</span>
+            136);
+
+<span class="fc" id="L427">    public static final BACnetPropertyIdentifier notificationThreshold = new BACnetPropertyIdentifier(</span>
+            137);
+
+<span class="fc" id="L430">    public static final BACnetPropertyIdentifier protocolRevision = new BACnetPropertyIdentifier(</span>
+            139);
+
+<span class="fc" id="L433">    public static final BACnetPropertyIdentifier recordsSinceNotification = new BACnetPropertyIdentifier(</span>
+            140);
+
+<span class="fc" id="L436">    public static final BACnetPropertyIdentifier recordCount = new BACnetPropertyIdentifier(</span>
+            141);
+
+<span class="fc" id="L439">    public static final BACnetPropertyIdentifier startTime = new BACnetPropertyIdentifier(</span>
+            142);
+
+<span class="fc" id="L442">    public static final BACnetPropertyIdentifier stopTime = new BACnetPropertyIdentifier(</span>
+            143);
+
+<span class="fc" id="L445">    public static final BACnetPropertyIdentifier stopWhenFull = new BACnetPropertyIdentifier(</span>
+            144);
+
+<span class="fc" id="L448">    public static final BACnetPropertyIdentifier totalRecordCount = new BACnetPropertyIdentifier(</span>
+            145);
+
+<span class="fc" id="L451">    public static final BACnetPropertyIdentifier validSamples = new BACnetPropertyIdentifier(</span>
+            146);
+
+<span class="fc" id="L454">    public static final BACnetPropertyIdentifier windowInterval = new BACnetPropertyIdentifier(</span>
+            147);
+
+<span class="fc" id="L457">    public static final BACnetPropertyIdentifier windowSamples = new BACnetPropertyIdentifier(</span>
+            148);
+
+<span class="fc" id="L460">    public static final BACnetPropertyIdentifier maximumValueTimestamp = new BACnetPropertyIdentifier(</span>
+            149);
+
+<span class="fc" id="L463">    public static final BACnetPropertyIdentifier minimumValueTimestamp = new BACnetPropertyIdentifier(</span>
+            150);
+
+<span class="fc" id="L466">    public static final BACnetPropertyIdentifier varianceValue = new BACnetPropertyIdentifier(</span>
+            151);
+
+<span class="fc" id="L469">    public static final BACnetPropertyIdentifier activeCovSubscriptions = new BACnetPropertyIdentifier(</span>
+            152);
+
+<span class="fc" id="L472">    public static final BACnetPropertyIdentifier backupFailureTimeout = new BACnetPropertyIdentifier(</span>
+            153);
+
+<span class="fc" id="L475">    public static final BACnetPropertyIdentifier configurationFiles = new BACnetPropertyIdentifier(</span>
+            154);
+
+<span class="fc" id="L478">    public static final BACnetPropertyIdentifier databaseRevision = new BACnetPropertyIdentifier(</span>
+            155);
+
+<span class="fc" id="L481">    public static final BACnetPropertyIdentifier directReading = new BACnetPropertyIdentifier(</span>
+            156);
+
+<span class="fc" id="L484">    public static final BACnetPropertyIdentifier lastRestoreTime = new BACnetPropertyIdentifier(</span>
+            157);
+
+<span class="fc" id="L487">    public static final BACnetPropertyIdentifier maintenanceRequired = new BACnetPropertyIdentifier(</span>
+            158);
+
+<span class="fc" id="L490">    public static final BACnetPropertyIdentifier memberOf = new BACnetPropertyIdentifier(</span>
+            159);
+
+<span class="fc" id="L493">    public static final BACnetPropertyIdentifier mode = new BACnetPropertyIdentifier(</span>
+            160);
+
+<span class="fc" id="L496">    public static final BACnetPropertyIdentifier operationExpected = new BACnetPropertyIdentifier(</span>
+            161);
+
+<span class="fc" id="L499">    public static final BACnetPropertyIdentifier setting = new BACnetPropertyIdentifier(</span>
+            162);
+
+<span class="fc" id="L502">    public static final BACnetPropertyIdentifier silenced = new BACnetPropertyIdentifier(</span>
+            163);
+
+<span class="fc" id="L505">    public static final BACnetPropertyIdentifier trackingValue = new BACnetPropertyIdentifier(</span>
+            164);
+
+<span class="fc" id="L508">    public static final BACnetPropertyIdentifier zoneMembers = new BACnetPropertyIdentifier(</span>
+            165);
+
+<span class="fc" id="L511">    public static final BACnetPropertyIdentifier lifeSafetyAlarmValues = new BACnetPropertyIdentifier(</span>
+            166);
+
+<span class="fc" id="L514">    public static final BACnetPropertyIdentifier maxSegmentsAccepted = new BACnetPropertyIdentifier(</span>
+            167);
+
+<span class="fc" id="L517">    public static final BACnetPropertyIdentifier profileName = new BACnetPropertyIdentifier(</span>
+            168);
+
+<span class="fc" id="L520">    public static final BACnetPropertyIdentifier autoSlaveDiscovery = new BACnetPropertyIdentifier(</span>
+            169);
+
+<span class="fc" id="L523">    public static final BACnetPropertyIdentifier manualSlaveAddressBinding = new BACnetPropertyIdentifier(</span>
+            170);
+
+<span class="fc" id="L526">    public static final BACnetPropertyIdentifier slaveAddressBinding = new BACnetPropertyIdentifier(</span>
+            171);
+
+<span class="fc" id="L529">    public static final BACnetPropertyIdentifier slaveProxyEnable = new BACnetPropertyIdentifier(</span>
+            172);
+
+<span class="fc" id="L532">    public static final BACnetPropertyIdentifier lastNotifyRecord = new BACnetPropertyIdentifier(</span>
+            173);
+
+<span class="fc" id="L535">    public static final BACnetPropertyIdentifier scheduleDefault = new BACnetPropertyIdentifier(</span>
+            174);
+
+<span class="fc" id="L538">    public static final BACnetPropertyIdentifier acceptedModes = new BACnetPropertyIdentifier(</span>
+            175);
+
+<span class="fc" id="L541">    public static final BACnetPropertyIdentifier adjustValue = new BACnetPropertyIdentifier(</span>
+            176);
+
+<span class="fc" id="L544">    public static final BACnetPropertyIdentifier count = new BACnetPropertyIdentifier(</span>
+            177);
+
+<span class="fc" id="L547">    public static final BACnetPropertyIdentifier countBeforeChange = new BACnetPropertyIdentifier(</span>
+            178);
+
+<span class="fc" id="L550">    public static final BACnetPropertyIdentifier countChangeTime = new BACnetPropertyIdentifier(</span>
+            179);
+
+<span class="fc" id="L553">    public static final BACnetPropertyIdentifier covPeriod = new BACnetPropertyIdentifier(</span>
+            180);
+
+<span class="fc" id="L556">    public static final BACnetPropertyIdentifier inputReference = new BACnetPropertyIdentifier(</span>
+            181);
+
+<span class="fc" id="L559">    public static final BACnetPropertyIdentifier limitMonitoringInterval = new BACnetPropertyIdentifier(</span>
+            182);
+
+<span class="fc" id="L562">    public static final BACnetPropertyIdentifier loggingObject = new BACnetPropertyIdentifier(</span>
+            183);
+
+<span class="fc" id="L565">    public static final BACnetPropertyIdentifier loggingRecord = new BACnetPropertyIdentifier(</span>
+            184);
+
+<span class="fc" id="L568">    public static final BACnetPropertyIdentifier prescale = new BACnetPropertyIdentifier(</span>
+            185);
+
+<span class="fc" id="L571">    public static final BACnetPropertyIdentifier pulseRate = new BACnetPropertyIdentifier(</span>
+            186);
+
+<span class="fc" id="L574">    public static final BACnetPropertyIdentifier scale = new BACnetPropertyIdentifier(</span>
+            187);
+
+<span class="fc" id="L577">    public static final BACnetPropertyIdentifier scaleFactor = new BACnetPropertyIdentifier(</span>
+            188);
+
+<span class="fc" id="L580">    public static final BACnetPropertyIdentifier updateTime = new BACnetPropertyIdentifier(</span>
+            189);
+
+<span class="fc" id="L583">    public static final BACnetPropertyIdentifier valueBeforeChange = new BACnetPropertyIdentifier(</span>
+            190);
+
+<span class="fc" id="L586">    public static final BACnetPropertyIdentifier valueSet = new BACnetPropertyIdentifier(</span>
+            191);
+
+<span class="fc" id="L589">    public static final BACnetPropertyIdentifier valueChangeTime = new BACnetPropertyIdentifier(</span>
+            192);
+
+<span class="fc" id="L592">    public static final BACnetPropertyIdentifier alignIntervals = new BACnetPropertyIdentifier(</span>
+            193);
+
+<span class="fc" id="L595">    public static final BACnetPropertyIdentifier intervalOffset = new BACnetPropertyIdentifier(</span>
+            195);
+
+<span class="fc" id="L598">    public static final BACnetPropertyIdentifier lastRestartReason = new BACnetPropertyIdentifier(</span>
+            196);
+
+<span class="fc" id="L601">    public static final BACnetPropertyIdentifier loggingType = new BACnetPropertyIdentifier(</span>
+            197);
+
+<span class="fc" id="L604">    public static final BACnetPropertyIdentifier restartNotificationRecipients = new BACnetPropertyIdentifier(</span>
+            202);
+
+<span class="fc" id="L607">    public static final BACnetPropertyIdentifier timeOfDeviceRestart = new BACnetPropertyIdentifier(</span>
+            203);
+
+<span class="fc" id="L610">    public static final BACnetPropertyIdentifier timeSynchronizationInterval = new BACnetPropertyIdentifier(</span>
+            204);
+
+<span class="fc" id="L613">    public static final BACnetPropertyIdentifier trigger = new BACnetPropertyIdentifier(</span>
+            205);
+
+<span class="fc" id="L616">    public static final BACnetPropertyIdentifier utcTimeSynchronizationRecipients = new BACnetPropertyIdentifier(</span>
+            206);
+
+<span class="fc" id="L619">    public static final BACnetPropertyIdentifier nodeSubtype = new BACnetPropertyIdentifier(</span>
+            207);
+
+<span class="fc" id="L622">    public static final BACnetPropertyIdentifier nodeType = new BACnetPropertyIdentifier(</span>
+            208);
+
+<span class="fc" id="L625">    public static final BACnetPropertyIdentifier structuredObjectList = new BACnetPropertyIdentifier(</span>
+            209);
+
+<span class="fc" id="L628">    public static final BACnetPropertyIdentifier subordinateAnnotations = new BACnetPropertyIdentifier(</span>
+            210);
+
+<span class="fc" id="L631">    public static final BACnetPropertyIdentifier subordinateList = new BACnetPropertyIdentifier(</span>
+            211);
+
+<span class="fc" id="L634">    public static final BACnetPropertyIdentifier actualShedLevel = new BACnetPropertyIdentifier(</span>
+            212);
+
+<span class="fc" id="L637">    public static final BACnetPropertyIdentifier dutyWindow = new BACnetPropertyIdentifier(</span>
+            213);
+
+<span class="fc" id="L640">    public static final BACnetPropertyIdentifier expectedShedLevel = new BACnetPropertyIdentifier(</span>
+            214);
+
+<span class="fc" id="L643">    public static final BACnetPropertyIdentifier fullDutyBaseline = new BACnetPropertyIdentifier(</span>
+            215);
+
+<span class="fc" id="L646">    public static final BACnetPropertyIdentifier requestedShedLevel = new BACnetPropertyIdentifier(</span>
+            218);
+
+<span class="fc" id="L649">    public static final BACnetPropertyIdentifier shedDuration = new BACnetPropertyIdentifier(</span>
+            219);
+
+<span class="fc" id="L652">    public static final BACnetPropertyIdentifier shedLevelDescriptions = new BACnetPropertyIdentifier(</span>
+            220);
+
+<span class="fc" id="L655">    public static final BACnetPropertyIdentifier shedLevels = new BACnetPropertyIdentifier(</span>
+            221);
+
+<span class="fc" id="L658">    public static final BACnetPropertyIdentifier stateDescription = new BACnetPropertyIdentifier(</span>
+            222);
+
+<span class="fc" id="L661">    public static final BACnetPropertyIdentifier doorAlarmState = new BACnetPropertyIdentifier(</span>
+            226);
+
+<span class="fc" id="L664">    public static final BACnetPropertyIdentifier doorExtendedPulseTime = new BACnetPropertyIdentifier(</span>
+            227);
+
+<span class="fc" id="L667">    public static final BACnetPropertyIdentifier doorMembers = new BACnetPropertyIdentifier(</span>
+            228);
+
+<span class="fc" id="L670">    public static final BACnetPropertyIdentifier doorOpenTooLongTime = new BACnetPropertyIdentifier(</span>
+            229);
+
+<span class="fc" id="L673">    public static final BACnetPropertyIdentifier doorPulseTime = new BACnetPropertyIdentifier(</span>
+            230);
+
+<span class="fc" id="L676">    public static final BACnetPropertyIdentifier doorStatus = new BACnetPropertyIdentifier(</span>
+            231);
+
+<span class="fc" id="L679">    public static final BACnetPropertyIdentifier doorUnlockDelayTime = new BACnetPropertyIdentifier(</span>
+            232);
+
+<span class="fc" id="L682">    public static final BACnetPropertyIdentifier lockStatus = new BACnetPropertyIdentifier(</span>
+            233);
+
+<span class="fc" id="L685">    public static final BACnetPropertyIdentifier maskedAlarmValues = new BACnetPropertyIdentifier(</span>
+            234);
+
+<span class="fc" id="L688">    public static final BACnetPropertyIdentifier securedStatus = new BACnetPropertyIdentifier(</span>
+            235);
+
+<span class="fc" id="L691">    public static final BACnetPropertyIdentifier backupAndRestoreState = new BACnetPropertyIdentifier(</span>
+            338);
+
+<span class="fc" id="L694">    public static final BACnetPropertyIdentifier backupPreparationTime = new BACnetPropertyIdentifier(</span>
+            339);
+
+<span class="fc" id="L697">    public static final BACnetPropertyIdentifier restoreCompletionTime = new BACnetPropertyIdentifier(</span>
+            340);
+
+<span class="fc" id="L700">    public static final BACnetPropertyIdentifier restorePreparationTime = new BACnetPropertyIdentifier(</span>
+            341);
+
+<span class="fc" id="L703">    public static final BACnetPropertyIdentifier[] ALL = { ackedTransitions,</span>
+            ackRequired, action, actionText, activeText, activeVtSessions,
+            alarmValue, alarmValues, all, allWritesSuccessful,
+            apduSegmentTimeout, apduTimeout, applicationSoftwareVersion,
+            archive, bias, changeOfStateCount, changeOfStateTime,
+            notificationClass, controlledVariableReference,
+            controlledVariableUnits, controlledVariableValue, covIncrement,
+            dateList, daylightSavingsStatus, deadband, derivativeConstant,
+            derivativeConstantUnits, description, descriptionOfHalt,
+            deviceAddressBinding, deviceType, effectivePeriod,
+            elapsedActiveTime, errorLimit, eventEnable, eventState, eventType,
+            exceptionSchedule, faultValues, feedbackValue, fileAccessMethod,
+            fileSize, fileType, firmwareRevision, highLimit, inactiveText,
+            inProcess, instanceOf, integralConstant, integralConstantUnits,
+            limitEnable, listOfGroupMembers, listOfObjectPropertyReferences,
+            listOfSessionKeys, localDate, localTime, location, lowLimit,
+            manipulatedVariableReference, maximumOutput, maxApduLengthAccepted,
+            maxInfoFrames, maxMaster, maxPresValue, minimumOffTime,
+            minimumOnTime, minimumOutput, minPresValue, modelName,
+            modificationDate, notifyType, numberOfApduRetries, numberOfStates,
+            objectIdentifier, objectList, objectName, objectPropertyReference,
+            objectType, optional, outOfService, outputUnits, eventParameters,
+            polarity, presentValue, priority, priorityArray, priorityForWriting,
+            processIdentifier, programChange, programLocation, programState,
+            proportionalConstant, proportionalConstantUnits,
+            protocolObjectTypesSupported, protocolServicesSupported,
+            protocolVersion, readOnly, reasonForHalt, recipientList,
+            reliability, relinquishDefault, required, resolution,
+            segmentationSupported, setpoint, setpointReference, stateText,
+            statusFlags, systemStatus, timeDelay, timeOfActiveTimeReset,
+            timeOfStateCountReset, timeSynchronizationRecipients, units,
+            updateInterval, utcOffset, vendorIdentifier, vendorName,
+            vtClassesSupported, weeklySchedule, attemptedSamples, averageValue,
+            bufferSize, clientCovIncrement, covResubscriptionInterval,
+            eventTimeStamps, logBuffer, logDeviceObjectProperty, enable,
+            logInterval, maximumValue, minimumValue, notificationThreshold,
+            protocolRevision, recordsSinceNotification, recordCount, startTime,
+            stopTime, stopWhenFull, totalRecordCount, validSamples,
+            windowInterval, windowSamples, maximumValueTimestamp,
+            minimumValueTimestamp, varianceValue, activeCovSubscriptions,
+            backupFailureTimeout, configurationFiles, databaseRevision,
+            directReading, lastRestoreTime, maintenanceRequired, memberOf, mode,
+            operationExpected, setting, silenced, trackingValue, zoneMembers,
+            lifeSafetyAlarmValues, maxSegmentsAccepted, profileName,
+            autoSlaveDiscovery, manualSlaveAddressBinding, slaveAddressBinding,
+            slaveProxyEnable, lastNotifyRecord, scheduleDefault, acceptedModes,
+            adjustValue, count, countBeforeChange, countChangeTime, covPeriod,
+            inputReference, limitMonitoringInterval, loggingObject,
+            loggingRecord, prescale, pulseRate, scale, scaleFactor, updateTime,
+            valueBeforeChange, valueSet, valueChangeTime, alignIntervals,
+            intervalOffset, lastRestartReason, loggingType,
+            restartNotificationRecipients, timeOfDeviceRestart,
+            timeSynchronizationInterval, trigger,
+            utcTimeSynchronizationRecipients, nodeSubtype, nodeType,
+            structuredObjectList, subordinateAnnotations, subordinateList,
+            actualShedLevel, dutyWindow, expectedShedLevel, fullDutyBaseline,
+            requestedShedLevel, shedDuration, shedLevelDescriptions, shedLevels,
+            stateDescription, doorAlarmState, doorExtendedPulseTime,
+            doorMembers, doorOpenTooLongTime, doorPulseTime, doorStatus,
+            doorUnlockDelayTime, lockStatus, maskedAlarmValues, securedStatus,
+            backupAndRestoreState, backupPreparationTime, restoreCompletionTime,
+            restorePreparationTime, };
+
+    public BACnetPropertyIdentifier(final int value) {
+<span class="fc" id="L767">        super(value);</span>
+<span class="fc" id="L768">    }</span>
+
+    public BACnetPropertyIdentifier(final ByteQueue queue) {
+<span class="nc" id="L771">        super(queue);</span>
+<span class="nc" id="L772">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L776">        final int type = intValue();</span>
+<span class="nc bnc" id="L777" title="All 2 branches missed.">        if (type == ackedTransitions.intValue()) {</span>
+<span class="nc" id="L778">            return &quot;Acked transitions&quot;;</span>
+        }
+<span class="nc bnc" id="L780" title="All 2 branches missed.">        if (type == ackRequired.intValue()) {</span>
+<span class="nc" id="L781">            return &quot;Ack required&quot;;</span>
+        }
+<span class="nc bnc" id="L783" title="All 2 branches missed.">        if (type == action.intValue()) {</span>
+<span class="nc" id="L784">            return &quot;Action&quot;;</span>
+        }
+<span class="nc bnc" id="L786" title="All 2 branches missed.">        if (type == actionText.intValue()) {</span>
+<span class="nc" id="L787">            return &quot;Action text&quot;;</span>
+        }
+<span class="nc bnc" id="L789" title="All 2 branches missed.">        if (type == activeText.intValue()) {</span>
+<span class="nc" id="L790">            return &quot;Active text&quot;;</span>
+        }
+<span class="nc bnc" id="L792" title="All 2 branches missed.">        if (type == activeVtSessions.intValue()) {</span>
+<span class="nc" id="L793">            return &quot;Active VT sessions&quot;;</span>
+        }
+<span class="nc bnc" id="L795" title="All 2 branches missed.">        if (type == alarmValue.intValue()) {</span>
+<span class="nc" id="L796">            return &quot;Alarm value&quot;;</span>
+        }
+<span class="nc bnc" id="L798" title="All 2 branches missed.">        if (type == alarmValues.intValue()) {</span>
+<span class="nc" id="L799">            return &quot;Alarm values&quot;;</span>
+        }
+<span class="nc bnc" id="L801" title="All 2 branches missed.">        if (type == all.intValue()) {</span>
+<span class="nc" id="L802">            return &quot;All&quot;;</span>
+        }
+<span class="nc bnc" id="L804" title="All 2 branches missed.">        if (type == allWritesSuccessful.intValue()) {</span>
+<span class="nc" id="L805">            return &quot;All writes successful&quot;;</span>
+        }
+<span class="nc bnc" id="L807" title="All 2 branches missed.">        if (type == apduSegmentTimeout.intValue()) {</span>
+<span class="nc" id="L808">            return &quot;APDU segment timeout&quot;;</span>
+        }
+<span class="nc bnc" id="L810" title="All 2 branches missed.">        if (type == apduTimeout.intValue()) {</span>
+<span class="nc" id="L811">            return &quot;APDU timeout&quot;;</span>
+        }
+<span class="nc bnc" id="L813" title="All 2 branches missed.">        if (type == applicationSoftwareVersion.intValue()) {</span>
+<span class="nc" id="L814">            return &quot;Application software version&quot;;</span>
+        }
+<span class="nc bnc" id="L816" title="All 2 branches missed.">        if (type == archive.intValue()) {</span>
+<span class="nc" id="L817">            return &quot;Archive&quot;;</span>
+        }
+<span class="nc bnc" id="L819" title="All 2 branches missed.">        if (type == bias.intValue()) {</span>
+<span class="nc" id="L820">            return &quot;Bias&quot;;</span>
+        }
+<span class="nc bnc" id="L822" title="All 2 branches missed.">        if (type == changeOfStateCount.intValue()) {</span>
+<span class="nc" id="L823">            return &quot;Change of state count&quot;;</span>
+        }
+<span class="nc bnc" id="L825" title="All 2 branches missed.">        if (type == changeOfStateTime.intValue()) {</span>
+<span class="nc" id="L826">            return &quot;Change of state time&quot;;</span>
+        }
+<span class="nc bnc" id="L828" title="All 2 branches missed.">        if (type == notificationClass.intValue()) {</span>
+<span class="nc" id="L829">            return &quot;Notification class&quot;;</span>
+        }
+<span class="nc bnc" id="L831" title="All 2 branches missed.">        if (type == controlledVariableReference.intValue()) {</span>
+<span class="nc" id="L832">            return &quot;Controlled variable reference&quot;;</span>
+        }
+<span class="nc bnc" id="L834" title="All 2 branches missed.">        if (type == controlledVariableUnits.intValue()) {</span>
+<span class="nc" id="L835">            return &quot;Controlled variable units&quot;;</span>
+        }
+<span class="nc bnc" id="L837" title="All 2 branches missed.">        if (type == controlledVariableValue.intValue()) {</span>
+<span class="nc" id="L838">            return &quot;Controlled variable value&quot;;</span>
+        }
+<span class="nc bnc" id="L840" title="All 2 branches missed.">        if (type == covIncrement.intValue()) {</span>
+<span class="nc" id="L841">            return &quot;COV increment&quot;;</span>
+        }
+<span class="nc bnc" id="L843" title="All 2 branches missed.">        if (type == dateList.intValue()) {</span>
+<span class="nc" id="L844">            return &quot;Date list&quot;;</span>
+        }
+<span class="nc bnc" id="L846" title="All 2 branches missed.">        if (type == daylightSavingsStatus.intValue()) {</span>
+<span class="nc" id="L847">            return &quot;Daylight savings status&quot;;</span>
+        }
+<span class="nc bnc" id="L849" title="All 2 branches missed.">        if (type == deadband.intValue()) {</span>
+<span class="nc" id="L850">            return &quot;Deadband&quot;;</span>
+        }
+<span class="nc bnc" id="L852" title="All 2 branches missed.">        if (type == derivativeConstant.intValue()) {</span>
+<span class="nc" id="L853">            return &quot;Derivative constant&quot;;</span>
+        }
+<span class="nc bnc" id="L855" title="All 2 branches missed.">        if (type == derivativeConstantUnits.intValue()) {</span>
+<span class="nc" id="L856">            return &quot;Derivative constant units&quot;;</span>
+        }
+<span class="nc bnc" id="L858" title="All 2 branches missed.">        if (type == description.intValue()) {</span>
+<span class="nc" id="L859">            return &quot;Description&quot;;</span>
+        }
+<span class="nc bnc" id="L861" title="All 2 branches missed.">        if (type == descriptionOfHalt.intValue()) {</span>
+<span class="nc" id="L862">            return &quot;Description of halt&quot;;</span>
+        }
+<span class="nc bnc" id="L864" title="All 2 branches missed.">        if (type == deviceAddressBinding.intValue()) {</span>
+<span class="nc" id="L865">            return &quot;Device address binding&quot;;</span>
+        }
+<span class="nc bnc" id="L867" title="All 2 branches missed.">        if (type == deviceType.intValue()) {</span>
+<span class="nc" id="L868">            return &quot;Device type&quot;;</span>
+        }
+<span class="nc bnc" id="L870" title="All 2 branches missed.">        if (type == effectivePeriod.intValue()) {</span>
+<span class="nc" id="L871">            return &quot;Effective period&quot;;</span>
+        }
+<span class="nc bnc" id="L873" title="All 2 branches missed.">        if (type == elapsedActiveTime.intValue()) {</span>
+<span class="nc" id="L874">            return &quot;Elapsed active time&quot;;</span>
+        }
+<span class="nc bnc" id="L876" title="All 2 branches missed.">        if (type == errorLimit.intValue()) {</span>
+<span class="nc" id="L877">            return &quot;Error limit&quot;;</span>
+        }
+<span class="nc bnc" id="L879" title="All 2 branches missed.">        if (type == eventEnable.intValue()) {</span>
+<span class="nc" id="L880">            return &quot;Event enable&quot;;</span>
+        }
+<span class="nc bnc" id="L882" title="All 2 branches missed.">        if (type == eventState.intValue()) {</span>
+<span class="nc" id="L883">            return &quot;Event state&quot;;</span>
+        }
+<span class="nc bnc" id="L885" title="All 2 branches missed.">        if (type == eventType.intValue()) {</span>
+<span class="nc" id="L886">            return &quot;Event type&quot;;</span>
+        }
+<span class="nc bnc" id="L888" title="All 2 branches missed.">        if (type == exceptionSchedule.intValue()) {</span>
+<span class="nc" id="L889">            return &quot;Exception schedule&quot;;</span>
+        }
+<span class="nc bnc" id="L891" title="All 2 branches missed.">        if (type == faultValues.intValue()) {</span>
+<span class="nc" id="L892">            return &quot;Fault values&quot;;</span>
+        }
+<span class="nc bnc" id="L894" title="All 2 branches missed.">        if (type == feedbackValue.intValue()) {</span>
+<span class="nc" id="L895">            return &quot;Feedback value&quot;;</span>
+        }
+<span class="nc bnc" id="L897" title="All 2 branches missed.">        if (type == fileAccessMethod.intValue()) {</span>
+<span class="nc" id="L898">            return &quot;File access method&quot;;</span>
+        }
+<span class="nc bnc" id="L900" title="All 2 branches missed.">        if (type == fileSize.intValue()) {</span>
+<span class="nc" id="L901">            return &quot;File size&quot;;</span>
+        }
+<span class="nc bnc" id="L903" title="All 2 branches missed.">        if (type == fileType.intValue()) {</span>
+<span class="nc" id="L904">            return &quot;File type&quot;;</span>
+        }
+<span class="nc bnc" id="L906" title="All 2 branches missed.">        if (type == firmwareRevision.intValue()) {</span>
+<span class="nc" id="L907">            return &quot;Firmware revision&quot;;</span>
+        }
+<span class="nc bnc" id="L909" title="All 2 branches missed.">        if (type == highLimit.intValue()) {</span>
+<span class="nc" id="L910">            return &quot;High limit&quot;;</span>
+        }
+<span class="nc bnc" id="L912" title="All 2 branches missed.">        if (type == inactiveText.intValue()) {</span>
+<span class="nc" id="L913">            return &quot;Inactive text&quot;;</span>
+        }
+<span class="nc bnc" id="L915" title="All 2 branches missed.">        if (type == inProcess.intValue()) {</span>
+<span class="nc" id="L916">            return &quot;In process&quot;;</span>
+        }
+<span class="nc bnc" id="L918" title="All 2 branches missed.">        if (type == instanceOf.intValue()) {</span>
+<span class="nc" id="L919">            return &quot;Instance of&quot;;</span>
+        }
+<span class="nc bnc" id="L921" title="All 2 branches missed.">        if (type == integralConstant.intValue()) {</span>
+<span class="nc" id="L922">            return &quot;Integral constant&quot;;</span>
+        }
+<span class="nc bnc" id="L924" title="All 2 branches missed.">        if (type == integralConstantUnits.intValue()) {</span>
+<span class="nc" id="L925">            return &quot;Integral constant units&quot;;</span>
+        }
+<span class="nc bnc" id="L927" title="All 2 branches missed.">        if (type == limitEnable.intValue()) {</span>
+<span class="nc" id="L928">            return &quot;Limit enable&quot;;</span>
+        }
+<span class="nc bnc" id="L930" title="All 2 branches missed.">        if (type == listOfGroupMembers.intValue()) {</span>
+<span class="nc" id="L931">            return &quot;List of group members&quot;;</span>
+        }
+<span class="nc bnc" id="L933" title="All 2 branches missed.">        if (type == listOfObjectPropertyReferences.intValue()) {</span>
+<span class="nc" id="L934">            return &quot;List of object property references&quot;;</span>
+        }
+<span class="nc bnc" id="L936" title="All 2 branches missed.">        if (type == listOfSessionKeys.intValue()) {</span>
+<span class="nc" id="L937">            return &quot;List of session keys&quot;;</span>
+        }
+<span class="nc bnc" id="L939" title="All 2 branches missed.">        if (type == localDate.intValue()) {</span>
+<span class="nc" id="L940">            return &quot;Local date&quot;;</span>
+        }
+<span class="nc bnc" id="L942" title="All 2 branches missed.">        if (type == localTime.intValue()) {</span>
+<span class="nc" id="L943">            return &quot;Local time&quot;;</span>
+        }
+<span class="nc bnc" id="L945" title="All 2 branches missed.">        if (type == location.intValue()) {</span>
+<span class="nc" id="L946">            return &quot;Location&quot;;</span>
+        }
+<span class="nc bnc" id="L948" title="All 2 branches missed.">        if (type == lowLimit.intValue()) {</span>
+<span class="nc" id="L949">            return &quot;Low limit&quot;;</span>
+        }
+<span class="nc bnc" id="L951" title="All 2 branches missed.">        if (type == manipulatedVariableReference.intValue()) {</span>
+<span class="nc" id="L952">            return &quot;Manipulated variable reference&quot;;</span>
+        }
+<span class="nc bnc" id="L954" title="All 2 branches missed.">        if (type == maximumOutput.intValue()) {</span>
+<span class="nc" id="L955">            return &quot;Maximum output&quot;;</span>
+        }
+<span class="nc bnc" id="L957" title="All 2 branches missed.">        if (type == maxApduLengthAccepted.intValue()) {</span>
+<span class="nc" id="L958">            return &quot;Max APDU length accepted&quot;;</span>
+        }
+<span class="nc bnc" id="L960" title="All 2 branches missed.">        if (type == maxInfoFrames.intValue()) {</span>
+<span class="nc" id="L961">            return &quot;Max info frames&quot;;</span>
+        }
+<span class="nc bnc" id="L963" title="All 2 branches missed.">        if (type == maxMaster.intValue()) {</span>
+<span class="nc" id="L964">            return &quot;Max master&quot;;</span>
+        }
+<span class="nc bnc" id="L966" title="All 2 branches missed.">        if (type == maxPresValue.intValue()) {</span>
+<span class="nc" id="L967">            return &quot;Max pres value&quot;;</span>
+        }
+<span class="nc bnc" id="L969" title="All 2 branches missed.">        if (type == minimumOffTime.intValue()) {</span>
+<span class="nc" id="L970">            return &quot;Minimum off time&quot;;</span>
+        }
+<span class="nc bnc" id="L972" title="All 2 branches missed.">        if (type == minimumOnTime.intValue()) {</span>
+<span class="nc" id="L973">            return &quot;Minimum on time&quot;;</span>
+        }
+<span class="nc bnc" id="L975" title="All 2 branches missed.">        if (type == minimumOutput.intValue()) {</span>
+<span class="nc" id="L976">            return &quot;Minimum output&quot;;</span>
+        }
+<span class="nc bnc" id="L978" title="All 2 branches missed.">        if (type == minPresValue.intValue()) {</span>
+<span class="nc" id="L979">            return &quot;Min pres value&quot;;</span>
+        }
+<span class="nc bnc" id="L981" title="All 2 branches missed.">        if (type == modelName.intValue()) {</span>
+<span class="nc" id="L982">            return &quot;Model name&quot;;</span>
+        }
+<span class="nc bnc" id="L984" title="All 2 branches missed.">        if (type == modificationDate.intValue()) {</span>
+<span class="nc" id="L985">            return &quot;Modification date&quot;;</span>
+        }
+<span class="nc bnc" id="L987" title="All 2 branches missed.">        if (type == notifyType.intValue()) {</span>
+<span class="nc" id="L988">            return &quot;Notify type&quot;;</span>
+        }
+<span class="nc bnc" id="L990" title="All 2 branches missed.">        if (type == numberOfApduRetries.intValue()) {</span>
+<span class="nc" id="L991">            return &quot;Number of APDU retries&quot;;</span>
+        }
+<span class="nc bnc" id="L993" title="All 2 branches missed.">        if (type == numberOfStates.intValue()) {</span>
+<span class="nc" id="L994">            return &quot;Number of states&quot;;</span>
+        }
+<span class="nc bnc" id="L996" title="All 2 branches missed.">        if (type == objectIdentifier.intValue()) {</span>
+<span class="nc" id="L997">            return &quot;Object identifier&quot;;</span>
+        }
+<span class="nc bnc" id="L999" title="All 2 branches missed.">        if (type == objectList.intValue()) {</span>
+<span class="nc" id="L1000">            return &quot;Object list&quot;;</span>
+        }
+<span class="nc bnc" id="L1002" title="All 2 branches missed.">        if (type == objectName.intValue()) {</span>
+<span class="nc" id="L1003">            return &quot;Object name&quot;;</span>
+        }
+<span class="nc bnc" id="L1005" title="All 2 branches missed.">        if (type == objectPropertyReference.intValue()) {</span>
+<span class="nc" id="L1006">            return &quot;Object property reference&quot;;</span>
+        }
+<span class="nc bnc" id="L1008" title="All 2 branches missed.">        if (type == objectType.intValue()) {</span>
+<span class="nc" id="L1009">            return &quot;Object type&quot;;</span>
+        }
+<span class="nc bnc" id="L1011" title="All 2 branches missed.">        if (type == optional.intValue()) {</span>
+<span class="nc" id="L1012">            return &quot;Optional&quot;;</span>
+        }
+<span class="nc bnc" id="L1014" title="All 2 branches missed.">        if (type == outOfService.intValue()) {</span>
+<span class="nc" id="L1015">            return &quot;Out of service&quot;;</span>
+        }
+<span class="nc bnc" id="L1017" title="All 2 branches missed.">        if (type == outputUnits.intValue()) {</span>
+<span class="nc" id="L1018">            return &quot;Output units&quot;;</span>
+        }
+<span class="nc bnc" id="L1020" title="All 2 branches missed.">        if (type == eventParameters.intValue()) {</span>
+<span class="nc" id="L1021">            return &quot;Event parameters&quot;;</span>
+        }
+<span class="nc bnc" id="L1023" title="All 2 branches missed.">        if (type == polarity.intValue()) {</span>
+<span class="nc" id="L1024">            return &quot;Polarity&quot;;</span>
+        }
+<span class="nc bnc" id="L1026" title="All 2 branches missed.">        if (type == presentValue.intValue()) {</span>
+<span class="nc" id="L1027">            return &quot;Present value&quot;;</span>
+        }
+<span class="nc bnc" id="L1029" title="All 2 branches missed.">        if (type == priority.intValue()) {</span>
+<span class="nc" id="L1030">            return &quot;Priority&quot;;</span>
+        }
+<span class="nc bnc" id="L1032" title="All 2 branches missed.">        if (type == priorityArray.intValue()) {</span>
+<span class="nc" id="L1033">            return &quot;Priority array&quot;;</span>
+        }
+<span class="nc bnc" id="L1035" title="All 2 branches missed.">        if (type == priorityForWriting.intValue()) {</span>
+<span class="nc" id="L1036">            return &quot;Priority for writing&quot;;</span>
+        }
+<span class="nc bnc" id="L1038" title="All 2 branches missed.">        if (type == processIdentifier.intValue()) {</span>
+<span class="nc" id="L1039">            return &quot;Process identifier&quot;;</span>
+        }
+<span class="nc bnc" id="L1041" title="All 2 branches missed.">        if (type == programChange.intValue()) {</span>
+<span class="nc" id="L1042">            return &quot;Program change&quot;;</span>
+        }
+<span class="nc bnc" id="L1044" title="All 2 branches missed.">        if (type == programLocation.intValue()) {</span>
+<span class="nc" id="L1045">            return &quot;Program location&quot;;</span>
+        }
+<span class="nc bnc" id="L1047" title="All 2 branches missed.">        if (type == programState.intValue()) {</span>
+<span class="nc" id="L1048">            return &quot;Program state&quot;;</span>
+        }
+<span class="nc bnc" id="L1050" title="All 2 branches missed.">        if (type == proportionalConstant.intValue()) {</span>
+<span class="nc" id="L1051">            return &quot;Proportional constant&quot;;</span>
+        }
+<span class="nc bnc" id="L1053" title="All 2 branches missed.">        if (type == proportionalConstantUnits.intValue()) {</span>
+<span class="nc" id="L1054">            return &quot;Proportional constant units&quot;;</span>
+        }
+<span class="nc bnc" id="L1056" title="All 2 branches missed.">        if (type == protocolObjectTypesSupported.intValue()) {</span>
+<span class="nc" id="L1057">            return &quot;Protocol object types supported&quot;;</span>
+        }
+<span class="nc bnc" id="L1059" title="All 2 branches missed.">        if (type == protocolServicesSupported.intValue()) {</span>
+<span class="nc" id="L1060">            return &quot;Protocol services supported&quot;;</span>
+        }
+<span class="nc bnc" id="L1062" title="All 2 branches missed.">        if (type == protocolVersion.intValue()) {</span>
+<span class="nc" id="L1063">            return &quot;Protocol version&quot;;</span>
+        }
+<span class="nc bnc" id="L1065" title="All 2 branches missed.">        if (type == readOnly.intValue()) {</span>
+<span class="nc" id="L1066">            return &quot;Read only&quot;;</span>
+        }
+<span class="nc bnc" id="L1068" title="All 2 branches missed.">        if (type == reasonForHalt.intValue()) {</span>
+<span class="nc" id="L1069">            return &quot;Reason for halt&quot;;</span>
+        }
+<span class="nc bnc" id="L1071" title="All 2 branches missed.">        if (type == recipientList.intValue()) {</span>
+<span class="nc" id="L1072">            return &quot;Recipient list&quot;;</span>
+        }
+<span class="nc bnc" id="L1074" title="All 2 branches missed.">        if (type == reliability.intValue()) {</span>
+<span class="nc" id="L1075">            return &quot;Reliability&quot;;</span>
+        }
+<span class="nc bnc" id="L1077" title="All 2 branches missed.">        if (type == relinquishDefault.intValue()) {</span>
+<span class="nc" id="L1078">            return &quot;Relinquish default&quot;;</span>
+        }
+<span class="nc bnc" id="L1080" title="All 2 branches missed.">        if (type == required.intValue()) {</span>
+<span class="nc" id="L1081">            return &quot;Required&quot;;</span>
+        }
+<span class="nc bnc" id="L1083" title="All 2 branches missed.">        if (type == resolution.intValue()) {</span>
+<span class="nc" id="L1084">            return &quot;Resolution&quot;;</span>
+        }
+<span class="nc bnc" id="L1086" title="All 2 branches missed.">        if (type == segmentationSupported.intValue()) {</span>
+<span class="nc" id="L1087">            return &quot;Segmentation supported&quot;;</span>
+        }
+<span class="nc bnc" id="L1089" title="All 2 branches missed.">        if (type == setpoint.intValue()) {</span>
+<span class="nc" id="L1090">            return &quot;Setpoint&quot;;</span>
+        }
+<span class="nc bnc" id="L1092" title="All 2 branches missed.">        if (type == setpointReference.intValue()) {</span>
+<span class="nc" id="L1093">            return &quot;Setpoint reference&quot;;</span>
+        }
+<span class="nc bnc" id="L1095" title="All 2 branches missed.">        if (type == stateText.intValue()) {</span>
+<span class="nc" id="L1096">            return &quot;State text&quot;;</span>
+        }
+<span class="nc bnc" id="L1098" title="All 2 branches missed.">        if (type == statusFlags.intValue()) {</span>
+<span class="nc" id="L1099">            return &quot;Status flags&quot;;</span>
+        }
+<span class="nc bnc" id="L1101" title="All 2 branches missed.">        if (type == systemStatus.intValue()) {</span>
+<span class="nc" id="L1102">            return &quot;System status&quot;;</span>
+        }
+<span class="nc bnc" id="L1104" title="All 2 branches missed.">        if (type == timeDelay.intValue()) {</span>
+<span class="nc" id="L1105">            return &quot;Time delay&quot;;</span>
+        }
+<span class="nc bnc" id="L1107" title="All 2 branches missed.">        if (type == timeOfActiveTimeReset.intValue()) {</span>
+<span class="nc" id="L1108">            return &quot;Time of active time reset&quot;;</span>
+        }
+<span class="nc bnc" id="L1110" title="All 2 branches missed.">        if (type == timeOfStateCountReset.intValue()) {</span>
+<span class="nc" id="L1111">            return &quot;Time of state count reset&quot;;</span>
+        }
+<span class="nc bnc" id="L1113" title="All 2 branches missed.">        if (type == timeSynchronizationRecipients.intValue()) {</span>
+<span class="nc" id="L1114">            return &quot;Time synchronization recipients&quot;;</span>
+        }
+<span class="nc bnc" id="L1116" title="All 2 branches missed.">        if (type == units.intValue()) {</span>
+<span class="nc" id="L1117">            return &quot;Units&quot;;</span>
+        }
+<span class="nc bnc" id="L1119" title="All 2 branches missed.">        if (type == updateInterval.intValue()) {</span>
+<span class="nc" id="L1120">            return &quot;Update interval&quot;;</span>
+        }
+<span class="nc bnc" id="L1122" title="All 2 branches missed.">        if (type == utcOffset.intValue()) {</span>
+<span class="nc" id="L1123">            return &quot;UTC offset&quot;;</span>
+        }
+<span class="nc bnc" id="L1125" title="All 2 branches missed.">        if (type == vendorIdentifier.intValue()) {</span>
+<span class="nc" id="L1126">            return &quot;Vendor identifier&quot;;</span>
+        }
+<span class="nc bnc" id="L1128" title="All 2 branches missed.">        if (type == vendorName.intValue()) {</span>
+<span class="nc" id="L1129">            return &quot;Vendor name&quot;;</span>
+        }
+<span class="nc bnc" id="L1131" title="All 2 branches missed.">        if (type == vtClassesSupported.intValue()) {</span>
+<span class="nc" id="L1132">            return &quot;VT classes supported&quot;;</span>
+        }
+<span class="nc bnc" id="L1134" title="All 2 branches missed.">        if (type == weeklySchedule.intValue()) {</span>
+<span class="nc" id="L1135">            return &quot;Weekly schedule&quot;;</span>
+        }
+<span class="nc bnc" id="L1137" title="All 2 branches missed.">        if (type == attemptedSamples.intValue()) {</span>
+<span class="nc" id="L1138">            return &quot;Attempted samples&quot;;</span>
+        }
+<span class="nc bnc" id="L1140" title="All 2 branches missed.">        if (type == averageValue.intValue()) {</span>
+<span class="nc" id="L1141">            return &quot;Average value&quot;;</span>
+        }
+<span class="nc bnc" id="L1143" title="All 2 branches missed.">        if (type == bufferSize.intValue()) {</span>
+<span class="nc" id="L1144">            return &quot;Buffer size&quot;;</span>
+        }
+<span class="nc bnc" id="L1146" title="All 2 branches missed.">        if (type == clientCovIncrement.intValue()) {</span>
+<span class="nc" id="L1147">            return &quot;Client COV increment&quot;;</span>
+        }
+<span class="nc bnc" id="L1149" title="All 2 branches missed.">        if (type == covResubscriptionInterval.intValue()) {</span>
+<span class="nc" id="L1150">            return &quot;COV resubscription interval&quot;;</span>
+        }
+<span class="nc bnc" id="L1152" title="All 2 branches missed.">        if (type == eventTimeStamps.intValue()) {</span>
+<span class="nc" id="L1153">            return &quot;Event time stamps&quot;;</span>
+        }
+<span class="nc bnc" id="L1155" title="All 2 branches missed.">        if (type == logBuffer.intValue()) {</span>
+<span class="nc" id="L1156">            return &quot;Log buffer&quot;;</span>
+        }
+<span class="nc bnc" id="L1158" title="All 2 branches missed.">        if (type == logDeviceObjectProperty.intValue()) {</span>
+<span class="nc" id="L1159">            return &quot;Log device object property&quot;;</span>
+        }
+<span class="nc bnc" id="L1161" title="All 2 branches missed.">        if (type == enable.intValue()) {</span>
+<span class="nc" id="L1162">            return &quot;enable&quot;;</span>
+        }
+<span class="nc bnc" id="L1164" title="All 2 branches missed.">        if (type == logInterval.intValue()) {</span>
+<span class="nc" id="L1165">            return &quot;Log interval&quot;;</span>
+        }
+<span class="nc bnc" id="L1167" title="All 2 branches missed.">        if (type == maximumValue.intValue()) {</span>
+<span class="nc" id="L1168">            return &quot;Maximum value&quot;;</span>
+        }
+<span class="nc bnc" id="L1170" title="All 2 branches missed.">        if (type == minimumValue.intValue()) {</span>
+<span class="nc" id="L1171">            return &quot;Minimum value&quot;;</span>
+        }
+<span class="nc bnc" id="L1173" title="All 2 branches missed.">        if (type == notificationThreshold.intValue()) {</span>
+<span class="nc" id="L1174">            return &quot;Notification threshold&quot;;</span>
+        }
+<span class="nc bnc" id="L1176" title="All 2 branches missed.">        if (type == protocolRevision.intValue()) {</span>
+<span class="nc" id="L1177">            return &quot;Protocol revision&quot;;</span>
+        }
+<span class="nc bnc" id="L1179" title="All 2 branches missed.">        if (type == recordsSinceNotification.intValue()) {</span>
+<span class="nc" id="L1180">            return &quot;Records since notification&quot;;</span>
+        }
+<span class="nc bnc" id="L1182" title="All 2 branches missed.">        if (type == recordCount.intValue()) {</span>
+<span class="nc" id="L1183">            return &quot;Record count&quot;;</span>
+        }
+<span class="nc bnc" id="L1185" title="All 2 branches missed.">        if (type == startTime.intValue()) {</span>
+<span class="nc" id="L1186">            return &quot;Start time&quot;;</span>
+        }
+<span class="nc bnc" id="L1188" title="All 2 branches missed.">        if (type == stopTime.intValue()) {</span>
+<span class="nc" id="L1189">            return &quot;Stop time&quot;;</span>
+        }
+<span class="nc bnc" id="L1191" title="All 2 branches missed.">        if (type == stopWhenFull.intValue()) {</span>
+<span class="nc" id="L1192">            return &quot;Stop when full&quot;;</span>
+        }
+<span class="nc bnc" id="L1194" title="All 2 branches missed.">        if (type == totalRecordCount.intValue()) {</span>
+<span class="nc" id="L1195">            return &quot;Total record count&quot;;</span>
+        }
+<span class="nc bnc" id="L1197" title="All 2 branches missed.">        if (type == validSamples.intValue()) {</span>
+<span class="nc" id="L1198">            return &quot;Valid samples&quot;;</span>
+        }
+<span class="nc bnc" id="L1200" title="All 2 branches missed.">        if (type == windowInterval.intValue()) {</span>
+<span class="nc" id="L1201">            return &quot;Window interval&quot;;</span>
+        }
+<span class="nc bnc" id="L1203" title="All 2 branches missed.">        if (type == windowSamples.intValue()) {</span>
+<span class="nc" id="L1204">            return &quot;Window samples&quot;;</span>
+        }
+<span class="nc bnc" id="L1206" title="All 2 branches missed.">        if (type == maximumValueTimestamp.intValue()) {</span>
+<span class="nc" id="L1207">            return &quot;Maximum value timestamp&quot;;</span>
+        }
+<span class="nc bnc" id="L1209" title="All 2 branches missed.">        if (type == minimumValueTimestamp.intValue()) {</span>
+<span class="nc" id="L1210">            return &quot;Minimum value timestamp&quot;;</span>
+        }
+<span class="nc bnc" id="L1212" title="All 2 branches missed.">        if (type == varianceValue.intValue()) {</span>
+<span class="nc" id="L1213">            return &quot;Variance value&quot;;</span>
+        }
+<span class="nc bnc" id="L1215" title="All 2 branches missed.">        if (type == activeCovSubscriptions.intValue()) {</span>
+<span class="nc" id="L1216">            return &quot;Active COV subscriptions&quot;;</span>
+        }
+<span class="nc bnc" id="L1218" title="All 2 branches missed.">        if (type == backupFailureTimeout.intValue()) {</span>
+<span class="nc" id="L1219">            return &quot;Backup failure timeout&quot;;</span>
+        }
+<span class="nc bnc" id="L1221" title="All 2 branches missed.">        if (type == configurationFiles.intValue()) {</span>
+<span class="nc" id="L1222">            return &quot;Configuration files&quot;;</span>
+        }
+<span class="nc bnc" id="L1224" title="All 2 branches missed.">        if (type == databaseRevision.intValue()) {</span>
+<span class="nc" id="L1225">            return &quot;Database revision&quot;;</span>
+        }
+<span class="nc bnc" id="L1227" title="All 2 branches missed.">        if (type == directReading.intValue()) {</span>
+<span class="nc" id="L1228">            return &quot;Direct reading&quot;;</span>
+        }
+<span class="nc bnc" id="L1230" title="All 2 branches missed.">        if (type == lastRestoreTime.intValue()) {</span>
+<span class="nc" id="L1231">            return &quot;Last restore time&quot;;</span>
+        }
+<span class="nc bnc" id="L1233" title="All 2 branches missed.">        if (type == maintenanceRequired.intValue()) {</span>
+<span class="nc" id="L1234">            return &quot;Maintenance required&quot;;</span>
+        }
+<span class="nc bnc" id="L1236" title="All 2 branches missed.">        if (type == memberOf.intValue()) {</span>
+<span class="nc" id="L1237">            return &quot;Member of&quot;;</span>
+        }
+<span class="nc bnc" id="L1239" title="All 2 branches missed.">        if (type == mode.intValue()) {</span>
+<span class="nc" id="L1240">            return &quot;Mode&quot;;</span>
+        }
+<span class="nc bnc" id="L1242" title="All 2 branches missed.">        if (type == operationExpected.intValue()) {</span>
+<span class="nc" id="L1243">            return &quot;Operation expected&quot;;</span>
+        }
+<span class="nc bnc" id="L1245" title="All 2 branches missed.">        if (type == setting.intValue()) {</span>
+<span class="nc" id="L1246">            return &quot;Setting&quot;;</span>
+        }
+<span class="nc bnc" id="L1248" title="All 2 branches missed.">        if (type == silenced.intValue()) {</span>
+<span class="nc" id="L1249">            return &quot;Silenced&quot;;</span>
+        }
+<span class="nc bnc" id="L1251" title="All 2 branches missed.">        if (type == trackingValue.intValue()) {</span>
+<span class="nc" id="L1252">            return &quot;Tracking value&quot;;</span>
+        }
+<span class="nc bnc" id="L1254" title="All 2 branches missed.">        if (type == zoneMembers.intValue()) {</span>
+<span class="nc" id="L1255">            return &quot;Zone members&quot;;</span>
+        }
+<span class="nc bnc" id="L1257" title="All 2 branches missed.">        if (type == lifeSafetyAlarmValues.intValue()) {</span>
+<span class="nc" id="L1258">            return &quot;Life safety alarm values&quot;;</span>
+        }
+<span class="nc bnc" id="L1260" title="All 2 branches missed.">        if (type == maxSegmentsAccepted.intValue()) {</span>
+<span class="nc" id="L1261">            return &quot;Max segments accepted&quot;;</span>
+        }
+<span class="nc bnc" id="L1263" title="All 2 branches missed.">        if (type == profileName.intValue()) {</span>
+<span class="nc" id="L1264">            return &quot;Profile name&quot;;</span>
+        }
+<span class="nc bnc" id="L1266" title="All 2 branches missed.">        if (type == autoSlaveDiscovery.intValue()) {</span>
+<span class="nc" id="L1267">            return &quot;Auto slave discovery&quot;;</span>
+        }
+<span class="nc bnc" id="L1269" title="All 2 branches missed.">        if (type == manualSlaveAddressBinding.intValue()) {</span>
+<span class="nc" id="L1270">            return &quot;Manual slave address binding&quot;;</span>
+        }
+<span class="nc bnc" id="L1272" title="All 2 branches missed.">        if (type == slaveAddressBinding.intValue()) {</span>
+<span class="nc" id="L1273">            return &quot;Slave address binding&quot;;</span>
+        }
+<span class="nc bnc" id="L1275" title="All 2 branches missed.">        if (type == slaveProxyEnable.intValue()) {</span>
+<span class="nc" id="L1276">            return &quot;Slave proxy enable&quot;;</span>
+        }
+<span class="nc bnc" id="L1278" title="All 2 branches missed.">        if (type == lastNotifyRecord.intValue()) {</span>
+<span class="nc" id="L1279">            return &quot;Last notify record&quot;;</span>
+        }
+<span class="nc bnc" id="L1281" title="All 2 branches missed.">        if (type == scheduleDefault.intValue()) {</span>
+<span class="nc" id="L1282">            return &quot;Schedule default&quot;;</span>
+        }
+<span class="nc bnc" id="L1284" title="All 2 branches missed.">        if (type == acceptedModes.intValue()) {</span>
+<span class="nc" id="L1285">            return &quot;Accepted modes&quot;;</span>
+        }
+<span class="nc bnc" id="L1287" title="All 2 branches missed.">        if (type == adjustValue.intValue()) {</span>
+<span class="nc" id="L1288">            return &quot;Adjust value&quot;;</span>
+        }
+<span class="nc bnc" id="L1290" title="All 2 branches missed.">        if (type == count.intValue()) {</span>
+<span class="nc" id="L1291">            return &quot;Count&quot;;</span>
+        }
+<span class="nc bnc" id="L1293" title="All 2 branches missed.">        if (type == countBeforeChange.intValue()) {</span>
+<span class="nc" id="L1294">            return &quot;Count before change&quot;;</span>
+        }
+<span class="nc bnc" id="L1296" title="All 2 branches missed.">        if (type == countChangeTime.intValue()) {</span>
+<span class="nc" id="L1297">            return &quot;Count change time&quot;;</span>
+        }
+<span class="nc bnc" id="L1299" title="All 2 branches missed.">        if (type == covPeriod.intValue()) {</span>
+<span class="nc" id="L1300">            return &quot;COV period&quot;;</span>
+        }
+<span class="nc bnc" id="L1302" title="All 2 branches missed.">        if (type == inputReference.intValue()) {</span>
+<span class="nc" id="L1303">            return &quot;Input reference&quot;;</span>
+        }
+<span class="nc bnc" id="L1305" title="All 2 branches missed.">        if (type == limitMonitoringInterval.intValue()) {</span>
+<span class="nc" id="L1306">            return &quot;Limit monitoring interval&quot;;</span>
+        }
+<span class="nc bnc" id="L1308" title="All 2 branches missed.">        if (type == loggingObject.intValue()) {</span>
+<span class="nc" id="L1309">            return &quot;Logging object&quot;;</span>
+        }
+<span class="nc bnc" id="L1311" title="All 2 branches missed.">        if (type == loggingRecord.intValue()) {</span>
+<span class="nc" id="L1312">            return &quot;Logging record&quot;;</span>
+        }
+<span class="nc bnc" id="L1314" title="All 2 branches missed.">        if (type == prescale.intValue()) {</span>
+<span class="nc" id="L1315">            return &quot;Prescale&quot;;</span>
+        }
+<span class="nc bnc" id="L1317" title="All 2 branches missed.">        if (type == pulseRate.intValue()) {</span>
+<span class="nc" id="L1318">            return &quot;Pulse rate&quot;;</span>
+        }
+<span class="nc bnc" id="L1320" title="All 2 branches missed.">        if (type == scale.intValue()) {</span>
+<span class="nc" id="L1321">            return &quot;Scale&quot;;</span>
+        }
+<span class="nc bnc" id="L1323" title="All 2 branches missed.">        if (type == scaleFactor.intValue()) {</span>
+<span class="nc" id="L1324">            return &quot;Scale factor&quot;;</span>
+        }
+<span class="nc bnc" id="L1326" title="All 2 branches missed.">        if (type == updateTime.intValue()) {</span>
+<span class="nc" id="L1327">            return &quot;Update time&quot;;</span>
+        }
+<span class="nc bnc" id="L1329" title="All 2 branches missed.">        if (type == valueBeforeChange.intValue()) {</span>
+<span class="nc" id="L1330">            return &quot;Value before change&quot;;</span>
+        }
+<span class="nc bnc" id="L1332" title="All 2 branches missed.">        if (type == valueSet.intValue()) {</span>
+<span class="nc" id="L1333">            return &quot;Value set&quot;;</span>
+        }
+<span class="nc bnc" id="L1335" title="All 2 branches missed.">        if (type == valueChangeTime.intValue()) {</span>
+<span class="nc" id="L1336">            return &quot;Value change time&quot;;</span>
+        }
+<span class="nc bnc" id="L1338" title="All 2 branches missed.">        if (type == alignIntervals.intValue()) {</span>
+<span class="nc" id="L1339">            return &quot;Align Intervals&quot;;</span>
+        }
+<span class="nc bnc" id="L1341" title="All 2 branches missed.">        if (type == intervalOffset.intValue()) {</span>
+<span class="nc" id="L1342">            return &quot;Interval Offset&quot;;</span>
+        }
+<span class="nc bnc" id="L1344" title="All 2 branches missed.">        if (type == lastRestartReason.intValue()) {</span>
+<span class="nc" id="L1345">            return &quot;Last Restart Reason&quot;;</span>
+        }
+<span class="nc bnc" id="L1347" title="All 2 branches missed.">        if (type == loggingType.intValue()) {</span>
+<span class="nc" id="L1348">            return &quot;Logging Type&quot;;</span>
+        }
+<span class="nc bnc" id="L1350" title="All 2 branches missed.">        if (type == restartNotificationRecipients.intValue()) {</span>
+<span class="nc" id="L1351">            return &quot;Restart Notification Recipients&quot;;</span>
+        }
+<span class="nc bnc" id="L1353" title="All 2 branches missed.">        if (type == timeOfDeviceRestart.intValue()) {</span>
+<span class="nc" id="L1354">            return &quot;Time Of Device Restart&quot;;</span>
+        }
+<span class="nc bnc" id="L1356" title="All 2 branches missed.">        if (type == timeSynchronizationInterval.intValue()) {</span>
+<span class="nc" id="L1357">            return &quot;Time Synchronization Interval&quot;;</span>
+        }
+<span class="nc bnc" id="L1359" title="All 2 branches missed.">        if (type == trigger.intValue()) {</span>
+<span class="nc" id="L1360">            return &quot;Trigger&quot;;</span>
+        }
+<span class="nc bnc" id="L1362" title="All 2 branches missed.">        if (type == utcTimeSynchronizationRecipients.intValue()) {</span>
+<span class="nc" id="L1363">            return &quot;UTC Time Synchronization Recipients&quot;;</span>
+        }
+<span class="nc bnc" id="L1365" title="All 2 branches missed.">        if (type == nodeSubtype.intValue()) {</span>
+<span class="nc" id="L1366">            return &quot;Node Subtype&quot;;</span>
+        }
+<span class="nc bnc" id="L1368" title="All 2 branches missed.">        if (type == nodeType.intValue()) {</span>
+<span class="nc" id="L1369">            return &quot;Node Type&quot;;</span>
+        }
+<span class="nc bnc" id="L1371" title="All 2 branches missed.">        if (type == structuredObjectList.intValue()) {</span>
+<span class="nc" id="L1372">            return &quot;Structured Object List&quot;;</span>
+        }
+<span class="nc bnc" id="L1374" title="All 2 branches missed.">        if (type == subordinateAnnotations.intValue()) {</span>
+<span class="nc" id="L1375">            return &quot;Subordinate Annotations&quot;;</span>
+        }
+<span class="nc bnc" id="L1377" title="All 2 branches missed.">        if (type == subordinateList.intValue()) {</span>
+<span class="nc" id="L1378">            return &quot;Subordinate List&quot;;</span>
+        }
+<span class="nc bnc" id="L1380" title="All 2 branches missed.">        if (type == actualShedLevel.intValue()) {</span>
+<span class="nc" id="L1381">            return &quot;Actual Shed Level&quot;;</span>
+        }
+<span class="nc bnc" id="L1383" title="All 2 branches missed.">        if (type == dutyWindow.intValue()) {</span>
+<span class="nc" id="L1384">            return &quot;Duty Window&quot;;</span>
+        }
+<span class="nc bnc" id="L1386" title="All 2 branches missed.">        if (type == expectedShedLevel.intValue()) {</span>
+<span class="nc" id="L1387">            return &quot;Expected Shed Level&quot;;</span>
+        }
+<span class="nc bnc" id="L1389" title="All 2 branches missed.">        if (type == fullDutyBaseline.intValue()) {</span>
+<span class="nc" id="L1390">            return &quot;Full Duty Baseline&quot;;</span>
+        }
+<span class="nc bnc" id="L1392" title="All 2 branches missed.">        if (type == requestedShedLevel.intValue()) {</span>
+<span class="nc" id="L1393">            return &quot;Requested Shed Level&quot;;</span>
+        }
+<span class="nc bnc" id="L1395" title="All 2 branches missed.">        if (type == shedDuration.intValue()) {</span>
+<span class="nc" id="L1396">            return &quot;Shed Duration&quot;;</span>
+        }
+<span class="nc bnc" id="L1398" title="All 2 branches missed.">        if (type == shedLevelDescriptions.intValue()) {</span>
+<span class="nc" id="L1399">            return &quot;Shed Level Descriptions&quot;;</span>
+        }
+<span class="nc bnc" id="L1401" title="All 2 branches missed.">        if (type == shedLevels.intValue()) {</span>
+<span class="nc" id="L1402">            return &quot;Shed Levels&quot;;</span>
+        }
+<span class="nc bnc" id="L1404" title="All 2 branches missed.">        if (type == stateDescription.intValue()) {</span>
+<span class="nc" id="L1405">            return &quot;State Description&quot;;</span>
+        }
+<span class="nc bnc" id="L1407" title="All 2 branches missed.">        if (type == doorAlarmState.intValue()) {</span>
+<span class="nc" id="L1408">            return &quot;Door Alarm State&quot;;</span>
+        }
+<span class="nc bnc" id="L1410" title="All 2 branches missed.">        if (type == doorExtendedPulseTime.intValue()) {</span>
+<span class="nc" id="L1411">            return &quot;Door Extended Pulse Time&quot;;</span>
+        }
+<span class="nc bnc" id="L1413" title="All 2 branches missed.">        if (type == doorMembers.intValue()) {</span>
+<span class="nc" id="L1414">            return &quot;Door Members&quot;;</span>
+        }
+<span class="nc bnc" id="L1416" title="All 2 branches missed.">        if (type == doorOpenTooLongTime.intValue()) {</span>
+<span class="nc" id="L1417">            return &quot;Door Open Too Long Time&quot;;</span>
+        }
+<span class="nc bnc" id="L1419" title="All 2 branches missed.">        if (type == doorPulseTime.intValue()) {</span>
+<span class="nc" id="L1420">            return &quot;Door Pulse Time&quot;;</span>
+        }
+<span class="nc bnc" id="L1422" title="All 2 branches missed.">        if (type == doorStatus.intValue()) {</span>
+<span class="nc" id="L1423">            return &quot;Door Status&quot;;</span>
+        }
+<span class="nc bnc" id="L1425" title="All 2 branches missed.">        if (type == doorUnlockDelayTime.intValue()) {</span>
+<span class="nc" id="L1426">            return &quot;Door Unlock Delay Time&quot;;</span>
+        }
+<span class="nc bnc" id="L1428" title="All 2 branches missed.">        if (type == lockStatus.intValue()) {</span>
+<span class="nc" id="L1429">            return &quot;Lock Status&quot;;</span>
+        }
+<span class="nc bnc" id="L1431" title="All 2 branches missed.">        if (type == maskedAlarmValues.intValue()) {</span>
+<span class="nc" id="L1432">            return &quot;Masked Alarm Values&quot;;</span>
+        }
+<span class="nc bnc" id="L1434" title="All 2 branches missed.">        if (type == securedStatus.intValue()) {</span>
+<span class="nc" id="L1435">            return &quot;Secured Status&quot;;</span>
+        }
+<span class="nc bnc" id="L1437" title="All 2 branches missed.">        if (type == backupAndRestoreState.intValue()) {</span>
+<span class="nc" id="L1438">            return &quot;Backup And Restore State&quot;;</span>
+        }
+<span class="nc bnc" id="L1440" title="All 2 branches missed.">        if (type == backupPreparationTime.intValue()) {</span>
+<span class="nc" id="L1441">            return &quot;Backup Preparation Time&quot;;</span>
+        }
+<span class="nc bnc" id="L1443" title="All 2 branches missed.">        if (type == restoreCompletionTime.intValue()) {</span>
+<span class="nc" id="L1444">            return &quot;Restore Completion Time&quot;;</span>
+        }
+<span class="nc bnc" id="L1446" title="All 2 branches missed.">        if (type == restorePreparationTime.intValue()) {</span>
+<span class="nc" id="L1447">            return &quot;Restore Preparation Time&quot;;</span>
+        }
+<span class="nc" id="L1449">        return &quot;Unknown: &quot; + type;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

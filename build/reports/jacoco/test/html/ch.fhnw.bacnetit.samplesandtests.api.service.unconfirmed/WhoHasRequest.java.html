@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhoHasRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.service.unconfirmed</a> &gt; <span class="el_source">WhoHasRequest.java</span></div><h1>WhoHasRequest.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.service.unconfirmed;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.BaseType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.Choice;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.CharacterString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class WhoHasRequest extends UnconfirmedRequestService {
+    private static final long serialVersionUID = -3261764708955375488L;
+
+    public static final byte TYPE_ID = 7;
+
+    private static List&lt;Class&lt;? extends Encodable&gt;&gt; classes;
+
+    static {
+<span class="nc" id="L45">        classes = new ArrayList&lt;Class&lt;? extends Encodable&gt;&gt;();</span>
+<span class="nc" id="L46">        classes.add(Encodable.class);</span>
+<span class="nc" id="L47">        classes.add(Encodable.class);</span>
+<span class="nc" id="L48">        classes.add(BACnetObjectIdentifier.class);</span>
+<span class="nc" id="L49">        classes.add(CharacterString.class);</span>
+<span class="nc" id="L50">    }</span>
+
+    private final Limits limits;
+
+    private final Choice object;
+
+    public WhoHasRequest(final Limits limits,
+<span class="nc" id="L57">            final BACnetObjectIdentifier identifier) {</span>
+<span class="nc" id="L58">        this.limits = limits;</span>
+<span class="nc" id="L59">        object = new Choice(2, identifier);</span>
+<span class="nc" id="L60">    }</span>
+
+<span class="nc" id="L62">    public WhoHasRequest(final Limits limits, final CharacterString name) {</span>
+<span class="nc" id="L63">        this.limits = limits;</span>
+<span class="nc" id="L64">        object = new Choice(3, name);</span>
+<span class="nc" id="L65">    }</span>
+
+    @Override
+    public byte getChoiceId() {
+<span class="nc" id="L69">        return TYPE_ID;</span>
+    }
+
+    // @Override
+    // public void handle(LocalDevice localDevice, Address from, OctetString
+    // linkService) throws BACnetException {
+    // // Check if we're in the device id range.
+    // if (limits != null) {
+    // int localId = localDevice.getConfiguration().getInstanceId();
+    // if (localId &lt; limits.getDeviceInstanceRangeLowLimit().intValue()
+    // || localId &gt; limits.getDeviceInstanceRangeHighLimit().intValue())
+    // return;
+    // }
+    //
+    // // Check if we have the thing being looking for.
+    // BACnetObject result;
+    // if (object.getContextId() == 2) {
+    // ObjectIdentifier oid = (ObjectIdentifier) object.getDatum();
+    // result = localDevice.getObject(oid);
+    // }
+    // else if (object.getContextId() == 3) {
+    // String name = ((CharacterString) object.getDatum()).toString();
+    // result = localDevice.getObject(name);
+    // }
+    // else
+    // return;
+    //
+    // if (result != null) {
+    // // Return the result in an i have message.
+    // IHaveRequest response = new
+    // IHaveRequest(localDevice.getConfiguration().getId(), result.getId(),
+    // result.getRawObjectName());
+    // localDevice.sendGlobalBroadcast(response);
+    // }
+    // }
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L107">        writeOptional(queue, limits);</span>
+<span class="nc" id="L108">        write(queue, object);</span>
+<span class="nc" id="L109">    }</span>
+
+<span class="nc" id="L111">    public WhoHasRequest(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L112">        final Limits l = new Limits(queue);</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        limits = l.getDeviceInstanceRangeLowLimit() == null ? null : l;</span>
+<span class="nc" id="L114">        object = new Choice(queue, classes);</span>
+<span class="nc" id="L115">    }</span>
+
+    public static class Limits extends BaseType {
+        private static final long serialVersionUID = -2736168226229323897L;
+
+        private UnsignedInteger deviceInstanceRangeLowLimit;
+
+        private UnsignedInteger deviceInstanceRangeHighLimit;
+
+        @Override
+        public void write(final ByteQueue queue) {
+<span class="nc" id="L126">            write(queue, deviceInstanceRangeLowLimit, 0);</span>
+<span class="nc" id="L127">            write(queue, deviceInstanceRangeHighLimit, 1);</span>
+<span class="nc" id="L128">        }</span>
+
+<span class="nc" id="L130">        Limits(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L131">            deviceInstanceRangeLowLimit = readOptional(queue,</span>
+                    UnsignedInteger.class, 0);
+<span class="nc" id="L133">            deviceInstanceRangeHighLimit = readOptional(queue,</span>
+                    UnsignedInteger.class, 1);
+<span class="nc" id="L135">        }</span>
+
+        public Limits(final UnsignedInteger deviceInstanceRangeLowLimit,
+<span class="nc" id="L138">                final UnsignedInteger deviceInstanceRangeHighLimit) {</span>
+<span class="nc bnc" id="L139" title="All 4 branches missed.">            if (deviceInstanceRangeLowLimit == null</span>
+                    || deviceInstanceRangeHighLimit == null) {
+<span class="nc" id="L141">                throw new RuntimeException(</span>
+                        &quot;Both the low and high limits must be set&quot;);
+            }
+<span class="nc" id="L144">            this.deviceInstanceRangeLowLimit = deviceInstanceRangeLowLimit;</span>
+<span class="nc" id="L145">            this.deviceInstanceRangeHighLimit = deviceInstanceRangeHighLimit;</span>
+<span class="nc" id="L146">        }</span>
+
+        public UnsignedInteger getDeviceInstanceRangeLowLimit() {
+<span class="nc" id="L149">            return deviceInstanceRangeLowLimit;</span>
+        }
+
+        public void setDeviceInstanceRangeLowLimit(
+                final UnsignedInteger deviceInstanceRangeLowLimit) {
+<span class="nc" id="L154">            this.deviceInstanceRangeLowLimit = deviceInstanceRangeLowLimit;</span>
+<span class="nc" id="L155">        }</span>
+
+        public UnsignedInteger getDeviceInstanceRangeHighLimit() {
+<span class="nc" id="L158">            return deviceInstanceRangeHighLimit;</span>
+        }
+
+        public void setDeviceInstanceRangeHighLimit(
+                final UnsignedInteger deviceInstanceRangeHighLimit) {
+<span class="nc" id="L163">            this.deviceInstanceRangeHighLimit = deviceInstanceRangeHighLimit;</span>
+<span class="nc" id="L164">        }</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L169">        final int PRIME = 31;</span>
+<span class="nc" id="L170">        int result = 1;</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        result = PRIME * result + ((limits == null) ? 0 : limits.hashCode());</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        result = PRIME * result + ((object == null) ? 0 : object.hashCode());</span>
+<span class="nc" id="L173">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L179">            return true;</span>
+        }
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L182">            return false;</span>
+        }
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L185">            return false;</span>
+        }
+<span class="nc" id="L187">        final WhoHasRequest other = (WhoHasRequest) obj;</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (limits == null) {</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">            if (other.limits != null) {</span>
+<span class="nc" id="L190">                return false;</span>
+            }
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        } else if (!limits.equals(other.limits)) {</span>
+<span class="nc" id="L193">            return false;</span>
+        }
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (object == null) {</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">            if (other.object != null) {</span>
+<span class="nc" id="L197">                return false;</span>
+            }
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        } else if (!object.equals(other.object)) {</span>
+<span class="nc" id="L200">            return false;</span>
+        }
+<span class="nc" id="L202">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

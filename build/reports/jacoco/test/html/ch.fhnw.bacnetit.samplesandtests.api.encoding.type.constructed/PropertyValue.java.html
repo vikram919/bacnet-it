@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PropertyValue.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">PropertyValue.java</span></div><h1>PropertyValue.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetPropertyIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.ThreadLocalObjectTypeStack;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class PropertyValue extends BaseType {
+    private static final long serialVersionUID = -2781078772918097137L;
+
+    private final BACnetPropertyIdentifier propertyIdentifier; // 0
+
+    private final UnsignedInteger propertyArrayIndex; // 1 optional
+
+    private Encodable value; // 2
+
+    private final UnsignedInteger priority; // 3 optional
+
+    public PropertyValue(final BACnetPropertyIdentifier propertyIdentifier,
+            final Encodable value) {
+<span class="fc" id="L45">        this(propertyIdentifier, null, value, null);</span>
+<span class="fc" id="L46">    }</span>
+
+    public PropertyValue(final BACnetPropertyIdentifier propertyIdentifier,
+            final UnsignedInteger propertyArrayIndex, final Encodable value,
+<span class="fc" id="L50">            final UnsignedInteger priority) {</span>
+<span class="fc" id="L51">        this.propertyIdentifier = propertyIdentifier;</span>
+<span class="fc" id="L52">        this.propertyArrayIndex = propertyArrayIndex;</span>
+<span class="fc" id="L53">        this.value = value;</span>
+<span class="fc" id="L54">        this.priority = priority;</span>
+<span class="fc" id="L55">    }</span>
+
+    public UnsignedInteger getPriority() {
+<span class="nc" id="L58">        return priority;</span>
+    }
+
+    public UnsignedInteger getPropertyArrayIndex() {
+<span class="nc" id="L62">        return propertyArrayIndex;</span>
+    }
+
+    public BACnetPropertyIdentifier getPropertyIdentifier() {
+<span class="nc" id="L66">        return propertyIdentifier;</span>
+    }
+
+    public Encodable getValue() {
+<span class="nc" id="L70">        return value;</span>
+    }
+
+    public void setValue(final Encodable value) {
+<span class="nc" id="L74">        this.value = value;</span>
+<span class="nc" id="L75">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="fc" id="L79">        write(queue, propertyIdentifier, 0);</span>
+<span class="fc" id="L80">        writeOptional(queue, propertyArrayIndex, 1);</span>
+<span class="fc" id="L81">        writeEncodable(queue, value, 2);</span>
+<span class="fc" id="L82">        writeOptional(queue, priority, 3);</span>
+<span class="fc" id="L83">    }</span>
+
+<span class="nc" id="L85">    public PropertyValue(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L86">        propertyIdentifier = read(queue, BACnetPropertyIdentifier.class, 0);</span>
+<span class="nc" id="L87">        propertyArrayIndex = readOptional(queue, UnsignedInteger.class, 1);</span>
+<span class="nc" id="L88">        value = readEncodable(queue, ThreadLocalObjectTypeStack.get(),</span>
+                propertyIdentifier, propertyArrayIndex, 2);
+<span class="nc" id="L90">        priority = readOptional(queue, UnsignedInteger.class, 3);</span>
+<span class="nc" id="L91">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L95">        return &quot;PropertyValue(propertyIdentifier=&quot; + propertyIdentifier</span>
+                + &quot;, propertyArrayIndex=&quot; + propertyArrayIndex + &quot;, value=&quot;
+                + value + &quot;, priority=&quot; + priority + &quot;)&quot;;
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L102">        final int PRIME = 31;</span>
+<span class="nc" id="L103">        int result = 1;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L105">                + ((priority == null) ? 0 : priority.hashCode());</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        result = PRIME * result + ((propertyArrayIndex == null) ? 0</span>
+<span class="nc" id="L107">                : propertyArrayIndex.hashCode());</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        result = PRIME * result + ((propertyIdentifier == null) ? 0</span>
+<span class="nc" id="L109">                : propertyIdentifier.hashCode());</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        result = PRIME * result + ((value == null) ? 0 : value.hashCode());</span>
+<span class="nc" id="L111">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L117">            return true;</span>
+        }
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L120">            return false;</span>
+        }
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L123">            return false;</span>
+        }
+<span class="nc" id="L125">        final PropertyValue other = (PropertyValue) obj;</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (priority == null) {</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">            if (other.priority != null) {</span>
+<span class="nc" id="L128">                return false;</span>
+            }
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        } else if (!priority.equals(other.priority)) {</span>
+<span class="nc" id="L131">            return false;</span>
+        }
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (propertyArrayIndex == null) {</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">            if (other.propertyArrayIndex != null) {</span>
+<span class="nc" id="L135">                return false;</span>
+            }
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        } else if (!propertyArrayIndex.equals(other.propertyArrayIndex)) {</span>
+<span class="nc" id="L138">            return false;</span>
+        }
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (propertyIdentifier == null) {</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">            if (other.propertyIdentifier != null) {</span>
+<span class="nc" id="L142">                return false;</span>
+            }
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        } else if (!propertyIdentifier.equals(other.propertyIdentifier)) {</span>
+<span class="nc" id="L145">            return false;</span>
+        }
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (value == null) {</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">            if (other.value != null) {</span>
+<span class="nc" id="L149">                return false;</span>
+            }
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        } else if (!value.equals(other.value)) {</span>
+<span class="nc" id="L152">            return false;</span>
+        }
+<span class="nc" id="L154">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

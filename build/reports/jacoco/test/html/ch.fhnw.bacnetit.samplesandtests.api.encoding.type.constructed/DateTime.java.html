@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DateTime.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">DateTime.java</span></div><h1>DateTime.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Date;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Time;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class DateTime extends BaseType {
+    private static final long serialVersionUID = -5792783146879193344L;
+
+    private final Date date;
+
+    private final Time time;
+
+    public DateTime() {
+<span class="fc" id="L41">        this(new GregorianCalendar());</span>
+<span class="fc" id="L42">    }</span>
+
+<span class="nc" id="L44">    public DateTime(final Date date, final Time time) {</span>
+<span class="nc" id="L45">        this.date = date;</span>
+<span class="nc" id="L46">        this.time = time;</span>
+<span class="nc" id="L47">    }</span>
+
+<span class="nc" id="L49">    public DateTime(final long millis) {</span>
+<span class="nc" id="L50">        final GregorianCalendar gc = new GregorianCalendar();</span>
+<span class="nc" id="L51">        gc.setTimeInMillis(millis);</span>
+<span class="nc" id="L52">        date = new Date(gc);</span>
+<span class="nc" id="L53">        time = new Time(gc);</span>
+<span class="nc" id="L54">    }</span>
+
+<span class="fc" id="L56">    public DateTime(final GregorianCalendar gc) {</span>
+<span class="fc" id="L57">        date = new Date(gc);</span>
+<span class="fc" id="L58">        time = new Time(gc);</span>
+<span class="fc" id="L59">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="fc" id="L63">        date.write(queue);</span>
+<span class="fc" id="L64">        time.write(queue);</span>
+<span class="fc" id="L65">    }</span>
+
+<span class="nc" id="L67">    public DateTime(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L68">        date = read(queue, Date.class);</span>
+<span class="nc" id="L69">        time = read(queue, Time.class);</span>
+<span class="nc" id="L70">    }</span>
+
+    public Date getDate() {
+<span class="nc" id="L73">        return date;</span>
+    }
+
+    public Time getTime() {
+<span class="nc" id="L77">        return time;</span>
+    }
+
+    public long getTimeMillis() {
+<span class="nc" id="L81">        final GregorianCalendar gc = new GregorianCalendar(</span>
+<span class="nc" id="L82">                date.getCenturyYear(), date.getMonth().getId() - 1,</span>
+<span class="nc" id="L83">                date.getDay(), time.getHour(), time.getMinute(),</span>
+<span class="nc" id="L84">                time.getSecond());</span>
+<span class="nc" id="L85">        gc.set(Calendar.MILLISECOND, time.getHundredth() * 10);</span>
+<span class="nc" id="L86">        return gc.getTimeInMillis();</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L91">        final int PRIME = 31;</span>
+<span class="nc" id="L92">        int result = 1;</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        result = PRIME * result + ((date == null) ? 0 : date.hashCode());</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        result = PRIME * result + ((time == null) ? 0 : time.hashCode());</span>
+<span class="nc" id="L95">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L101">            return true;</span>
+        }
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L104">            return false;</span>
+        }
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L107">            return false;</span>
+        }
+<span class="nc" id="L109">        final DateTime other = (DateTime) obj;</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (date == null) {</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (other.date != null) {</span>
+<span class="nc" id="L112">                return false;</span>
+            }
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        } else if (!date.equals(other.date)) {</span>
+<span class="nc" id="L115">            return false;</span>
+        }
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (time == null) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (other.time != null) {</span>
+<span class="nc" id="L119">                return false;</span>
+            }
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        } else if (!time.equals(other.time)) {</span>
+<span class="nc" id="L122">            return false;</span>
+        }
+<span class="nc" id="L124">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="7.5.1">
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\ConnectionConfig.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\ExceptionManager.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\api\NetworkPortObj.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\auth\X509AccessControl.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\configuration\api\ConnectionConfig.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\configuration\api\DiscoveryConfig.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\configuration\api\HttpAuthConfig.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\configuration\api\KeystoreConfig.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\configuration\api\TruststoreConfig.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\exception\StackInitializationException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\service\ASEChannel.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\service\api\ASEServices.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\service\api\ApplicationService.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\service\api\BACnetEntityListener.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\service\api\ChannelConfiguration.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\service\api\ChannelFactory.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\service\api\TransportBindingService.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\transaction\ChannelEvent.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\transaction\ProtocolConfig.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\transaction\Transaction.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\transaction\TransactionKey.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\transaction\TransactionManager.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\transaction\TransactionManagerListener.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\transaction\TransactionState.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\application\transaction\api\ChannelListener.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\ControlMessage.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\ControlMessageInitEvent.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\ControlMessageReceivedEvent.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\DirectoryRecordQuality.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\EntityRecord.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\ITBBase.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\NetworkAddress.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\NetworkAddressChoice.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\NetworkPriority.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\PrimitiveSerializer.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\SecurityParameters.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\Serializer.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\TPDUType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\TransportError.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\UnsignedInteger16.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\UnsignedInteger31.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\UnsignedInteger8.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\_Address.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\_BACnetUtils.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\_ByteQueue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\_CharacterString.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\_Enumerated.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\_OctetString.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\_TagData.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\api\BACnetEID.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\api\TPDU.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\api\T_UnitDataIndication.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\api\T_UnitDataRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\exception\BACnetErrorType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\exception\ConfirmedRequestParseException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\exception\NotImplementedException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\exception\StackCommunicationException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\exception\TransactionManagerExcpetion.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\encoding\exception\TransportErrorException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\network\directory\api\DirectoryBinding.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\network\directory\api\DirectoryService.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\network\transport\TransportProtocolType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\ase\transportbinding\service\api\ASEService.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\directorybinding\dnssd\api\DNSSD.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\examples\AbstractApplication.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\examples\Application1.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\examples\Application2.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\examples\Configurator.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\deviceobjects\BACnetObject.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\deviceobjects\BACnetObjectFactory.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\deviceobjects\BACnetObjectIdentifier.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\deviceobjects\BACnetObjectType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\deviceobjects\BACnetProperty.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\deviceobjects\BACnetPropertyIdentifier.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\deviceobjects\FileObject.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\deviceobjects\Service.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\deviceobjects\VendorServiceKey.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\ObjectCovSubscription.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\ASDU.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\Abort.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\AckASDU.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\BACnetErrorAckASDU.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\BACnetMsgErrorAckASDU.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\ComplexACK.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\ConfirmedRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\Error.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\IncomingRequestParser.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\Reject.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\SimpleACK.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\asdu\UnconfirmedRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\base\BACnetUtils.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\enums\DayOfWeek.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\enums\MaxApduLength.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\enums\MaxSegments.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\enums\Month.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\enums\Tag.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\BACnetErrorException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\BACnetErrorType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\BACnetException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\BACnetRejectException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\BACnetResolutionException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\BACnetRuntimeException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\BACnetServiceException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\BACnetTimeoutException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\BACnetTransactionManagerException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\ConfirmedRequestParseException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\NotImplementedException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\PropertyValueException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\ReflectionException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\StackCommunicationException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\TransactionManagerExcpetion.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\TransportError.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\exception\TransportErrorException.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\AmbiguousValue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\Encodable.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\SequenceDefinition.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\TagData.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\ThreadLocalObjectTypeStack.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\AccumulatorRecord.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ActionCommand.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ActionList.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\Address.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\AddressBinding.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\BACnetError.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\BaseType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\CalendarEntry.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\Choice.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ClientCov.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\CovSubscription.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\DailySchedule.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\DateRange.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\DateTime.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\DaysOfWeek.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\Destination.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\DeviceObjectPropertyReference.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\DeviceObjectPropertyValue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\DeviceObjectReference.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\EventLogRecord.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\EventTransitionBits.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\LimitEnable.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\LogData.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\LogMultipleRecord.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\LogRecord.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\LogStatus.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ObjectPropertyReference.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ObjectPropertyValue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ObjectTypesSupported.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\Prescale.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\PriorityArray.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\PriorityValue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\PropertyReference.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\PropertyStates.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\PropertyValue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ReadAccessResult.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ReadAccessSpecification.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\Recipient.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\RecipientProcess.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ResultFlags.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\Scale.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\Sequence.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\SequenceOf.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ServicesSupported.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\SessionKey.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\SetpointReference.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\ShedLevel.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\SpecialEvent.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\StatusFlags.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\TimeStamp.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\TimeValue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\VtSession.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\WeekNDay.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\constructed\WriteAccessSpecification.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\AbortReason.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\Action.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\BackupState.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\BinaryPV.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\DeviceStatus.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\DoorAlarmState.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\DoorSecuredStatus.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\DoorStatus.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\DoorValue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\EngineeringUnits.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\ErrorClass.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\ErrorCode.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\EventState.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\EventType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\FileAccessMethod.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\LifeSafetyMode.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\LifeSafetyOperation.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\LifeSafetyState.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\LockStatus.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\LoggingType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\Maintenance.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\MessagePriority.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\NodeType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\NotifyType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\Polarity.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\ProgramError.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\ProgramRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\ProgramState.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\RejectReason.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\Reliability.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\RestartReason.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\Segmentation.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\ShedState.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\SilencedState.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\enumerated\VtClass.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\error\BaseError.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\error\ChangeListError.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\error\ConfirmedPrivateTransferError.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\error\CreateObjectError.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\error\VTCloseError.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\error\WritePropertyMultipleError.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\BufferReady.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\ChangeOfBitString.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\ChangeOfLifeSafety.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\ChangeOfState.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\ChangeOfValue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\CommandFailure.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\EventParameter.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\Extended.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\FloatingLimit.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\OutOfRange.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\eventParameter\UnsignedRange.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\itb\primitive\DeviceConfig.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\BufferReady.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\ChangeOfBitString.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\ChangeOfLifeSafety.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\ChangeOfState.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\ChangeOfValue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\CommandFailure.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\ComplexEventType.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\Extended.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\FloatingLimit.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\NotificationParameters.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\OutOfRange.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\notificationParameter\UnsignedRange.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\BitString.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Boolean.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\CharacterString.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Date.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Double.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Enumerated.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Null.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\ObjectConfig.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\OctetString.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Primitive.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Real.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\SignedInteger.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Time.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Unsigned16.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Unsigned32.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\Unsigned8.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\type\primitive\UnsignedInteger.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\encoding\util\ByteQueue.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\AcknowledgementService.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\AtomicReadFileAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\AtomicWriteFileAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\AuthenticateAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\BACnetErrorAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\BACnetMsgErrorAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\ConfirmedPrivateTransferAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\CreateObjectAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\GetAlarmSummaryAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\GetEnrollmentSummaryAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\GetEventInformationAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\ReadPropertyAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\ReadPropertyConditionalAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\ReadPropertyMultipleAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\ReadRangeAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\VtDataAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\acknowledgment\VtOpenAck.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\AcknowledgeAlarmRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\AddListElementRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\AtomicReadFileRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\AtomicWriteFileRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\AuthenticateRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\ConfirmedCovNotificationRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\ConfirmedEventNotificationRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\ConfirmedPrivateTransferRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\ConfirmedRequestService.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\ConfirmedTextMessageRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\CreateObjectRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\DeleteObjectRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\DeviceCommunicationControlRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\GetAlarmSummaryRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\GetEnrollmentSummaryRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\GetEventInformation.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\LifeSafetyOperationRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\ReadPropertyConditionalRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\ReadPropertyMultipleRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\ReadPropertyRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\ReadRangeRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\ReinitializeDeviceRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\RemoveListElementRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\RequestKeyRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\SubscribeCOVPropertyRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\SubscribeCOVRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\VtCloseRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\VtDataRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\VtOpenRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\WritePropertyMultipleRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\confirmed\WritePropertyRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\IAmRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\IHaveRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\TimeSynchronizationRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\UTCTimeSynchronizationRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\UnconfirmedCovNotificationRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\UnconfirmedEventNotificationRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\UnconfirmedPrivateTransferRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\UnconfirmedRequestService.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\UnconfirmedTextMessageRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\WhoHasRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\service\unconfirmed\WhoIsRequest.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\samplesandtests\api\util\BytesUtil.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\IncomingConnectionHandler.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\OutgoingConnectionHandler.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\api\BindingConfiguration.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\api\ConnectionFactory.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\api\TransportBindingInitializer.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\auth\http\HttpBasicAuthHandler.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\auth\http\HttpCorsHandler.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\util\ByteBufLogger.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\util\MessageLogger.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\util\PipelineLogger.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\ConnectionClient.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\ConnectionClientPipe.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\ConnectionServer.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\ConnectionServerPipe.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\ControlMessageHandler.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\EndPointHandler.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\WSBinaryFrameHandler.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\WSConnectionHandler.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\WSEncoder.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\WSPayloadControl.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\incoming\WSConnectionServer.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\incoming\WSConnectionServerHandler.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\incoming\api\WSConnectionServerFactory.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\incoming\tls\WSSConnectionServer.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\incoming\tls\WSSConnectionServerHandler.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\incoming\tls\api\WSSConnectionServerFactory.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\outgoing\WSConnection.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\outgoing\api\WSConnectionClientFactory.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\outgoing\tls\WSSConnection.java">
+</file>
+<file name="S:\MasterThesis\BACnetWorkspace\bacnet-it\src\main\java\ch\fhnw\bacnetit\transportbinding\ws\outgoing\tls\api\WSSConnectionClientFactory.java">
+</file>
+</checkstyle>

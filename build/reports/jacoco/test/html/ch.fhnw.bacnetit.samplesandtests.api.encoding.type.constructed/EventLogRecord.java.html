@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EventLogRecord.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">EventLogRecord.java</span></div><h1>EventLogRecord.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Real;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+/**
+ * @author Matthew Lohbihler
+ */
+public class EventLogRecord extends BaseType {
+    private static final long serialVersionUID = 7506599418976133752L;
+
+    private static List&lt;Class&lt;? extends Encodable&gt;&gt; classes;
+
+    static {
+<span class="nc" id="L42">        classes = new ArrayList&lt;Class&lt;? extends Encodable&gt;&gt;();</span>
+<span class="nc" id="L43">        classes.add(LogStatus.class);</span>
+        // classes.add(ConfirmedEventNotificationRequest.class);
+<span class="nc" id="L45">        classes.add(Real.class);</span>
+<span class="nc" id="L46">    }</span>
+
+    private final DateTime timestamp;
+
+    private final Choice choice;
+
+<span class="nc" id="L52">    public EventLogRecord(final DateTime timestamp, final LogStatus datum) {</span>
+<span class="nc" id="L53">        this.timestamp = timestamp;</span>
+<span class="nc" id="L54">        choice = new Choice(0, datum);</span>
+<span class="nc" id="L55">    }</span>
+
+    // public EventLogRecord(DateTime timestamp,
+    // ConfirmedEventNotificationRequest datum) {
+    // this.timestamp = timestamp;
+    // choice = new Choice(1, datum);
+    // }
+
+<span class="nc" id="L63">    public EventLogRecord(final DateTime timestamp, final Real datum) {</span>
+<span class="nc" id="L64">        this.timestamp = timestamp;</span>
+<span class="nc" id="L65">        choice = new Choice(2, datum);</span>
+<span class="nc" id="L66">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L70">        write(queue, timestamp, 0);</span>
+<span class="nc" id="L71">        write(queue, choice, 1);</span>
+<span class="nc" id="L72">    }</span>
+
+    public DateTime getTimestamp() {
+<span class="nc" id="L75">        return timestamp;</span>
+    }
+
+    public LogStatus getLogStatus() {
+<span class="nc" id="L79">        return (LogStatus) choice.getDatum();</span>
+    }
+
+    // public ConfirmedEventNotificationRequest
+    // getConfirmedEventNotificationRequest() {
+    // return (ConfirmedEventNotificationRequest) choice.getDatum();
+    // }
+
+    public Real getReal() {
+<span class="nc" id="L88">        return (Real) choice.getDatum();</span>
+    }
+
+    public int getChoiceType() {
+<span class="nc" id="L92">        return choice.getContextId();</span>
+    }
+
+<span class="nc" id="L95">    public EventLogRecord(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L96">        timestamp = read(queue, DateTime.class, 0);</span>
+<span class="nc" id="L97">        choice = new Choice(queue, classes, 1);</span>
+<span class="nc" id="L98">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L102">        final int prime = 31;</span>
+<span class="nc" id="L103">        int result = 1;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        result = prime * result + ((choice == null) ? 0 : choice.hashCode());</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        result = prime * result</span>
+<span class="nc" id="L106">                + ((timestamp == null) ? 0 : timestamp.hashCode());</span>
+<span class="nc" id="L107">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L113">            return true;</span>
+        }
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L116">            return false;</span>
+        }
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L119">            return false;</span>
+        }
+<span class="nc" id="L121">        final EventLogRecord other = (EventLogRecord) obj;</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (choice == null) {</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">            if (other.choice != null) {</span>
+<span class="nc" id="L124">                return false;</span>
+            }
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        } else if (!choice.equals(other.choice)) {</span>
+<span class="nc" id="L127">            return false;</span>
+        }
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (timestamp == null) {</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">            if (other.timestamp != null) {</span>
+<span class="nc" id="L131">                return false;</span>
+            }
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        } else if (!timestamp.equals(other.timestamp)) {</span>
+<span class="nc" id="L134">            return false;</span>
+        }
+<span class="nc" id="L136">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

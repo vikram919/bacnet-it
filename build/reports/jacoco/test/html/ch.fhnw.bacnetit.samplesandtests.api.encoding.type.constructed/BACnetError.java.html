@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BACnetError.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">BACnetError.java</span></div><h1>BACnetError.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetServiceException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ErrorClass;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ErrorCode;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class BACnetError extends BaseType {
+    private static final long serialVersionUID = -2894184233450540796L;
+
+    private final ErrorClass errorClass;
+
+    private final ErrorCode errorCode;
+
+<span class="nc" id="L38">    public BACnetError(final ErrorClass errorClass, final ErrorCode errorCode) {</span>
+<span class="nc" id="L39">        this.errorClass = errorClass;</span>
+<span class="nc" id="L40">        this.errorCode = errorCode;</span>
+<span class="nc" id="L41">    }</span>
+
+<span class="nc" id="L43">    public BACnetError(final BACnetServiceException e) {</span>
+<span class="nc" id="L44">        this.errorClass = e.getErrorClass();</span>
+<span class="nc" id="L45">        this.errorCode = e.getErrorCode();</span>
+<span class="nc" id="L46">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L50">        write(queue, errorClass);</span>
+<span class="nc" id="L51">        write(queue, errorCode);</span>
+<span class="nc" id="L52">    }</span>
+
+<span class="fc" id="L54">    public BACnetError(final ByteQueue queue) throws BACnetException {</span>
+<span class="fc" id="L55">        errorClass = read(queue, ErrorClass.class);</span>
+<span class="fc" id="L56">        errorCode = read(queue, ErrorCode.class);</span>
+<span class="fc" id="L57">    }</span>
+
+    public ErrorClass getErrorClass() {
+<span class="fc" id="L60">        return errorClass;</span>
+    }
+
+    public ErrorCode getErrorCode() {
+<span class="fc" id="L64">        return errorCode;</span>
+    }
+
+    public boolean equals(final ErrorClass errorClass,
+            final ErrorCode errorCode) {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        return this.errorClass.equals(errorClass)</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">                &amp;&amp; this.errorCode.equals(errorCode);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L75">        final int PRIME = 31;</span>
+<span class="nc" id="L76">        int result = 1;</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L78">                + ((errorClass == null) ? 0 : errorClass.hashCode());</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L80">                + ((errorCode == null) ? 0 : errorCode.hashCode());</span>
+<span class="nc" id="L81">        return result;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L86">        return &quot;errorClass=&quot; + errorClass + &quot;, errorCode=&quot; + errorCode;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L92">            return true;</span>
+        }
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L95">            return false;</span>
+        }
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L98">            return false;</span>
+        }
+<span class="nc" id="L100">        final BACnetError other = (BACnetError) obj;</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (errorClass == null) {</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">            if (other.errorClass != null) {</span>
+<span class="nc" id="L103">                return false;</span>
+            }
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        } else if (!errorClass.equals(other.errorClass)) {</span>
+<span class="nc" id="L106">            return false;</span>
+        }
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (errorCode == null) {</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            if (other.errorCode != null) {</span>
+<span class="nc" id="L110">                return false;</span>
+            }
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        } else if (!errorCode.equals(other.errorCode)) {</span>
+<span class="nc" id="L113">            return false;</span>
+        }
+<span class="nc" id="L115">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ch.fhnw.bacnetit.samplesandtests.encoding.TBAPDUTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-03-21T20:19:17" hostname="DESKTOP-QBU1TN7" time="0.0">
+  <properties/>
+  <testcase name="TBAPDUEncodableTest1" classname="ch.fhnw.bacnetit.samplesandtests.encoding.TBAPDUTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

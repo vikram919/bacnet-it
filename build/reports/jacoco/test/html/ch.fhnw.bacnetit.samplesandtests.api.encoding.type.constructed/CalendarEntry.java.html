@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CalendarEntry.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">CalendarEntry.java</span></div><h1>CalendarEntry.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Date;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+/**
+ * ASHRAE Standard 135-2012 Clause 21 p. 667&lt;br&gt;
+ * BACnetCalendarEntry ::= CHOICE {&lt;br&gt;
+ * date [0] Date,&lt;br&gt;
+ * dateRange [1] BACnetDateRange,&lt;br&gt;
+ * weekNDay [2] BACnetWeekNDay &lt;br&gt;
+ * }
+ */
+public class CalendarEntry extends BaseType {
+    private static final long serialVersionUID = -4210434764578714766L;
+
+    private static List&lt;Class&lt;? extends Encodable&gt;&gt; classes;
+
+    static {
+<span class="nc" id="L47">        classes = new ArrayList&lt;Class&lt;? extends Encodable&gt;&gt;();</span>
+<span class="nc" id="L48">        classes.add(Date.class);</span>
+<span class="nc" id="L49">        classes.add(DateRange.class);</span>
+<span class="nc" id="L50">        classes.add(WeekNDay.class);</span>
+<span class="nc" id="L51">    }</span>
+
+    private final Choice entry;
+
+<span class="nc" id="L55">    public CalendarEntry(final Date date) {</span>
+<span class="nc" id="L56">        entry = new Choice(0, date);</span>
+<span class="nc" id="L57">    }</span>
+
+<span class="nc" id="L59">    public CalendarEntry(final DateRange dateRange) {</span>
+<span class="nc" id="L60">        entry = new Choice(1, dateRange);</span>
+<span class="nc" id="L61">    }</span>
+
+<span class="nc" id="L63">    public CalendarEntry(final WeekNDay weekNDay) {</span>
+<span class="nc" id="L64">        entry = new Choice(2, weekNDay);</span>
+<span class="nc" id="L65">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L69">        write(queue, entry);</span>
+<span class="nc" id="L70">    }</span>
+
+<span class="nc" id="L72">    public CalendarEntry(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L73">        entry = new Choice(queue, classes);</span>
+<span class="nc" id="L74">    }</span>
+
+    public boolean isDate() {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        return entry.getContextId() == 0;</span>
+    }
+
+    public boolean isDateRange() {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        return entry.getContextId() == 1;</span>
+    }
+
+    public boolean isWeekNDay() {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        return entry.getContextId() == 2;</span>
+    }
+
+    public Date getDate() {
+<span class="nc" id="L89">        return (Date) entry.getDatum();</span>
+    }
+
+    public DateRange getDateRange() {
+<span class="nc" id="L93">        return (DateRange) entry.getDatum();</span>
+    }
+
+    public WeekNDay getWeekNDay() {
+<span class="nc" id="L97">        return (WeekNDay) entry.getDatum();</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L102">        final int prime = 31;</span>
+<span class="nc" id="L103">        int result = 1;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        result = prime * result + ((entry == null) ? 0 : entry.hashCode());</span>
+<span class="nc" id="L105">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L111">            return true;</span>
+        }
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L114">            return false;</span>
+        }
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L117">            return false;</span>
+        }
+<span class="nc" id="L119">        final CalendarEntry other = (CalendarEntry) obj;</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (entry == null) {</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (other.entry != null) {</span>
+<span class="nc" id="L122">                return false;</span>
+            }
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        } else if (!entry.equals(other.entry)) {</span>
+<span class="nc" id="L125">            return false;</span>
+        }
+<span class="nc" id="L127">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

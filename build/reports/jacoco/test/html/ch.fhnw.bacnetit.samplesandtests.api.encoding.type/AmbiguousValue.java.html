@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AmbiguousValue.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type</a> &gt; <span class="el_source">AmbiguousValue.java</span></div><h1>AmbiguousValue.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Boolean;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class AmbiguousValue extends Encodable {
+    private static final long serialVersionUID = -1554703777454557893L;
+
+    private byte[] data;
+
+<span class="nc" id="L34">    public AmbiguousValue(final ByteQueue queue) {</span>
+<span class="nc" id="L35">        final TagData tagData = new TagData();</span>
+<span class="nc" id="L36">        peekTagData(queue, tagData);</span>
+<span class="nc" id="L37">        readAmbiguousData(queue, tagData);</span>
+<span class="nc" id="L38">    }</span>
+
+    public AmbiguousValue(final ByteQueue queue, final int contextId)
+<span class="nc" id="L41">            throws BACnetException {</span>
+<span class="nc" id="L42">        popStart(queue, contextId);</span>
+
+<span class="nc" id="L44">        final TagData tagData = new TagData();</span>
+        while (true) {
+<span class="nc" id="L46">            peekTagData(queue, tagData);</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">            if (tagData.isEndTag(contextId)) {</span>
+<span class="nc" id="L48">                break;</span>
+            }
+<span class="nc" id="L50">            readAmbiguousData(queue, tagData);</span>
+        }
+
+<span class="nc" id="L53">        popEnd(queue, contextId);</span>
+<span class="nc" id="L54">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue, final int contextId) {
+<span class="nc" id="L58">        throw new RuntimeException(</span>
+                &quot;Don't write ambigous values, convert to actual types first&quot;);
+    }
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L64">        throw new RuntimeException(</span>
+                &quot;Don't write ambigous values, convert to actual types first&quot;);
+    }
+
+    private void readAmbiguousData(final ByteQueue queue,
+            final TagData tagData) {
+<span class="nc" id="L70">        final ByteQueue data = new ByteQueue();</span>
+<span class="nc" id="L71">        readAmbiguousData(queue, tagData, data);</span>
+<span class="nc" id="L72">        this.data = data.popAll();</span>
+<span class="nc" id="L73">    }</span>
+
+    private void readAmbiguousData(final ByteQueue queue, final TagData tagData,
+            final ByteQueue data) {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (!tagData.contextSpecific) {</span>
+            // Application class.
+<span class="nc bnc" id="L79" title="All 2 branches missed.">            if (tagData.tagNumber == Boolean.TYPE_ID) {</span>
+<span class="nc" id="L80">                copyData(queue, 1, data);</span>
+            } else {
+<span class="nc" id="L82">                copyData(queue, tagData.getTotalLength(), data);</span>
+            }
+        } else {
+            // Context specific class.
+<span class="nc bnc" id="L86" title="All 2 branches missed.">            if (tagData.isStartTag()) {</span>
+                // Copy the start tag
+<span class="nc" id="L88">                copyData(queue, 1, data);</span>
+
+                // Remember the context id
+<span class="nc" id="L91">                final int contextId = tagData.tagNumber;</span>
+
+                // Read ambiguous data until we find the end tag.
+                while (true) {
+<span class="nc" id="L95">                    peekTagData(queue, tagData);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">                    if (tagData.isEndTag(contextId)) {</span>
+<span class="nc" id="L97">                        break;</span>
+                    }
+<span class="nc" id="L99">                    readAmbiguousData(queue, tagData);</span>
+                }
+
+                // Copy the end tag
+<span class="nc" id="L103">                copyData(queue, 1, data);</span>
+<span class="nc" id="L104">            } else {</span>
+<span class="nc" id="L105">                copyData(queue, tagData.getTotalLength(), data);</span>
+            }
+        }
+<span class="nc" id="L108">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L112">        final StringBuffer byteStream = new StringBuffer();</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        for (final byte b : data) {</span>
+<span class="nc" id="L114">            byteStream.append(b);</span>
+        }
+<span class="nc" id="L116">        return &quot;Ambiguous(&quot; + byteStream.toString() + &quot;)&quot;;</span>
+    }
+
+    private void copyData(final ByteQueue queue, int length,
+            final ByteQueue data) {
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        while (length-- &gt; 0) {</span>
+<span class="nc" id="L122">            data.push(queue.pop());</span>
+        }
+<span class="nc" id="L124">    }</span>
+
+    public boolean isNull() {
+<span class="nc bnc" id="L127" title="All 4 branches missed.">        return data.length == 1 &amp;&amp; data[0] == 0;</span>
+    }
+
+    public &lt;T extends Encodable&gt; T convertTo(final Class&lt;T&gt; clazz)
+            throws BACnetException {
+<span class="nc" id="L132">        return read(new ByteQueue(data), clazz);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L137">        final int PRIME = 31;</span>
+<span class="nc" id="L138">        int result = 1;</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        result = PRIME * result + ((data == null) ? 0 : data.hashCode());</span>
+<span class="nc" id="L140">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L146">            return true;</span>
+        }
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L149">            return false;</span>
+        }
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (!(obj instanceof Encodable)) {</span>
+<span class="nc" id="L152">            return false;</span>
+        }
+<span class="nc" id="L154">        final Encodable eobj = (Encodable) obj;</span>
+
+        try {
+<span class="nc" id="L157">            return convertTo(eobj.getClass()).equals(obj);</span>
+<span class="nc" id="L158">        } catch (final BACnetException e) {</span>
+<span class="nc" id="L159">            return false;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

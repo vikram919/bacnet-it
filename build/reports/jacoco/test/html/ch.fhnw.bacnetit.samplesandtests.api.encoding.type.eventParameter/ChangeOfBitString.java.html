@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ChangeOfBitString.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.eventParameter</a> &gt; <span class="el_source">ChangeOfBitString.java</span></div><h1>ChangeOfBitString.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.eventParameter;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.BitString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class ChangeOfBitString extends EventParameter {
+    private static final long serialVersionUID = -3812561432266744183L;
+
+    public static final byte TYPE_ID = 0;
+
+    private final UnsignedInteger timeDelay;
+
+    private final BitString bitMask;
+
+    private final SequenceOf&lt;BitString&gt; listOfBitstringValues;
+
+    public ChangeOfBitString(final UnsignedInteger timeDelay,
+            final BitString bitMask,
+<span class="nc" id="L44">            final SequenceOf&lt;BitString&gt; listOfBitstringValues) {</span>
+<span class="nc" id="L45">        this.timeDelay = timeDelay;</span>
+<span class="nc" id="L46">        this.bitMask = bitMask;</span>
+<span class="nc" id="L47">        this.listOfBitstringValues = listOfBitstringValues;</span>
+<span class="nc" id="L48">    }</span>
+
+<span class="nc" id="L50">    public ChangeOfBitString(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L51">        timeDelay = read(queue, UnsignedInteger.class, 0);</span>
+<span class="nc" id="L52">        bitMask = read(queue, BitString.class, 1);</span>
+<span class="nc" id="L53">        listOfBitstringValues = readSequenceOf(queue, BitString.class, 2);</span>
+<span class="nc" id="L54">    }</span>
+
+    @Override
+    protected void writeImpl(final ByteQueue queue) {
+<span class="nc" id="L58">        write(queue, timeDelay, 0);</span>
+<span class="nc" id="L59">        write(queue, bitMask, 1);</span>
+<span class="nc" id="L60">        write(queue, listOfBitstringValues, 2);</span>
+<span class="nc" id="L61">    }</span>
+
+    @Override
+    protected int getTypeId() {
+<span class="nc" id="L65">        return TYPE_ID;</span>
+    }
+
+    public UnsignedInteger getTimeDelay() {
+<span class="nc" id="L69">        return timeDelay;</span>
+    }
+
+    public BitString getBitMask() {
+<span class="nc" id="L73">        return bitMask;</span>
+    }
+
+    public SequenceOf&lt;BitString&gt; getListOfBitstringValues() {
+<span class="nc" id="L77">        return listOfBitstringValues;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L82">        final int PRIME = 31;</span>
+<span class="nc" id="L83">        int result = 1;</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        result = PRIME * result + ((bitMask == null) ? 0 : bitMask.hashCode());</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        result = PRIME * result + ((listOfBitstringValues == null) ? 0</span>
+<span class="nc" id="L86">                : listOfBitstringValues.hashCode());</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L88">                + ((timeDelay == null) ? 0 : timeDelay.hashCode());</span>
+<span class="nc" id="L89">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L95">            return true;</span>
+        }
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L98">            return false;</span>
+        }
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L101">            return false;</span>
+        }
+<span class="nc" id="L103">        final ChangeOfBitString other = (ChangeOfBitString) obj;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (bitMask == null) {</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">            if (other.bitMask != null) {</span>
+<span class="nc" id="L106">                return false;</span>
+            }
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        } else if (!bitMask.equals(other.bitMask)) {</span>
+<span class="nc" id="L109">            return false;</span>
+        }
+<span class="nc bnc" id="L111" title="All 2 branches missed.">        if (listOfBitstringValues == null) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (other.listOfBitstringValues != null) {</span>
+<span class="nc" id="L113">                return false;</span>
+            }
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        } else if (!listOfBitstringValues.equals(other.listOfBitstringValues)) {</span>
+<span class="nc" id="L116">            return false;</span>
+        }
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (timeDelay == null) {</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (other.timeDelay != null) {</span>
+<span class="nc" id="L120">                return false;</span>
+            }
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        } else if (!timeDelay.equals(other.timeDelay)) {</span>
+<span class="nc" id="L123">            return false;</span>
+        }
+<span class="nc" id="L125">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

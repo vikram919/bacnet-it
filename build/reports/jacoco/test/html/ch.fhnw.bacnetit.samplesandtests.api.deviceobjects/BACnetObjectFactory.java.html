@@ -1,0 +1,2157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BACnetObjectFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.deviceobjects</a> &gt; <span class="el_source">BACnetObjectFactory.java</span></div><h1>BACnetObjectFactory.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.deviceobjects;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetServiceException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.AmbiguousValue;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.AccumulatorRecord;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ActionList;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.AddressBinding;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.CalendarEntry;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ClientCov;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.CovSubscription;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.DailySchedule;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.DateRange;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.DateTime;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.Destination;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.DeviceObjectPropertyReference;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.DeviceObjectReference;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.EventLogRecord;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.EventTransitionBits;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.LimitEnable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.LogMultipleRecord;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.LogRecord;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ObjectPropertyReference;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ObjectTypesSupported;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.Prescale;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.PriorityArray;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ReadAccessResult;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ReadAccessSpecification;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.Recipient;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.Scale;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SessionKey;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SetpointReference;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ShedLevel;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SpecialEvent;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.StatusFlags;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.TimeStamp;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.VtSession;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.Action;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.BackupState;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.BinaryPV;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.DeviceStatus;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.DoorAlarmState;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.DoorSecuredStatus;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.DoorStatus;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.DoorValue;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.EngineeringUnits;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ErrorClass;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ErrorCode;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.EventState;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.EventType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.FileAccessMethod;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.LifeSafetyMode;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.LifeSafetyOperation;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.LifeSafetyState;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.LockStatus;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.LoggingType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.Maintenance;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.NodeType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.NotifyType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.Polarity;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ProgramError;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ProgramRequest;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ProgramState;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.Reliability;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.RestartReason;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.Segmentation;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ShedState;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.SilencedState;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.VtClass;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.eventParameter.EventParameter;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Boolean;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.CharacterString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Date;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Real;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.SignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Time;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Unsigned16;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+
+<span class="nc" id="L109">public class BACnetObjectFactory {</span>
+<span class="nc" id="L110">    private static final Map&lt;BACnetObjectType, List&lt;BACnetProperty&gt;&gt; propertyTypes = new HashMap&lt;BACnetObjectType, List&lt;BACnetProperty&gt;&gt;();</span>
+
+    public static BACnetProperty getPropertyTypeDefinition(
+            final BACnetObjectType objectType,
+            final BACnetPropertyIdentifier propertyIdentifier) {
+<span class="nc" id="L115">        final List&lt;BACnetProperty&gt; list = propertyTypes.get(objectType);</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (list == null) {</span>
+<span class="nc" id="L117">            return null;</span>
+        }
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        for (final BACnetProperty def : list) {</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">            if (def.getPropertyIdentifier().equals(propertyIdentifier)) {</span>
+<span class="nc" id="L121">                return def;</span>
+            }
+<span class="nc" id="L123">        }</span>
+<span class="nc" id="L124">        return null;</span>
+    }
+
+    public static BACnetProperty getPropertyTypeDefinitionRequired(
+            final BACnetObjectType objectType,
+            final BACnetPropertyIdentifier propertyIdentifier)
+            throws BACnetServiceException {
+<span class="nc" id="L131">        final BACnetProperty def = getPropertyTypeDefinition(objectType,</span>
+                propertyIdentifier);
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (def == null) {</span>
+<span class="nc" id="L134">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.unknownProperty,
+                    objectType + &quot;/&quot; + propertyIdentifier);
+        }
+<span class="nc" id="L138">        return def;</span>
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public static void validateValue(final BACnetObjectType objectType,
+            final BACnetPropertyIdentifier propertyIdentifier,
+            final Encodable value) throws BACnetServiceException {
+<span class="nc" id="L145">        final BACnetProperty def = getPropertyTypeDefinitionRequired(objectType,</span>
+                propertyIdentifier);
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (def.isSequence()) {</span>
+<span class="nc" id="L148">            final SequenceOf&lt;Encodable&gt; seq = (SequenceOf&lt;Encodable&gt;) value;</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">            for (final Encodable e : seq) {</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">                if (!def.getClazz().isAssignableFrom(e.getClass())) {</span>
+<span class="nc" id="L151">                    throw new BACnetServiceException(ErrorClass.property,</span>
+                            ErrorCode.invalidDataType,
+<span class="nc" id="L153">                            &quot;expected &quot; + def.getClazz() + &quot;, received=&quot;</span>
+<span class="nc" id="L154">                                    + value.getClass());</span>
+                }
+<span class="nc" id="L156">            }</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        } else if (!def.getClazz().isAssignableFrom(value.getClass())) {</span>
+<span class="nc" id="L158">            throw new BACnetServiceException(ErrorClass.property,</span>
+<span class="nc" id="L159">                    ErrorCode.invalidDataType, &quot;expected &quot; + def.getClazz()</span>
+<span class="nc" id="L160">                            + &quot;, received=&quot; + value.getClass());</span>
+        }
+<span class="nc" id="L162">    }</span>
+
+    public static void validateSequenceValue(final BACnetObjectType objectType,
+            final BACnetPropertyIdentifier propertyIdentifier,
+            final Encodable value) throws BACnetServiceException {
+<span class="nc" id="L167">        final BACnetProperty def = getPropertyTypeDefinitionRequired(objectType,</span>
+                propertyIdentifier);
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (!def.isSequence()) {</span>
+<span class="nc" id="L170">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.propertyIsNotAnArray);
+        }
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (!def.getClazz().isAssignableFrom(value.getClass())) {</span>
+<span class="nc" id="L174">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.invalidDataType);
+        }
+<span class="nc" id="L177">    }</span>
+
+    public static List&lt;BACnetProperty&gt; getPropertyTypeDefinitions(
+            final BACnetObjectType objectType) {
+<span class="nc" id="L181">        return getPropertyTypeDefinitions(objectType, 0);</span>
+    }
+
+    public static List&lt;BACnetProperty&gt; getRequiredPropertyTypeDefinitions(
+            final BACnetObjectType objectType) {
+<span class="nc" id="L186">        return getPropertyTypeDefinitions(objectType, 1);</span>
+    }
+
+    public static List&lt;BACnetProperty&gt; getOptionalPropertyTypeDefinitions(
+            final BACnetObjectType objectType) {
+<span class="nc" id="L191">        return getPropertyTypeDefinitions(objectType, 2);</span>
+    }
+
+    public static boolean isCommandable(final BACnetObjectType type,
+            final BACnetPropertyIdentifier pid) {
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        if (!pid.equals(BACnetPropertyIdentifier.presentValue)) {</span>
+<span class="nc" id="L197">            return false;</span>
+        }
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        return type.equals(BACnetObjectType.analogOutput)</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">                || type.equals(BACnetObjectType.analogValue)</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">                || type.equals(BACnetObjectType.binaryOutput)</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">                || type.equals(BACnetObjectType.binaryValue)</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">                || type.equals(BACnetObjectType.multiStateOutput)</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">                || type.equals(BACnetObjectType.multiStateValue)</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">                || type.equals(BACnetObjectType.accessDoor);</span>
+    }
+
+    /**
+     * @param objectType
+     * @param include
+     *            0 = all, 1 = required, 2 = optional
+     * @return
+     */
+    private static List&lt;BACnetProperty&gt; getPropertyTypeDefinitions(
+            final BACnetObjectType objectType, final int include) {
+<span class="nc" id="L216">        final List&lt;BACnetProperty&gt; result = new ArrayList&lt;BACnetProperty&gt;();</span>
+<span class="nc" id="L217">        final List&lt;BACnetProperty&gt; list = propertyTypes.get(objectType);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (list != null) {</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">            for (final BACnetProperty def : list) {</span>
+<span class="nc bnc" id="L220" title="All 8 branches missed.">                if (include == 0 || (include == 1 &amp;&amp; def.isRequired())</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">                        || (include == 2 &amp;&amp; def.isOptional())) {</span>
+<span class="nc" id="L222">                    result.add(def);</span>
+                }
+<span class="nc" id="L224">            }</span>
+        }
+<span class="nc" id="L226">        return result;</span>
+    }
+
+    private static void add(final BACnetObjectType type,
+            final BACnetPropertyIdentifier pid,
+            final Class&lt;? extends Encodable&gt; clazz, final boolean sequence,
+            final boolean required, final Encodable defaultValue) {
+<span class="nc" id="L233">        List&lt;BACnetProperty&gt; list = propertyTypes.get(type);</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">        if (list == null) {</span>
+<span class="nc" id="L235">            list = new ArrayList&lt;BACnetProperty&gt;();</span>
+<span class="nc" id="L236">            propertyTypes.put(type, list);</span>
+        }
+
+        // Check for existing entries.
+<span class="nc bnc" id="L240" title="All 2 branches missed.">        for (final BACnetProperty def : list) {</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">            if (def.getPropertyIdentifier().equals(pid)) {</span>
+<span class="nc" id="L242">                list.remove(def);</span>
+<span class="nc" id="L243">                break;</span>
+            }
+<span class="nc" id="L245">        }</span>
+
+<span class="nc" id="L247">        list.add(new BACnetProperty(type, pid, clazz, sequence, required,</span>
+                defaultValue));
+<span class="nc" id="L249">    }</span>
+
+    public static void addPropertyTypeDefinition(final BACnetObjectType type,
+            final BACnetPropertyIdentifier pid,
+            final Class&lt;? extends Encodable&gt; clazz, final boolean sequence,
+            final boolean required, final Encodable defaultValue) {
+<span class="nc" id="L255">        final List&lt;BACnetProperty&gt; list = propertyTypes.get(type);</span>
+<span class="nc bnc" id="L256" title="All 2 branches missed.">        if (list == null) {</span>
+<span class="nc" id="L257">            throw new RuntimeException(&quot;ObjectType not found: &quot; + type);</span>
+        }
+
+        // Check for existing entries.
+<span class="nc bnc" id="L261" title="All 2 branches missed.">        for (final BACnetProperty def : list) {</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">            if (def.getPropertyIdentifier().equals(pid)) {</span>
+<span class="nc" id="L263">                throw new RuntimeException(</span>
+                        &quot;ObjectType already contains the given PropertyIdentifier&quot;);
+            }
+<span class="nc" id="L266">        }</span>
+
+<span class="nc" id="L268">        list.add(new BACnetProperty(type, pid, clazz, sequence, required,</span>
+                defaultValue));
+<span class="nc" id="L270">    }</span>
+
+    static {
+        // Access door
+<span class="nc" id="L274">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.accessDoor,
+                        0x3fffff));
+<span class="nc" id="L279">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L281">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true,
+                BACnetObjectType.accessDoor);
+<span class="nc" id="L284">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.presentValue,</span>
+                DoorValue.class, false, true, null);
+<span class="nc" id="L286">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L288">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L291">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L293">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, true, null);
+<span class="nc" id="L295">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.outOfService,</span>
+                Boolean.class, false, true, new Boolean(true));
+<span class="nc" id="L297">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.priorityArray,</span>
+                PriorityArray.class, false, true, new PriorityArray());
+<span class="nc" id="L299">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.relinquishDefault, DoorValue.class,
+                false, true, DoorValue.lock);
+<span class="nc" id="L302">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.doorStatus,</span>
+                DoorStatus.class, false, false, null);
+<span class="nc" id="L304">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.lockStatus,</span>
+                LockStatus.class, false, false, null);
+<span class="nc" id="L306">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.securedStatus,</span>
+                DoorSecuredStatus.class, false, false, null);
+<span class="nc" id="L308">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.doorMembers,</span>
+                DeviceObjectReference.class, true, false, null);
+<span class="nc" id="L310">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.doorPulseTime,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L312">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.doorExtendedPulseTime,
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L315">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.doorUnlockDelayTime,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L318">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.doorOpenTooLongTime,
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L321">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.doorAlarmState, DoorAlarmState.class,
+                false, false, null);
+<span class="nc" id="L324">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.maskedAlarmValues,
+                DoorAlarmState.class, true, false, null);
+<span class="nc" id="L327">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.maintenanceRequired, Maintenance.class,
+                false, false, null);
+<span class="nc" id="L330">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L332">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L335">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.alarmValues,</span>
+                DoorAlarmState.class, true, false, null);
+<span class="nc" id="L337">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.faultValues,</span>
+                DoorAlarmState.class, true, false, null);
+<span class="nc" id="L339">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L341">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L344">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L346">        add(BACnetObjectType.accessDoor,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L349">        add(BACnetObjectType.accessDoor, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Accumulator
+<span class="nc" id="L353">        add(BACnetObjectType.accumulator,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.accumulator,
+                        0x3fffff));
+<span class="nc" id="L358">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L360">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true,
+                BACnetObjectType.accumulator);
+<span class="nc" id="L363">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.presentValue,</span>
+                UnsignedInteger.class, false, true, new UnsignedInteger(0));
+<span class="nc" id="L365">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L367">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.deviceType,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L369">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L372">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L374">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+<span class="nc" id="L376">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.outOfService,</span>
+                Boolean.class, false, true, new Boolean(true));
+<span class="nc" id="L378">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.scale,</span>
+                Scale.class, false, true, null);
+<span class="nc" id="L380">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.units,</span>
+                EngineeringUnits.class, false, true, EngineeringUnits.noUnits);
+<span class="nc" id="L382">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.prescale,</span>
+                Prescale.class, false, false, null);
+<span class="nc" id="L384">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.maxPresValue,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L386">        add(BACnetObjectType.accumulator,</span>
+                BACnetPropertyIdentifier.valueChangeTime, DateTime.class, false,
+                false, null);
+<span class="nc" id="L389">        add(BACnetObjectType.accumulator,</span>
+                BACnetPropertyIdentifier.valueBeforeChange,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L392">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.valueSet,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L394">        add(BACnetObjectType.accumulator,</span>
+                BACnetPropertyIdentifier.loggingRecord, AccumulatorRecord.class,
+                false, false, null);
+<span class="nc" id="L397">        add(BACnetObjectType.accumulator,</span>
+                BACnetPropertyIdentifier.loggingObject,
+                BACnetObjectIdentifier.class, false, false, null);
+<span class="nc" id="L400">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.pulseRate,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L402">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.highLimit,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L404">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.lowLimit,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L406">        add(BACnetObjectType.accumulator,</span>
+                BACnetPropertyIdentifier.limitMonitoringInterval,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L409">        add(BACnetObjectType.accumulator,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L412">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L414">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.limitEnable,</span>
+                LimitEnable.class, false, false, null);
+<span class="nc" id="L416">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L418">        add(BACnetObjectType.accumulator,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L421">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L423">        add(BACnetObjectType.accumulator,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L426">        add(BACnetObjectType.accumulator, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Analog input
+<span class="nc" id="L430">        add(BACnetObjectType.analogInput,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.analogInput,
+                        0x3fffff));
+<span class="nc" id="L435">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L437">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true,
+                BACnetObjectType.analogInput);
+<span class="nc" id="L440">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.presentValue,</span>
+                Real.class, false, true, new Real(0));
+<span class="nc" id="L442">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L444">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.deviceType,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L446">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L449">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L451">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+<span class="nc" id="L453">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.outOfService,</span>
+                Boolean.class, false, true, new Boolean(true));
+<span class="nc" id="L455">        add(BACnetObjectType.analogInput,</span>
+                BACnetPropertyIdentifier.updateInterval, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L458">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.units,</span>
+                EngineeringUnits.class, false, true, EngineeringUnits.noUnits);
+<span class="nc" id="L460">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.minPresValue,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L462">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.maxPresValue,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L464">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.resolution,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L466">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.covIncrement,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L468">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L470">        add(BACnetObjectType.analogInput,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L473">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.highLimit,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L475">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.lowLimit,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L477">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.deadband,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L479">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.limitEnable,</span>
+                LimitEnable.class, false, false, null);
+<span class="nc" id="L481">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L483">        add(BACnetObjectType.analogInput,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L486">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L488">        add(BACnetObjectType.analogInput,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L491">        add(BACnetObjectType.analogInput, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Analog output
+<span class="nc" id="L495">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.analogOutput,
+                        0x3fffff));
+<span class="nc" id="L500">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L502">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true,
+                BACnetObjectType.analogOutput);
+<span class="nc" id="L505">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.presentValue, Real.class, false, true,
+                new Real(0));
+<span class="nc" id="L508">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L510">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.deviceType,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L512">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L515">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L517">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+<span class="nc" id="L519">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.outOfService, Boolean.class, false,
+                true, new Boolean(true));
+<span class="nc" id="L522">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.units,</span>
+                EngineeringUnits.class, false, true, EngineeringUnits.noUnits);
+<span class="nc" id="L524">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.minPresValue, Real.class, false, false,
+                null);
+<span class="nc" id="L527">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.maxPresValue, Real.class, false, false,
+                null);
+<span class="nc" id="L530">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.resolution,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L532">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.priorityArray, PriorityArray.class,
+                false, true, new PriorityArray());
+<span class="nc" id="L535">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.relinquishDefault, Real.class, false,
+                true, new Real(0));
+<span class="nc" id="L538">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.covIncrement, Real.class, false, false,
+                null);
+<span class="nc" id="L541">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L543">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L546">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.highLimit,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L548">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.lowLimit,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L550">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.deadband,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L552">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.limitEnable,</span>
+                LimitEnable.class, false, false, null);
+<span class="nc" id="L554">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L556">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L559">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L561">        add(BACnetObjectType.analogOutput,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L564">        add(BACnetObjectType.analogOutput, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Analog value
+<span class="nc" id="L568">        add(BACnetObjectType.analogValue,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.analogValue,
+                        0x3fffff));
+<span class="nc" id="L573">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L575">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true,
+                BACnetObjectType.analogValue);
+<span class="nc" id="L578">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.presentValue,</span>
+                Real.class, false, true, new Real(0));
+<span class="nc" id="L580">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L582">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L585">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L587">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+<span class="nc" id="L589">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.outOfService,</span>
+                Boolean.class, false, true, new Boolean(true));
+<span class="nc" id="L591">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.units,</span>
+                EngineeringUnits.class, false, true, EngineeringUnits.noUnits);
+<span class="nc" id="L593">        add(BACnetObjectType.analogValue,</span>
+                BACnetPropertyIdentifier.priorityArray, PriorityArray.class,
+                false, false, new PriorityArray());
+<span class="nc" id="L596">        add(BACnetObjectType.analogValue,</span>
+                BACnetPropertyIdentifier.relinquishDefault, Real.class, false,
+                false, new Real(0));
+<span class="nc" id="L599">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.covIncrement,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L601">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L603">        add(BACnetObjectType.analogValue,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L606">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.highLimit,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L608">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.lowLimit,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L610">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.deadband,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L612">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.limitEnable,</span>
+                LimitEnable.class, false, false, null);
+<span class="nc" id="L614">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L616">        add(BACnetObjectType.analogValue,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L619">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L621">        add(BACnetObjectType.analogValue,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L624">        add(BACnetObjectType.analogValue, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Averaging
+<span class="nc" id="L628">        add(BACnetObjectType.averaging,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.averaging,
+                        0x3fffff));
+<span class="nc" id="L633">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L635">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true,
+                BACnetObjectType.averaging);
+<span class="nc" id="L638">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.minimumValue,</span>
+                Real.class, false, true, new Real(0));
+<span class="nc" id="L640">        add(BACnetObjectType.averaging,</span>
+                BACnetPropertyIdentifier.minimumValueTimestamp, DateTime.class,
+                false, false, null);
+<span class="nc" id="L643">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.averageValue,</span>
+                Real.class, false, true, new Real(0));
+<span class="nc" id="L645">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.varianceValue,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L647">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.maximumValue,</span>
+                Real.class, false, true, new Real(0));
+<span class="nc" id="L649">        add(BACnetObjectType.averaging,</span>
+                BACnetPropertyIdentifier.maximumValueTimestamp, DateTime.class,
+                false, false, null);
+<span class="nc" id="L652">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L654">        add(BACnetObjectType.averaging,</span>
+                BACnetPropertyIdentifier.attemptedSamples,
+                UnsignedInteger.class, false, true, new UnsignedInteger(0));
+<span class="nc" id="L657">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.validSamples,</span>
+                UnsignedInteger.class, false, true, new UnsignedInteger(0));
+<span class="nc" id="L659">        add(BACnetObjectType.averaging,</span>
+                BACnetPropertyIdentifier.objectPropertyReference,
+                DeviceObjectPropertyReference.class, false, true, null);
+<span class="nc" id="L662">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.windowInterval,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L664">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.windowSamples,</span>
+                UnsignedInteger.class, false, true, new UnsignedInteger(0));
+<span class="nc" id="L666">        add(BACnetObjectType.averaging, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Binary input
+<span class="nc" id="L670">        add(BACnetObjectType.binaryInput,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.binaryInput,
+                        0x3fffff));
+<span class="nc" id="L675">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L677">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true,
+                BACnetObjectType.binaryInput);
+<span class="nc" id="L680">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.presentValue,</span>
+                BinaryPV.class, false, true, BinaryPV.inactive);
+<span class="nc" id="L682">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L684">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.deviceType,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L686">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L689">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L691">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+<span class="nc" id="L693">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.outOfService,</span>
+                Boolean.class, false, true, new Boolean(true));
+<span class="nc" id="L695">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.polarity,</span>
+                Polarity.class, false, true, Polarity.normal);
+<span class="nc" id="L697">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.inactiveText,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L699">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.activeText,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L701">        add(BACnetObjectType.binaryInput,</span>
+                BACnetPropertyIdentifier.changeOfStateTime, DateTime.class,
+                false, false, null);
+<span class="nc" id="L704">        add(BACnetObjectType.binaryInput,</span>
+                BACnetPropertyIdentifier.changeOfStateCount,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L707">        add(BACnetObjectType.binaryInput,</span>
+                BACnetPropertyIdentifier.timeOfStateCountReset, DateTime.class,
+                false, false, null);
+<span class="nc" id="L710">        add(BACnetObjectType.binaryInput,</span>
+                BACnetPropertyIdentifier.elapsedActiveTime,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L713">        add(BACnetObjectType.binaryInput,</span>
+                BACnetPropertyIdentifier.timeOfActiveTimeReset, DateTime.class,
+                false, false, null);
+<span class="nc" id="L716">        add(BACnetObjectType.binaryInput,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L719">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.alarmValue,</span>
+                BinaryPV.class, false, false, null);
+<span class="nc" id="L721">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L723">        add(BACnetObjectType.binaryInput,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L726">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L728">        add(BACnetObjectType.binaryInput,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L731">        add(BACnetObjectType.binaryInput, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Binary output
+<span class="nc" id="L735">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.binaryOutput,
+                        0x3fffff));
+<span class="nc" id="L740">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L742">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true,
+                BACnetObjectType.binaryOutput);
+<span class="nc" id="L745">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.presentValue, BinaryPV.class, false,
+                true, BinaryPV.inactive);
+<span class="nc" id="L748">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L750">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.deviceType,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L752">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L755">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L757">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+<span class="nc" id="L759">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.outOfService, Boolean.class, false,
+                true, new Boolean(true));
+<span class="nc" id="L762">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.polarity,</span>
+                Polarity.class, false, true, Polarity.normal);
+<span class="nc" id="L764">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.inactiveText, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L767">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.activeText,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L769">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.changeOfStateTime, DateTime.class,
+                false, false, null);
+<span class="nc" id="L772">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.changeOfStateCount,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L775">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.timeOfStateCountReset, DateTime.class,
+                false, false, null);
+<span class="nc" id="L778">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.elapsedActiveTime,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L781">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.timeOfActiveTimeReset, DateTime.class,
+                false, false, null);
+<span class="nc" id="L784">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.minimumOffTime, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L787">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.minimumOnTime, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L790">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.priorityArray, PriorityArray.class,
+                false, true, new PriorityArray());
+<span class="nc" id="L793">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.relinquishDefault, BinaryPV.class,
+                false, true, BinaryPV.inactive);
+<span class="nc" id="L796">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L798">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L801">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.feedbackValue, BinaryPV.class, false,
+                false, null);
+<span class="nc" id="L804">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L806">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L809">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L811">        add(BACnetObjectType.binaryOutput,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L814">        add(BACnetObjectType.binaryOutput, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Binary value
+<span class="nc" id="L818">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.binaryValue,
+                        0x3fffff));
+<span class="nc" id="L823">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L825">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true,
+                BACnetObjectType.binaryValue);
+<span class="nc" id="L828">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.presentValue,</span>
+                BinaryPV.class, false, true, BinaryPV.inactive);
+<span class="nc" id="L830">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L832">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L835">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L837">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+<span class="nc" id="L839">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.outOfService,</span>
+                Boolean.class, false, true, new Boolean(true));
+<span class="nc" id="L841">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.inactiveText,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L843">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.activeText,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L845">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.changeOfStateTime, DateTime.class,
+                false, false, null);
+<span class="nc" id="L848">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.changeOfStateCount,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L851">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.timeOfStateCountReset, DateTime.class,
+                false, false, null);
+<span class="nc" id="L854">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.elapsedActiveTime,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L857">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.timeOfActiveTimeReset, DateTime.class,
+                false, false, null);
+<span class="nc" id="L860">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.minimumOffTime, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L863">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.minimumOnTime, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L866">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.priorityArray, PriorityArray.class,
+                false, false, new PriorityArray());
+<span class="nc" id="L869">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.relinquishDefault, BinaryPV.class,
+                false, false, BinaryPV.inactive);
+<span class="nc" id="L872">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L874">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L877">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.alarmValue,</span>
+                BinaryPV.class, false, false, null);
+<span class="nc" id="L879">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L881">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L884">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L886">        add(BACnetObjectType.binaryValue,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L889">        add(BACnetObjectType.binaryValue, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Calendar
+<span class="nc" id="L893">        add(BACnetObjectType.calendar,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.calendar,
+                        0x3fffff));
+<span class="nc" id="L898">        add(BACnetObjectType.calendar, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L900">        add(BACnetObjectType.calendar, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true, BACnetObjectType.calendar);
+<span class="nc" id="L902">        add(BACnetObjectType.calendar, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L904">        add(BACnetObjectType.calendar, BACnetPropertyIdentifier.presentValue,</span>
+                Boolean.class, false, true, null);
+<span class="nc" id="L906">        add(BACnetObjectType.calendar, BACnetPropertyIdentifier.dateList,</span>
+                CalendarEntry.class, true, true, null);
+<span class="nc" id="L908">        add(BACnetObjectType.calendar, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Command
+<span class="nc" id="L912">        add(BACnetObjectType.command, BACnetPropertyIdentifier.objectIdentifier,</span>
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.command, 0x3fffff));
+<span class="nc" id="L915">        add(BACnetObjectType.command, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L917">        add(BACnetObjectType.command, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true, BACnetObjectType.command);
+<span class="nc" id="L919">        add(BACnetObjectType.command, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L921">        add(BACnetObjectType.command, BACnetPropertyIdentifier.presentValue,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L923">        add(BACnetObjectType.command, BACnetPropertyIdentifier.inProcess,</span>
+                Boolean.class, false, true, null);
+<span class="nc" id="L925">        add(BACnetObjectType.command,</span>
+                BACnetPropertyIdentifier.allWritesSuccessful, Boolean.class,
+                false, true, null);
+<span class="nc" id="L928">        add(BACnetObjectType.command, BACnetPropertyIdentifier.action,</span>
+                ActionList.class, true, true, null);
+<span class="nc" id="L930">        add(BACnetObjectType.command, BACnetPropertyIdentifier.actionText,</span>
+                CharacterString.class, true, false, null);
+<span class="nc" id="L932">        add(BACnetObjectType.command, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Device
+<span class="nc" id="L936">        add(BACnetObjectType.device, BACnetPropertyIdentifier.objectIdentifier,</span>
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.device, 0x3fffff));
+<span class="nc" id="L939">        add(BACnetObjectType.device, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L941">        add(BACnetObjectType.device, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true, BACnetObjectType.device);
+<span class="nc" id="L943">        add(BACnetObjectType.device, BACnetPropertyIdentifier.systemStatus,</span>
+                DeviceStatus.class, false, true, null);
+<span class="nc" id="L945">        add(BACnetObjectType.device, BACnetPropertyIdentifier.vendorName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L947">        add(BACnetObjectType.device, BACnetPropertyIdentifier.vendorIdentifier,</span>
+                Unsigned16.class, false, true, null);
+<span class="nc" id="L949">        add(BACnetObjectType.device, BACnetPropertyIdentifier.modelName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L951">        add(BACnetObjectType.device, BACnetPropertyIdentifier.firmwareRevision,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L953">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.applicationSoftwareVersion,
+                CharacterString.class, false, true, null);
+<span class="nc" id="L956">        add(BACnetObjectType.device, BACnetPropertyIdentifier.location,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L958">        add(BACnetObjectType.device, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L960">        add(BACnetObjectType.device, BACnetPropertyIdentifier.protocolVersion,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L962">        add(BACnetObjectType.device, BACnetPropertyIdentifier.protocolRevision,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L964">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.protocolServicesSupported,
+                ServicesSupported.class, false, true, null);
+<span class="nc" id="L967">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.protocolObjectTypesSupported,
+                ObjectTypesSupported.class, false, true, null);
+<span class="nc" id="L970">        add(BACnetObjectType.device, BACnetPropertyIdentifier.objectList,</span>
+                BACnetObjectIdentifier.class, true, true, null);
+<span class="nc" id="L972">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.structuredObjectList,
+                BACnetObjectIdentifier.class, true, false, null);
+<span class="nc" id="L975">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.maxApduLengthAccepted,
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L978">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.segmentationSupported,
+                Segmentation.class, false, true, null);
+<span class="nc" id="L981">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.vtClassesSupported, VtClass.class,
+                true, false, null);
+<span class="nc" id="L984">        add(BACnetObjectType.device, BACnetPropertyIdentifier.activeVtSessions,</span>
+                VtSession.class, true, false, null);
+<span class="nc" id="L986">        add(BACnetObjectType.device, BACnetPropertyIdentifier.localTime,</span>
+                Time.class, false, false, null);
+<span class="nc" id="L988">        add(BACnetObjectType.device, BACnetPropertyIdentifier.localDate,</span>
+                Date.class, false, false, null);
+<span class="nc" id="L990">        add(BACnetObjectType.device, BACnetPropertyIdentifier.utcOffset,</span>
+                SignedInteger.class, false, false, null);
+<span class="nc" id="L992">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.daylightSavingsStatus, Boolean.class,
+                false, false, null);
+<span class="nc" id="L995">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.apduSegmentTimeout,
+                UnsignedInteger.class, false, true, new UnsignedInteger(1000));
+<span class="nc" id="L998">        add(BACnetObjectType.device, BACnetPropertyIdentifier.apduTimeout,</span>
+                UnsignedInteger.class, false, true, new UnsignedInteger(5000));
+<span class="nc" id="L1000">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.numberOfApduRetries,
+                UnsignedInteger.class, false, true, new UnsignedInteger(2));
+<span class="nc" id="L1003">        add(BACnetObjectType.device, BACnetPropertyIdentifier.listOfSessionKeys,</span>
+                SessionKey.class, true, false, null);
+<span class="nc" id="L1005">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.timeSynchronizationRecipients,
+                Recipient.class, true, false, null);
+<span class="nc" id="L1008">        add(BACnetObjectType.device, BACnetPropertyIdentifier.maxMaster,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1010">        add(BACnetObjectType.device, BACnetPropertyIdentifier.maxInfoFrames,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1012">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.deviceAddressBinding,
+                AddressBinding.class, true, true,
+                new SequenceOf&lt;AddressBinding&gt;());
+<span class="nc" id="L1016">        add(BACnetObjectType.device, BACnetPropertyIdentifier.databaseRevision,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1018">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.configurationFiles,
+                BACnetObjectIdentifier.class, true, false, null);
+<span class="nc" id="L1021">        add(BACnetObjectType.device, BACnetPropertyIdentifier.lastRestoreTime,</span>
+                TimeStamp.class, false, false, null);
+<span class="nc" id="L1023">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.backupFailureTimeout, Unsigned16.class,
+                false, false, null);
+<span class="nc" id="L1026">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.backupPreparationTime,
+                Unsigned16.class, false, false, null);
+<span class="nc" id="L1029">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.restorePreparationTime,
+                Unsigned16.class, false, false, null);
+<span class="nc" id="L1032">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.restoreCompletionTime,
+                Unsigned16.class, false, false, null);
+<span class="nc" id="L1035">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.backupAndRestoreState,
+                BackupState.class, false, true, null);
+<span class="nc" id="L1038">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.activeCovSubscriptions,
+                CovSubscription.class, true, true,
+                new SequenceOf&lt;CovSubscription&gt;());
+<span class="nc" id="L1042">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.maxSegmentsAccepted,
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1045">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.utcTimeSynchronizationRecipients,
+                Recipient.class, true, false, null);
+<span class="nc" id="L1048">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.timeSynchronizationInterval,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1051">        add(BACnetObjectType.device, BACnetPropertyIdentifier.alignIntervals,</span>
+                Boolean.class, false, false, null);
+<span class="nc" id="L1053">        add(BACnetObjectType.device, BACnetPropertyIdentifier.intervalOffset,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1055">        add(BACnetObjectType.device, BACnetPropertyIdentifier.slaveProxyEnable,</span>
+                Boolean.class, true, false, null);
+<span class="nc" id="L1057">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.autoSlaveDiscovery, Boolean.class,
+                true, false, null);
+<span class="nc" id="L1060">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.slaveAddressBinding,
+                AddressBinding.class, true, false, null);
+<span class="nc" id="L1063">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.manualSlaveAddressBinding,
+                AddressBinding.class, true, false, null);
+<span class="nc" id="L1066">        add(BACnetObjectType.device, BACnetPropertyIdentifier.lastRestartReason,</span>
+                RestartReason.class, false, false, null);
+<span class="nc" id="L1068">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.restartNotificationRecipients,
+                Recipient.class, true, false, null);
+<span class="nc" id="L1071">        add(BACnetObjectType.device,</span>
+                BACnetPropertyIdentifier.timeOfDeviceRestart, TimeStamp.class,
+                false, false, null);
+<span class="nc" id="L1074">        add(BACnetObjectType.device, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Event enrollment
+<span class="nc" id="L1078">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.eventEnrollment,
+                        0x3fffff));
+<span class="nc" id="L1083">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.objectName, CharacterString.class,
+                false, true, null);
+<span class="nc" id="L1086">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.objectType, BACnetObjectType.class,
+                false, true, BACnetObjectType.eventEnrollment);
+<span class="nc" id="L1089">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.description, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1092">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.eventType, EventType.class, false,
+                true, null);
+<span class="nc" id="L1095">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.notifyType, NotifyType.class, false,
+                true, null);
+<span class="nc" id="L1098">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.eventParameters, EventParameter.class,
+                false, true, null);
+<span class="nc" id="L1101">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.objectPropertyReference,
+                DeviceObjectPropertyReference.class, false, true, null);
+<span class="nc" id="L1104">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.eventState, EventState.class, false,
+                true, EventState.normal);
+<span class="nc" id="L1107">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.eventEnable, EventTransitionBits.class,
+                false, true, null);
+<span class="nc" id="L1110">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, true, null);
+<span class="nc" id="L1113">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1116">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                true, null);
+<span class="nc" id="L1119">        add(BACnetObjectType.eventEnrollment,</span>
+                BACnetPropertyIdentifier.profileName, CharacterString.class,
+                false, false, null);
+
+        // Event log
+<span class="nc" id="L1124">        add(BACnetObjectType.eventLog,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.eventLog,
+                        0x3fffff));
+<span class="nc" id="L1129">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L1131">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true, BACnetObjectType.eventLog);
+<span class="nc" id="L1133">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1135">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L1138">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L1140">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+<span class="nc" id="L1142">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.enable,</span>
+                Boolean.class, false, true, null);
+<span class="nc" id="L1144">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.startTime,</span>
+                DateTime.class, false, false, null);
+<span class="nc" id="L1146">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.stopTime,</span>
+                DateTime.class, false, false, null);
+<span class="nc" id="L1148">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.stopWhenFull,</span>
+                Boolean.class, false, true, null);
+<span class="nc" id="L1150">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.bufferSize,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1152">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.logBuffer,</span>
+                EventLogRecord.class, true, true,
+                new SequenceOf&lt;EventLogRecord&gt;());
+<span class="nc" id="L1155">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.recordCount,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1157">        add(BACnetObjectType.eventLog,</span>
+                BACnetPropertyIdentifier.totalRecordCount,
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1160">        add(BACnetObjectType.eventLog,</span>
+                BACnetPropertyIdentifier.notificationThreshold,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1163">        add(BACnetObjectType.eventLog,</span>
+                BACnetPropertyIdentifier.recordsSinceNotification,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1166">        add(BACnetObjectType.eventLog,</span>
+                BACnetPropertyIdentifier.lastNotifyRecord,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1169">        add(BACnetObjectType.eventLog,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1172">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1174">        add(BACnetObjectType.eventLog,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1177">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L1179">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.eventTimeStamps,</span>
+                TimeStamp.class, true, false, null);
+<span class="nc" id="L1181">        add(BACnetObjectType.eventLog, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // File
+<span class="nc" id="L1185">        add(BACnetObjectType.file, BACnetPropertyIdentifier.objectIdentifier,</span>
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.file, 0x3fffff));
+<span class="nc" id="L1188">        add(BACnetObjectType.file, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L1190">        add(BACnetObjectType.file, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true, BACnetObjectType.file);
+<span class="nc" id="L1192">        add(BACnetObjectType.file, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1194">        add(BACnetObjectType.file, BACnetPropertyIdentifier.fileType,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L1196">        add(BACnetObjectType.file, BACnetPropertyIdentifier.fileSize,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1198">        add(BACnetObjectType.file, BACnetPropertyIdentifier.modificationDate,</span>
+                DateTime.class, false, true, null);
+<span class="nc" id="L1200">        add(BACnetObjectType.file, BACnetPropertyIdentifier.archive,</span>
+                Boolean.class, false, true, null);
+<span class="nc" id="L1202">        add(BACnetObjectType.file, BACnetPropertyIdentifier.readOnly,</span>
+                Boolean.class, false, true, null);
+<span class="nc" id="L1204">        add(BACnetObjectType.file, BACnetPropertyIdentifier.fileAccessMethod,</span>
+                FileAccessMethod.class, false, true, null);
+<span class="nc" id="L1206">        add(BACnetObjectType.file, BACnetPropertyIdentifier.recordCount,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1208">        add(BACnetObjectType.file, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Group
+<span class="nc" id="L1212">        add(BACnetObjectType.group, BACnetPropertyIdentifier.objectIdentifier,</span>
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.group, 0x3fffff));
+<span class="nc" id="L1215">        add(BACnetObjectType.group, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L1217">        add(BACnetObjectType.group, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true, BACnetObjectType.group);
+<span class="nc" id="L1219">        add(BACnetObjectType.group, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1221">        add(BACnetObjectType.group, BACnetPropertyIdentifier.listOfGroupMembers,</span>
+                ReadAccessSpecification.class, true, true, null);
+<span class="nc" id="L1223">        add(BACnetObjectType.group, BACnetPropertyIdentifier.presentValue,</span>
+                ReadAccessResult.class, true, true, null);
+<span class="nc" id="L1225">        add(BACnetObjectType.group, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Life safety point
+<span class="nc" id="L1229">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.lifeSafetyPoint,
+                        0x3fffff));
+<span class="nc" id="L1234">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.objectName, CharacterString.class,
+                false, true, null);
+<span class="nc" id="L1237">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.objectType, BACnetObjectType.class,
+                false, true, BACnetObjectType.lifeSafetyPoint);
+<span class="nc" id="L1240">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.presentValue, LifeSafetyState.class,
+                false, true, LifeSafetyState.quiet);
+<span class="nc" id="L1243">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.trackingValue, LifeSafetyState.class,
+                false, true, null);
+<span class="nc" id="L1246">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.description, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1249">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.deviceType, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1252">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.statusFlags, StatusFlags.class, false,
+                true, new StatusFlags(false, false, false, true));
+<span class="nc" id="L1255">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.eventState, EventState.class, false,
+                true, EventState.normal);
+<span class="nc" id="L1258">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.reliability, Reliability.class, false,
+                true, null);
+<span class="nc" id="L1261">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.outOfService, Boolean.class, false,
+                true, new Boolean(true));
+<span class="nc" id="L1264">        add(BACnetObjectType.lifeSafetyPoint, BACnetPropertyIdentifier.mode,</span>
+                LifeSafetyMode.class, false, true, null);
+<span class="nc" id="L1266">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.acceptedModes, LifeSafetyMode.class,
+                true, true, null);
+<span class="nc" id="L1269">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.timeDelay, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L1272">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1275">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.lifeSafetyAlarmValues,
+                LifeSafetyState.class, true, false, null);
+<span class="nc" id="L1278">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.alarmValues, LifeSafetyState.class,
+                true, false, null);
+<span class="nc" id="L1281">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.faultValues, LifeSafetyState.class,
+                true, false, null);
+<span class="nc" id="L1284">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.eventEnable, EventTransitionBits.class,
+                false, false, null);
+<span class="nc" id="L1287">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1290">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.notifyType, NotifyType.class, false,
+                false, null);
+<span class="nc" id="L1293">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L1296">        add(BACnetObjectType.lifeSafetyPoint, BACnetPropertyIdentifier.silenced,</span>
+                SilencedState.class, false, true, null);
+<span class="nc" id="L1298">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.operationExpected,
+                LifeSafetyOperation.class, false, true, null);
+<span class="nc" id="L1301">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.maintenanceRequired, Maintenance.class,
+                false, false, null);
+<span class="nc" id="L1304">        add(BACnetObjectType.lifeSafetyPoint, BACnetPropertyIdentifier.setting,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1306">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.directReading, Real.class, false,
+                false, null);
+<span class="nc" id="L1309">        add(BACnetObjectType.lifeSafetyPoint, BACnetPropertyIdentifier.units,</span>
+                EngineeringUnits.class, false, true, EngineeringUnits.noUnits);
+<span class="nc" id="L1311">        add(BACnetObjectType.lifeSafetyPoint, BACnetPropertyIdentifier.memberOf,</span>
+                DeviceObjectReference.class, true, false, null);
+<span class="nc" id="L1313">        add(BACnetObjectType.lifeSafetyPoint,</span>
+                BACnetPropertyIdentifier.profileName, CharacterString.class,
+                false, false, null);
+
+        // Life safety zone
+<span class="nc" id="L1318">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.lifeSafetyZone,
+                        0x3fffff));
+<span class="nc" id="L1323">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.objectName, CharacterString.class,
+                false, true, null);
+<span class="nc" id="L1326">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.objectType, BACnetObjectType.class,
+                false, true, BACnetObjectType.lifeSafetyZone);
+<span class="nc" id="L1329">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.presentValue, LifeSafetyState.class,
+                false, true, LifeSafetyState.quiet);
+<span class="nc" id="L1332">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.trackingValue, LifeSafetyState.class,
+                false, true, null);
+<span class="nc" id="L1335">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.description, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1338">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.deviceType, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1341">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.statusFlags, StatusFlags.class, false,
+                true, new StatusFlags(false, false, false, true));
+<span class="nc" id="L1344">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.eventState, EventState.class, false,
+                true, EventState.normal);
+<span class="nc" id="L1347">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.reliability, Reliability.class, false,
+                true, null);
+<span class="nc" id="L1350">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.outOfService, Boolean.class, false,
+                true, new Boolean(true));
+<span class="nc" id="L1353">        add(BACnetObjectType.lifeSafetyZone, BACnetPropertyIdentifier.mode,</span>
+                LifeSafetyMode.class, false, true, null);
+<span class="nc" id="L1355">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.acceptedModes, LifeSafetyMode.class,
+                true, true, null);
+<span class="nc" id="L1358">        add(BACnetObjectType.lifeSafetyZone, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1360">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1363">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.lifeSafetyAlarmValues,
+                LifeSafetyState.class, true, false, null);
+<span class="nc" id="L1366">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.alarmValues, LifeSafetyState.class,
+                true, false, null);
+<span class="nc" id="L1369">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.faultValues, LifeSafetyState.class,
+                true, false, null);
+<span class="nc" id="L1372">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.eventEnable, EventTransitionBits.class,
+                false, false, null);
+<span class="nc" id="L1375">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1378">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.notifyType, NotifyType.class, false,
+                false, null);
+<span class="nc" id="L1381">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L1384">        add(BACnetObjectType.lifeSafetyZone, BACnetPropertyIdentifier.silenced,</span>
+                SilencedState.class, false, true, null);
+<span class="nc" id="L1386">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.operationExpected,
+                LifeSafetyOperation.class, false, true, null);
+<span class="nc" id="L1389">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.maintenanceRequired, Maintenance.class,
+                false, false, null);
+<span class="nc" id="L1392">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.zoneMembers,
+                DeviceObjectReference.class, true, true, null);
+<span class="nc" id="L1395">        add(BACnetObjectType.lifeSafetyZone, BACnetPropertyIdentifier.memberOf,</span>
+                DeviceObjectReference.class, true, false, null);
+<span class="nc" id="L1397">        add(BACnetObjectType.lifeSafetyZone,</span>
+                BACnetPropertyIdentifier.profileName, CharacterString.class,
+                false, false, null);
+
+        // Load control
+<span class="nc" id="L1402">        add(BACnetObjectType.loadControl,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.loadControl,
+                        0x3fffff));
+<span class="nc" id="L1407">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L1409">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true,
+                BACnetObjectType.loadControl);
+<span class="nc" id="L1412">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1414">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.presentValue,</span>
+                ShedState.class, false, true, ShedState.shedInactive);
+<span class="nc" id="L1416">        add(BACnetObjectType.loadControl,</span>
+                BACnetPropertyIdentifier.stateDescription,
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1419">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L1422">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L1424">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, true, null);
+<span class="nc" id="L1426">        add(BACnetObjectType.loadControl,</span>
+                BACnetPropertyIdentifier.requestedShedLevel, ShedLevel.class,
+                false, true, null);
+<span class="nc" id="L1429">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.startTime,</span>
+                DateTime.class, false, true, null);
+<span class="nc" id="L1431">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.shedDuration,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1433">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.dutyWindow,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1435">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.enable,</span>
+                Boolean.class, false, true, null);
+<span class="nc" id="L1437">        add(BACnetObjectType.loadControl,</span>
+                BACnetPropertyIdentifier.fullDutyBaseline, Real.class, false,
+                false, null);
+<span class="nc" id="L1440">        add(BACnetObjectType.loadControl,</span>
+                BACnetPropertyIdentifier.expectedShedLevel, ShedLevel.class,
+                false, true, null);
+<span class="nc" id="L1443">        add(BACnetObjectType.loadControl,</span>
+                BACnetPropertyIdentifier.actualShedLevel, ShedLevel.class,
+                false, true, null);
+<span class="nc" id="L1446">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.shedLevels,</span>
+                UnsignedInteger.class, true, true, null);
+<span class="nc" id="L1448">        add(BACnetObjectType.loadControl,</span>
+                BACnetPropertyIdentifier.shedLevelDescriptions,
+                CharacterString.class, true, true, null);
+<span class="nc" id="L1451">        add(BACnetObjectType.loadControl,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1454">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1456">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1458">        add(BACnetObjectType.loadControl,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1461">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L1463">        add(BACnetObjectType.loadControl,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L1466">        add(BACnetObjectType.loadControl, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Loop
+<span class="nc" id="L1470">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.objectIdentifier,</span>
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.loop, 0x3fffff));
+<span class="nc" id="L1473">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L1475">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true, BACnetObjectType.loop);
+<span class="nc" id="L1477">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.presentValue,</span>
+                Real.class, false, true, new Real(0));
+<span class="nc" id="L1479">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1481">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L1484">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L1486">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+<span class="nc" id="L1488">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.outOfService,</span>
+                Boolean.class, false, true, new Boolean(true));
+<span class="nc" id="L1490">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.updateInterval,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1492">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.outputUnits,</span>
+                EngineeringUnits.class, false, true, null);
+<span class="nc" id="L1494">        add(BACnetObjectType.loop,</span>
+                BACnetPropertyIdentifier.manipulatedVariableReference,
+                ObjectPropertyReference.class, false, true, null);
+<span class="nc" id="L1497">        add(BACnetObjectType.loop,</span>
+                BACnetPropertyIdentifier.controlledVariableReference,
+                ObjectPropertyReference.class, false, true, null);
+<span class="nc" id="L1500">        add(BACnetObjectType.loop,</span>
+                BACnetPropertyIdentifier.controlledVariableValue, Real.class,
+                false, true, null);
+<span class="nc" id="L1503">        add(BACnetObjectType.loop,</span>
+                BACnetPropertyIdentifier.controlledVariableUnits,
+                EngineeringUnits.class, false, true, null);
+<span class="nc" id="L1506">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.setpointReference,</span>
+                SetpointReference.class, false, true, null);
+<span class="nc" id="L1508">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.setpoint,</span>
+                Real.class, false, true, null);
+<span class="nc" id="L1510">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.action,</span>
+                Action.class, false, true, null);
+<span class="nc" id="L1512">        add(BACnetObjectType.loop,</span>
+                BACnetPropertyIdentifier.proportionalConstant, Real.class,
+                false, false, null);
+<span class="nc" id="L1515">        add(BACnetObjectType.loop,</span>
+                BACnetPropertyIdentifier.proportionalConstantUnits,
+                EngineeringUnits.class, false, false, null);
+<span class="nc" id="L1518">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.integralConstant,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L1520">        add(BACnetObjectType.loop,</span>
+                BACnetPropertyIdentifier.integralConstantUnits,
+                EngineeringUnits.class, false, false, null);
+<span class="nc" id="L1523">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.derivativeConstant,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L1525">        add(BACnetObjectType.loop,</span>
+                BACnetPropertyIdentifier.derivativeConstantUnits,
+                EngineeringUnits.class, false, false, null);
+<span class="nc" id="L1528">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.bias, Real.class,</span>
+                false, false, null);
+<span class="nc" id="L1530">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.maximumOutput,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L1532">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.minimumOutput,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L1534">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.priorityForWriting,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1536">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.covIncrement,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L1538">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1540">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.notificationClass,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1542">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.errorLimit,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L1544">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.deadband,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L1546">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1548">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.ackedTransitions,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1550">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L1552">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.eventTimeStamps,</span>
+                TimeStamp.class, true, false, null);
+<span class="nc" id="L1554">        add(BACnetObjectType.loop, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Multi state input
+<span class="nc" id="L1558">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.multiStateInput,
+                        0x3fffff));
+<span class="nc" id="L1563">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.objectName, CharacterString.class,
+                false, true, null);
+<span class="nc" id="L1566">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.objectType, BACnetObjectType.class,
+                false, true, BACnetObjectType.multiStateInput);
+<span class="nc" id="L1569">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.presentValue, UnsignedInteger.class,
+                false, true, null);
+<span class="nc" id="L1572">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.description, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1575">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.deviceType, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1578">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.statusFlags, StatusFlags.class, false,
+                true, new StatusFlags(false, false, false, true));
+<span class="nc" id="L1581">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.eventState, EventState.class, false,
+                true, EventState.normal);
+<span class="nc" id="L1584">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.reliability, Reliability.class, false,
+                false, null);
+<span class="nc" id="L1587">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.outOfService, Boolean.class, false,
+                true, new Boolean(true));
+<span class="nc" id="L1590">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.numberOfStates, UnsignedInteger.class,
+                false, true, null);
+<span class="nc" id="L1593">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.stateText, CharacterString.class, true,
+                false, null);
+<span class="nc" id="L1596">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.timeDelay, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L1599">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1602">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.alarmValues, UnsignedInteger.class,
+                true, false, null);
+<span class="nc" id="L1605">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.faultValues, UnsignedInteger.class,
+                true, false, null);
+<span class="nc" id="L1608">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.eventEnable, EventTransitionBits.class,
+                false, false, null);
+<span class="nc" id="L1611">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1614">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.notifyType, NotifyType.class, false,
+                false, null);
+<span class="nc" id="L1617">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L1620">        add(BACnetObjectType.multiStateInput,</span>
+                BACnetPropertyIdentifier.profileName, CharacterString.class,
+                false, false, null);
+
+        // Multi state output
+<span class="nc" id="L1625">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.multiStateOutput,
+                        0x3fffff));
+<span class="nc" id="L1630">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.objectName, CharacterString.class,
+                false, true, null);
+<span class="nc" id="L1633">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.objectType, BACnetObjectType.class,
+                false, true, BACnetObjectType.multiStateOutput);
+<span class="nc" id="L1636">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.presentValue, UnsignedInteger.class,
+                false, true, new UnsignedInteger(0));
+<span class="nc" id="L1639">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.description, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1642">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.deviceType, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1645">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.statusFlags, StatusFlags.class, false,
+                true, new StatusFlags(false, false, false, true));
+<span class="nc" id="L1648">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.eventState, EventState.class, false,
+                true, EventState.normal);
+<span class="nc" id="L1651">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.reliability, Reliability.class, false,
+                false, null);
+<span class="nc" id="L1654">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.outOfService, Boolean.class, false,
+                true, new Boolean(true));
+<span class="nc" id="L1657">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.numberOfStates, UnsignedInteger.class,
+                false, true, null);
+<span class="nc" id="L1660">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.stateText, CharacterString.class, true,
+                false, null);
+<span class="nc" id="L1663">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.priorityArray, PriorityArray.class,
+                false, true, new PriorityArray());
+<span class="nc" id="L1666">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.relinquishDefault,
+                UnsignedInteger.class, false, true, new UnsignedInteger(0));
+<span class="nc" id="L1669">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.timeDelay, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L1672">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1675">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.feedbackValue, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L1678">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.eventEnable, EventTransitionBits.class,
+                false, false, null);
+<span class="nc" id="L1681">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1684">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.notifyType, NotifyType.class, false,
+                false, null);
+<span class="nc" id="L1687">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L1690">        add(BACnetObjectType.multiStateOutput,</span>
+                BACnetPropertyIdentifier.profileName, CharacterString.class,
+                false, false, null);
+
+        // Multi state value
+<span class="nc" id="L1695">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.multiStateValue,
+                        0x3fffff));
+<span class="nc" id="L1700">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.objectName, CharacterString.class,
+                false, true, null);
+<span class="nc" id="L1703">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.objectType, BACnetObjectType.class,
+                false, true, BACnetObjectType.multiStateValue);
+<span class="nc" id="L1706">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.presentValue, UnsignedInteger.class,
+                false, true, new UnsignedInteger(0));
+<span class="nc" id="L1709">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.description, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1712">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.statusFlags, StatusFlags.class, false,
+                true, new StatusFlags(false, false, false, true));
+<span class="nc" id="L1715">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.eventState, EventState.class, false,
+                true, EventState.normal);
+<span class="nc" id="L1718">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.reliability, Reliability.class, false,
+                false, null);
+<span class="nc" id="L1721">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.outOfService, Boolean.class, false,
+                true, new Boolean(true));
+<span class="nc" id="L1724">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.numberOfStates, UnsignedInteger.class,
+                false, true, null);
+<span class="nc" id="L1727">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.stateText, CharacterString.class, true,
+                false, null);
+<span class="nc" id="L1730">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.priorityArray, PriorityArray.class,
+                false, false, new PriorityArray());
+<span class="nc" id="L1733">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.relinquishDefault,
+                UnsignedInteger.class, false, false, new UnsignedInteger(0));
+<span class="nc" id="L1736">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.timeDelay, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L1739">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1742">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.alarmValues, UnsignedInteger.class,
+                true, false, null);
+<span class="nc" id="L1745">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.faultValues, UnsignedInteger.class,
+                true, false, null);
+<span class="nc" id="L1748">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.eventEnable, EventTransitionBits.class,
+                false, false, null);
+<span class="nc" id="L1751">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1754">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.notifyType, NotifyType.class, false,
+                false, null);
+<span class="nc" id="L1757">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L1760">        add(BACnetObjectType.multiStateValue,</span>
+                BACnetPropertyIdentifier.profileName, CharacterString.class,
+                false, false, null);
+
+        // Notification class
+<span class="nc" id="L1765">        add(BACnetObjectType.notificationClass,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.notificationClass,
+                        0x3fffff));
+<span class="nc" id="L1770">        add(BACnetObjectType.notificationClass,</span>
+                BACnetPropertyIdentifier.objectName, CharacterString.class,
+                false, true, null);
+<span class="nc" id="L1773">        add(BACnetObjectType.notificationClass,</span>
+                BACnetPropertyIdentifier.objectType, BACnetObjectType.class,
+                false, true, BACnetObjectType.notificationClass);
+<span class="nc" id="L1776">        add(BACnetObjectType.notificationClass,</span>
+                BACnetPropertyIdentifier.description, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1779">        add(BACnetObjectType.notificationClass,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1782">        add(BACnetObjectType.notificationClass,</span>
+                BACnetPropertyIdentifier.priority, UnsignedInteger.class, true,
+                true, null);
+<span class="nc" id="L1785">        add(BACnetObjectType.notificationClass,</span>
+                BACnetPropertyIdentifier.ackRequired, EventTransitionBits.class,
+                false, true, null);
+<span class="nc" id="L1788">        add(BACnetObjectType.notificationClass,</span>
+                BACnetPropertyIdentifier.recipientList, Destination.class, true,
+                true, null);
+<span class="nc" id="L1791">        add(BACnetObjectType.notificationClass,</span>
+                BACnetPropertyIdentifier.profileName, CharacterString.class,
+                false, false, null);
+
+        // Program
+<span class="nc" id="L1796">        add(BACnetObjectType.program, BACnetPropertyIdentifier.objectIdentifier,</span>
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.program, 0x3fffff));
+<span class="nc" id="L1799">        add(BACnetObjectType.program, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L1801">        add(BACnetObjectType.program, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true, BACnetObjectType.program);
+<span class="nc" id="L1803">        add(BACnetObjectType.program, BACnetPropertyIdentifier.programState,</span>
+                ProgramState.class, false, true, null);
+<span class="nc" id="L1805">        add(BACnetObjectType.program, BACnetPropertyIdentifier.programChange,</span>
+                ProgramRequest.class, false, true, null);
+<span class="nc" id="L1807">        add(BACnetObjectType.program, BACnetPropertyIdentifier.reasonForHalt,</span>
+                ProgramError.class, false, false, null);
+<span class="nc" id="L1809">        add(BACnetObjectType.program,</span>
+                BACnetPropertyIdentifier.descriptionOfHalt,
+                CharacterString.class, false, true, null);
+<span class="nc" id="L1812">        add(BACnetObjectType.program, BACnetPropertyIdentifier.programLocation,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1814">        add(BACnetObjectType.program, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1816">        add(BACnetObjectType.program, BACnetPropertyIdentifier.instanceOf,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1818">        add(BACnetObjectType.program, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L1821">        add(BACnetObjectType.program, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+<span class="nc" id="L1823">        add(BACnetObjectType.program, BACnetPropertyIdentifier.outOfService,</span>
+                Boolean.class, false, true, new Boolean(true));
+<span class="nc" id="L1825">        add(BACnetObjectType.program, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+
+        // Pulse converter
+<span class="nc" id="L1829">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.pulseConverter,
+                        0x3fffff));
+<span class="nc" id="L1834">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.objectName, CharacterString.class,
+                false, true, null);
+<span class="nc" id="L1837">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.objectType, BACnetObjectType.class,
+                false, true, BACnetObjectType.pulseConverter);
+<span class="nc" id="L1840">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.description, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1843">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.presentValue, Real.class, false, true,
+                null);
+<span class="nc" id="L1846">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.inputReference,
+                ObjectPropertyReference.class, false, false, null);
+<span class="nc" id="L1849">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.statusFlags, StatusFlags.class, false,
+                true, new StatusFlags(false, false, false, true));
+<span class="nc" id="L1852">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.eventState, EventState.class, false,
+                true, EventState.normal);
+<span class="nc" id="L1855">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.reliability, Reliability.class, false,
+                false, null);
+<span class="nc" id="L1858">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.outOfService, Boolean.class, false,
+                true, new Boolean(true));
+<span class="nc" id="L1861">        add(BACnetObjectType.pulseConverter, BACnetPropertyIdentifier.units,</span>
+                EngineeringUnits.class, false, true, EngineeringUnits.noUnits);
+<span class="nc" id="L1863">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.scaleFactor, Real.class, false, true,
+                null);
+<span class="nc" id="L1866">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.adjustValue, Real.class, false, true,
+                null);
+<span class="nc" id="L1869">        add(BACnetObjectType.pulseConverter, BACnetPropertyIdentifier.count,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1871">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.updateTime, DateTime.class, false,
+                true, null);
+<span class="nc" id="L1874">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.countChangeTime, DateTime.class, false,
+                true, null);
+<span class="nc" id="L1877">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.countBeforeChange,
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1880">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.covIncrement, Real.class, false, false,
+                null);
+<span class="nc" id="L1883">        add(BACnetObjectType.pulseConverter, BACnetPropertyIdentifier.covPeriod,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1885">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1888">        add(BACnetObjectType.pulseConverter, BACnetPropertyIdentifier.timeDelay,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L1890">        add(BACnetObjectType.pulseConverter, BACnetPropertyIdentifier.highLimit,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L1892">        add(BACnetObjectType.pulseConverter, BACnetPropertyIdentifier.lowLimit,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L1894">        add(BACnetObjectType.pulseConverter, BACnetPropertyIdentifier.deadband,</span>
+                Real.class, false, false, null);
+<span class="nc" id="L1896">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.limitEnable, LimitEnable.class, false,
+                false, null);
+<span class="nc" id="L1899">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.eventEnable, EventTransitionBits.class,
+                false, false, null);
+<span class="nc" id="L1902">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L1905">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.notifyType, NotifyType.class, false,
+                false, null);
+<span class="nc" id="L1908">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L1911">        add(BACnetObjectType.pulseConverter,</span>
+                BACnetPropertyIdentifier.profileName, CharacterString.class,
+                false, false, null);
+
+        // Schedule
+<span class="nc" id="L1916">        add(BACnetObjectType.schedule,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.schedule,
+                        0x3fffff));
+<span class="nc" id="L1921">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L1923">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true, BACnetObjectType.schedule);
+<span class="nc" id="L1925">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.presentValue,</span>
+                AmbiguousValue.class, false, true, null);
+<span class="nc" id="L1927">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1929">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.effectivePeriod,</span>
+                DateRange.class, false, true, null);
+<span class="nc" id="L1931">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.weeklySchedule,</span>
+                DailySchedule.class, true, false, null);
+<span class="nc" id="L1933">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.scheduleDefault,</span>
+                AmbiguousValue.class, false, true, null);
+<span class="nc" id="L1935">        add(BACnetObjectType.schedule,</span>
+                BACnetPropertyIdentifier.exceptionSchedule, SpecialEvent.class,
+                true, false, null);
+<span class="nc" id="L1938">        add(BACnetObjectType.schedule,</span>
+                BACnetPropertyIdentifier.listOfObjectPropertyReferences,
+                DeviceObjectPropertyReference.class, true, true, null);
+<span class="nc" id="L1941">        add(BACnetObjectType.schedule,</span>
+                BACnetPropertyIdentifier.priorityForWriting,
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L1944">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L1947">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, true, null);
+<span class="nc" id="L1949">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.outOfService,</span>
+                Boolean.class, false, true, new Boolean(true));
+<span class="nc" id="L1951">        add(BACnetObjectType.schedule, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, true, null);
+
+        // Structured View
+<span class="nc" id="L1955">        add(BACnetObjectType.structuredView,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.structuredView,
+                        0x3fffff));
+<span class="nc" id="L1960">        add(BACnetObjectType.structuredView,</span>
+                BACnetPropertyIdentifier.objectName, CharacterString.class,
+                false, true, null);
+<span class="nc" id="L1963">        add(BACnetObjectType.structuredView,</span>
+                BACnetPropertyIdentifier.objectType, BACnetObjectType.class,
+                false, true, BACnetObjectType.structuredView);
+<span class="nc" id="L1966">        add(BACnetObjectType.structuredView,</span>
+                BACnetPropertyIdentifier.description, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1969">        add(BACnetObjectType.structuredView, BACnetPropertyIdentifier.nodeType,</span>
+                NodeType.class, false, false, null);
+<span class="nc" id="L1971">        add(BACnetObjectType.structuredView,</span>
+                BACnetPropertyIdentifier.nodeSubtype, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L1974">        add(BACnetObjectType.structuredView,</span>
+                BACnetPropertyIdentifier.subordinateList,
+                DeviceObjectReference.class, true, true, null);
+<span class="nc" id="L1977">        add(BACnetObjectType.structuredView,</span>
+                BACnetPropertyIdentifier.subordinateAnnotations,
+                CharacterString.class, true, false, null);
+<span class="nc" id="L1980">        add(BACnetObjectType.structuredView,</span>
+                BACnetPropertyIdentifier.profileName, CharacterString.class,
+                false, false, null);
+
+        // Trend log
+<span class="nc" id="L1985">        add(BACnetObjectType.trendLog,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.trendLog,
+                        0x3fffff));
+<span class="nc" id="L1990">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.objectName,</span>
+                CharacterString.class, false, true, null);
+<span class="nc" id="L1992">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.objectType,</span>
+                BACnetObjectType.class, false, true, BACnetObjectType.trendLog);
+<span class="nc" id="L1994">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.description,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L1996">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.enable,</span>
+                Boolean.class, false, true, null);
+<span class="nc" id="L1998">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.startTime,</span>
+                DateTime.class, false, false, null);
+<span class="nc" id="L2000">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.stopTime,</span>
+                DateTime.class, false, false, null);
+<span class="nc" id="L2002">        add(BACnetObjectType.trendLog,</span>
+                BACnetPropertyIdentifier.logDeviceObjectProperty,
+                DeviceObjectPropertyReference.class, false, false, null);
+<span class="nc" id="L2005">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.logInterval,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2007">        add(BACnetObjectType.trendLog,</span>
+                BACnetPropertyIdentifier.covResubscriptionInterval,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2010">        add(BACnetObjectType.trendLog,</span>
+                BACnetPropertyIdentifier.clientCovIncrement, ClientCov.class,
+                false, false, null);
+<span class="nc" id="L2013">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.stopWhenFull,</span>
+                Boolean.class, false, true, null);
+<span class="nc" id="L2015">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.bufferSize,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L2017">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.logBuffer,</span>
+                LogRecord.class, true, true, new SequenceOf&lt;LogRecord&gt;());
+<span class="nc" id="L2019">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.recordCount,</span>
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L2021">        add(BACnetObjectType.trendLog,</span>
+                BACnetPropertyIdentifier.totalRecordCount,
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L2024">        add(BACnetObjectType.trendLog,</span>
+                BACnetPropertyIdentifier.notificationThreshold,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2027">        add(BACnetObjectType.trendLog,</span>
+                BACnetPropertyIdentifier.recordsSinceNotification,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2030">        add(BACnetObjectType.trendLog,</span>
+                BACnetPropertyIdentifier.lastNotifyRecord,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2033">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.eventState,</span>
+                EventState.class, false, true, EventState.normal);
+<span class="nc" id="L2035">        add(BACnetObjectType.trendLog,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2038">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.eventEnable,</span>
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L2040">        add(BACnetObjectType.trendLog,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L2043">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.notifyType,</span>
+                NotifyType.class, false, false, null);
+<span class="nc" id="L2045">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.eventTimeStamps,</span>
+                TimeStamp.class, true, false, null);
+<span class="nc" id="L2047">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.profileName,</span>
+                CharacterString.class, false, false, null);
+<span class="nc" id="L2049">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.loggingType,</span>
+                LoggingType.class, false, true, null);
+<span class="nc" id="L2051">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.alignIntervals,</span>
+                Boolean.class, false, false, null);
+<span class="nc" id="L2053">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.intervalOffset,</span>
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2055">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.trigger,</span>
+                Boolean.class, false, false, null);
+<span class="nc" id="L2057">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.statusFlags,</span>
+                StatusFlags.class, false, true,
+                new StatusFlags(false, false, false, true));
+<span class="nc" id="L2060">        add(BACnetObjectType.trendLog, BACnetPropertyIdentifier.reliability,</span>
+                Reliability.class, false, false, null);
+
+        // Trend log multiple
+<span class="nc" id="L2064">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.objectIdentifier,
+                BACnetObjectIdentifier.class, false, true,
+                new BACnetObjectIdentifier(BACnetObjectType.trendLogMultiple,
+                        0x3fffff));
+<span class="nc" id="L2069">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.objectName, CharacterString.class,
+                false, true, null);
+<span class="nc" id="L2072">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.objectType, BACnetObjectType.class,
+                false, true, BACnetObjectType.trendLogMultiple);
+<span class="nc" id="L2075">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.description, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L2078">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.statusFlags, StatusFlags.class, false,
+                true, new StatusFlags(false, false, false, true));
+<span class="nc" id="L2081">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.eventState, EventState.class, false,
+                true, EventState.normal);
+<span class="nc" id="L2084">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.reliability, Reliability.class, false,
+                false, null);
+<span class="nc" id="L2087">        add(BACnetObjectType.trendLogMultiple, BACnetPropertyIdentifier.enable,</span>
+                Boolean.class, false, true, null);
+<span class="nc" id="L2089">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.startTime, DateTime.class, false,
+                false, null);
+<span class="nc" id="L2092">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.stopTime, DateTime.class, false, false,
+                null);
+<span class="nc" id="L2095">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.logDeviceObjectProperty,
+                DeviceObjectPropertyReference.class, true, true,
+                new SequenceOf&lt;DeviceObjectPropertyReference&gt;());
+<span class="nc" id="L2099">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.loggingType, LoggingType.class, false,
+                true, null);
+<span class="nc" id="L2102">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.logInterval, UnsignedInteger.class,
+                false, true, null);
+<span class="nc" id="L2105">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.alignIntervals, Boolean.class, false,
+                false, null);
+<span class="nc" id="L2108">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.intervalOffset, UnsignedInteger.class,
+                false, false, null);
+<span class="nc" id="L2111">        add(BACnetObjectType.trendLogMultiple, BACnetPropertyIdentifier.trigger,</span>
+                Boolean.class, false, false, null);
+<span class="nc" id="L2113">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.stopWhenFull, Boolean.class, false,
+                true, null);
+<span class="nc" id="L2116">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.bufferSize, UnsignedInteger.class,
+                false, true, null);
+<span class="nc" id="L2119">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.logBuffer, LogMultipleRecord.class,
+                true, true, new SequenceOf&lt;LogMultipleRecord&gt;());
+<span class="nc" id="L2122">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.recordCount, UnsignedInteger.class,
+                false, true, null);
+<span class="nc" id="L2125">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.totalRecordCount,
+                UnsignedInteger.class, false, true, null);
+<span class="nc" id="L2128">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.notificationThreshold,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2131">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.recordsSinceNotification,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2134">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.lastNotifyRecord,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2137">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.notificationClass,
+                UnsignedInteger.class, false, false, null);
+<span class="nc" id="L2140">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.eventEnable, EventTransitionBits.class,
+                false, false, null);
+<span class="nc" id="L2143">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.ackedTransitions,
+                EventTransitionBits.class, false, false, null);
+<span class="nc" id="L2146">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.notifyType, NotifyType.class, false,
+                false, null);
+<span class="nc" id="L2149">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.eventTimeStamps, TimeStamp.class, true,
+                false, null);
+<span class="nc" id="L2152">        add(BACnetObjectType.trendLogMultiple,</span>
+                BACnetPropertyIdentifier.profileName, CharacterString.class,
+                false, false, null);
+<span class="nc" id="L2155">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

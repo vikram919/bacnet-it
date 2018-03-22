@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ch.fhnw.bacnetit.ase.application.transaction.TestTransactionManager" tests="8" skipped="0" failures="0" errors="0" timestamp="2018-03-21T20:19:16" hostname="DESKTOP-QBU1TN7" time="0.168">
+  <properties/>
+  <testcase name="amountUniqueInvokeId_inRange0To255combined" classname="ch.fhnw.bacnetit.ase.application.transaction.TestTransactionManager" time="0.063"/>
+  <testcase name="amountUniqueInvokeId_inRange0To255" classname="ch.fhnw.bacnetit.ase.application.transaction.TestTransactionManager" time="0.046"/>
+  <testcase name="findNotPresentTransaction" classname="ch.fhnw.bacnetit.ase.application.transaction.TestTransactionManager" time="0.001"/>
+  <testcase name="createOutboundTransactionWithoutInvokeIdAndGetAnAnswer" classname="ch.fhnw.bacnetit.ase.application.transaction.TestTransactionManager" time="0.001"/>
+  <testcase name="amountUniqueInvokeId" classname="ch.fhnw.bacnetit.ase.application.transaction.TestTransactionManager" time="0.017"/>
+  <testcase name="createOutboundTransactionWithInvokeIdThatWasNeverSeenBefore2" classname="ch.fhnw.bacnetit.ase.application.transaction.TestTransactionManager" time="0.0"/>
+  <testcase name="amountUniqueInvokeId_wrong" classname="ch.fhnw.bacnetit.ase.application.transaction.TestTransactionManager" time="0.034"/>
+  <testcase name="createOutboundTransactionWithInvokeIdThatWasNeverSeenBefore" classname="ch.fhnw.bacnetit.ase.application.transaction.TestTransactionManager" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+java.lang.Exception: Inconsistency during unique id calculation
+]]></system-err>
+</testsuite>

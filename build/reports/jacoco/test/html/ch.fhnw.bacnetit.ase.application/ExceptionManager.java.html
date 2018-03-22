@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExceptionManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.ase.application</a> &gt; <span class="el_source">ExceptionManager.java</span></div><h1>ExceptionManager.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.ase.application;
+
+import ch.fhnw.bacnetit.ase.application.service.ASEChannel;
+import ch.fhnw.bacnetit.ase.application.transaction.Transaction;
+import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
+import ch.fhnw.bacnetit.ase.encoding.exception.TransportErrorException;
+
+<span class="nc" id="L8">public class ExceptionManager {</span>
+
+    public void manageException(final Throwable cause, final BACnetEID source,
+            final Transaction transaction, final ASEChannel channel) {
+        // Exception infos
+<span class="nc" id="L13">        System.err.println(&quot;--------------------------------------&quot;);</span>
+<span class="nc" id="L14">        System.err.println(&quot;--------------------------------------&quot;);</span>
+<span class="nc" id="L15">        System.err.println(&quot;EXCEPTION HANDLING:&quot;);</span>
+
+        /*
+         * if (transaction != null) {
+         * System.err.println(&quot;Does remove transaction &quot;+transaction.toString())
+         * ; channel.getTransactionManager().removeTransaction(transaction); }
+         */
+<span class="nc" id="L22">        System.err.println(&quot;Message:&quot; + cause.getMessage());</span>
+<span class="nc" id="L23">        System.err.println(&quot;Stacktrace:&quot;);</span>
+<span class="nc" id="L24">        cause.printStackTrace(System.err);</span>
+
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        if (cause instanceof TransportErrorException) {</span>
+<span class="nc" id="L27">            System.err.println(</span>
+                    &quot;-&gt; -&gt;Exception contains a BACnet Transport Error&quot;);
+<span class="nc" id="L29">            System.err.println(&quot;-&gt; -&gt; -&gt;&quot; + ((TransportErrorException) cause)</span>
+<span class="nc" id="L30">                    .getTransportError().toString());</span>
+        } else {
+<span class="nc" id="L32">            System.err.println(&quot;Exception contains no BACnet Transport Error&quot;);</span>
+        }
+<span class="nc" id="L34">        System.err.println(&quot;--------------------------------------&quot;);</span>
+<span class="nc" id="L35">        System.err.println(&quot;--------------------------------------&quot;);</span>
+        // Exception handling
+        // if (cause instanceof java.io.IOException) {
+        // channel.initializeAndStart();
+        // }
+
+<span class="nc" id="L41">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

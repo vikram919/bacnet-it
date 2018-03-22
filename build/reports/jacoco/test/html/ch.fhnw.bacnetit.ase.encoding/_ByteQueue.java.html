@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>_ByteQueue.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.ase.encoding</a> &gt; <span class="el_source">_ByteQueue.java</span></div><h1>_ByteQueue.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.ase.encoding;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+
+public class _ByteQueue implements Cloneable {
+
+    private byte[] queue;
+
+    private int head;
+
+    private int tail;
+
+    private int size;
+
+    private int markHead;
+
+    private int markTail;
+
+    private int markSize;
+
+    public _ByteQueue() {
+<span class="fc" id="L25">        this(1024);</span>
+<span class="fc" id="L26">    }</span>
+
+<span class="fc" id="L28">    public _ByteQueue(final int initialLength) {</span>
+<span class="fc" id="L29">        head = -1;</span>
+<span class="fc" id="L30">        tail = 0;</span>
+<span class="fc" id="L31">        size = 0;</span>
+<span class="fc" id="L32">        queue = new byte[initialLength];</span>
+<span class="fc" id="L33">    }</span>
+
+    public _ByteQueue(final byte b[]) {
+<span class="fc" id="L36">        this(b.length);</span>
+<span class="fc" id="L37">        push(b, 0, b.length);</span>
+<span class="fc" id="L38">    }</span>
+
+    public _ByteQueue(final byte b[], final int pos, final int length) {
+<span class="nc" id="L41">        this(length);</span>
+<span class="nc" id="L42">        push(b, pos, length);</span>
+<span class="nc" id="L43">    }</span>
+
+    public void push(final byte b) {
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        if (room() == 0) {</span>
+<span class="nc" id="L47">            expand();</span>
+        }
+<span class="fc" id="L49">        queue[tail] = b;</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (head == -1) {</span>
+<span class="fc" id="L51">            head = 0;</span>
+        }
+<span class="fc" id="L53">        tail = (tail + 1) % queue.length;</span>
+<span class="fc" id="L54">        size++;</span>
+<span class="fc" id="L55">    }</span>
+
+    public void push(final int i) {
+<span class="fc" id="L58">        push((byte) i);</span>
+<span class="fc" id="L59">    }</span>
+
+    public void push(final long l) {
+<span class="fc" id="L62">        push((byte) (int) l);</span>
+<span class="fc" id="L63">    }</span>
+
+    public void pushU2B(final int i) {
+<span class="nc" id="L66">        push((byte) (i &gt;&gt; 8));</span>
+<span class="nc" id="L67">        push((byte) i);</span>
+<span class="nc" id="L68">    }</span>
+
+    public void pushU3B(final int i) {
+<span class="nc" id="L71">        push((byte) (i &gt;&gt; 16));</span>
+<span class="nc" id="L72">        push((byte) (i &gt;&gt; 8));</span>
+<span class="nc" id="L73">        push((byte) i);</span>
+<span class="nc" id="L74">    }</span>
+
+    public void pushS4B(final int i) {
+<span class="nc" id="L77">        pushInt(i);</span>
+<span class="nc" id="L78">    }</span>
+
+    public void pushU4B(final long l) {
+<span class="nc" id="L81">        push((byte) (int) (l &gt;&gt; 24));</span>
+<span class="nc" id="L82">        push((byte) (int) (l &gt;&gt; 16));</span>
+<span class="nc" id="L83">        push((byte) (int) (l &gt;&gt; 8));</span>
+<span class="nc" id="L84">        push((byte) (int) l);</span>
+<span class="nc" id="L85">    }</span>
+
+    public void pushChar(final char c) {
+<span class="nc" id="L88">        push((byte) (c &gt;&gt; 8));</span>
+<span class="nc" id="L89">        push((byte) c);</span>
+<span class="nc" id="L90">    }</span>
+
+    public void pushDouble(final double d) {
+<span class="nc" id="L93">        pushLong(Double.doubleToLongBits(d));</span>
+<span class="nc" id="L94">    }</span>
+
+    public void pushFloat(final float f) {
+<span class="nc" id="L97">        pushInt(Float.floatToIntBits(f));</span>
+<span class="nc" id="L98">    }</span>
+
+    public void pushInt(final int i) {
+<span class="nc" id="L101">        push((byte) (i &gt;&gt; 24));</span>
+<span class="nc" id="L102">        push((byte) (i &gt;&gt; 16));</span>
+<span class="nc" id="L103">        push((byte) (i &gt;&gt; 8));</span>
+<span class="nc" id="L104">        push((byte) i);</span>
+<span class="nc" id="L105">    }</span>
+
+    public void pushLong(final long l) {
+<span class="nc" id="L108">        push((byte) (int) (l &gt;&gt; 56));</span>
+<span class="nc" id="L109">        push((byte) (int) (l &gt;&gt; 48));</span>
+<span class="nc" id="L110">        push((byte) (int) (l &gt;&gt; 40));</span>
+<span class="nc" id="L111">        push((byte) (int) (l &gt;&gt; 32));</span>
+<span class="nc" id="L112">        push((byte) (int) (l &gt;&gt; 24));</span>
+<span class="nc" id="L113">        push((byte) (int) (l &gt;&gt; 16));</span>
+<span class="nc" id="L114">        push((byte) (int) (l &gt;&gt; 8));</span>
+<span class="nc" id="L115">        push((byte) (int) l);</span>
+<span class="nc" id="L116">    }</span>
+
+    public void pushShort(final short s) {
+<span class="nc" id="L119">        push((byte) (s &gt;&gt; 8));</span>
+<span class="nc" id="L120">        push((byte) s);</span>
+<span class="nc" id="L121">    }</span>
+
+    public void read(final InputStream in, final int length)
+            throws IOException {
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (length == 0) {</span>
+<span class="nc" id="L126">            return;</span>
+        }
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        for (; room() &lt; length; expand()) {</span>
+            ;
+        }
+<span class="nc" id="L131">        final int tailLength = queue.length - tail;</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (tailLength &gt; length) {</span>
+<span class="nc" id="L133">            readImpl(in, tail, length);</span>
+        } else {
+<span class="nc" id="L135">            readImpl(in, tail, tailLength);</span>
+        }
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (length &gt; tailLength) {</span>
+<span class="nc" id="L138">            readImpl(in, 0, length - tailLength);</span>
+        }
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (head == -1) {</span>
+<span class="nc" id="L141">            head = 0;</span>
+        }
+<span class="nc" id="L143">        tail = (tail + length) % queue.length;</span>
+<span class="nc" id="L144">        size += length;</span>
+<span class="nc" id="L145">    }</span>
+
+    private void readImpl(final InputStream in, int offset, int length)
+            throws IOException {
+        int readcount;
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        for (; length &gt; 0; length -= readcount) {</span>
+<span class="nc" id="L151">            readcount = in.read(queue, offset, length);</span>
+<span class="nc" id="L152">            offset += readcount;</span>
+        }
+<span class="nc" id="L154">    }</span>
+
+    public void push(final byte b[]) {
+<span class="fc" id="L157">        push(b, 0, b.length);</span>
+<span class="fc" id="L158">    }</span>
+
+    public void push(final byte b[], final int pos, final int length) {
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">        if (length == 0) {</span>
+<span class="nc" id="L162">            return;</span>
+        }
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">        for (; room() &lt; length; expand()) {</span>
+            ;
+        }
+<span class="fc" id="L167">        final int tailLength = queue.length - tail;</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        if (tailLength &gt; length) {</span>
+<span class="fc" id="L169">            System.arraycopy(b, pos, queue, tail, length);</span>
+        } else {
+<span class="fc" id="L171">            System.arraycopy(b, pos, queue, tail, tailLength);</span>
+        }
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if (length &gt; tailLength) {</span>
+<span class="nc" id="L174">            System.arraycopy(b, tailLength + pos, queue, 0,</span>
+                    length - tailLength);
+        }
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        if (head == -1) {</span>
+<span class="fc" id="L178">            head = 0;</span>
+        }
+<span class="fc" id="L180">        tail = (tail + length) % queue.length;</span>
+<span class="fc" id="L181">        size += length;</span>
+<span class="fc" id="L182">    }</span>
+
+    public void push(_ByteQueue source) {
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (source.size == 0) {</span>
+<span class="nc" id="L186">            return;</span>
+        }
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (source == this) {</span>
+<span class="nc" id="L189">            source = (_ByteQueue) clone();</span>
+        }
+<span class="nc" id="L191">        int firstCopyLen = source.queue.length - source.head;</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        if (source.size &lt; firstCopyLen) {</span>
+<span class="nc" id="L193">            firstCopyLen = source.size;</span>
+        }
+<span class="nc" id="L195">        push(source.queue, source.head, firstCopyLen);</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        if (firstCopyLen &lt; source.size) {</span>
+<span class="nc" id="L197">            push(source.queue, 0, source.tail);</span>
+        }
+<span class="nc" id="L199">    }</span>
+
+    public void mark() {
+<span class="nc" id="L202">        markHead = head;</span>
+<span class="nc" id="L203">        markTail = tail;</span>
+<span class="nc" id="L204">        markSize = size;</span>
+<span class="nc" id="L205">    }</span>
+
+    public void reset() {
+<span class="nc" id="L208">        head = markHead;</span>
+<span class="nc" id="L209">        tail = markTail;</span>
+<span class="nc" id="L210">        size = markSize;</span>
+<span class="nc" id="L211">    }</span>
+
+    public byte pop() {
+<span class="fc" id="L214">        final byte retval = queue[head];</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">        if (size == 1) {</span>
+<span class="fc" id="L216">            head = -1;</span>
+<span class="fc" id="L217">            tail = 0;</span>
+        } else {
+<span class="fc" id="L219">            head = (head + 1) % queue.length;</span>
+        }
+<span class="fc" id="L221">        size--;</span>
+<span class="fc" id="L222">        return retval;</span>
+    }
+
+    public int popU1B() {
+<span class="nc" id="L226">        return pop() &amp; 0xff;</span>
+    }
+
+    public int popU2B() {
+<span class="nc" id="L230">        return (pop() &amp; 0xff) &lt;&lt; 8 | pop() &amp; 0xff;</span>
+    }
+
+    public int popU3B() {
+<span class="nc" id="L234">        return (pop() &amp; 0xff) &lt;&lt; 16 | (pop() &amp; 0xff) &lt;&lt; 8 | pop() &amp; 0xff;</span>
+    }
+
+    public int popS4B() {
+<span class="nc" id="L238">        return (pop() &amp; 0xff) &lt;&lt; 24 | (pop() &amp; 0xff) &lt;&lt; 16 | (pop() &amp; 0xff) &lt;&lt; 8</span>
+<span class="nc" id="L239">                | pop() &amp; 0xff;</span>
+    }
+
+    public long popU4B() {
+<span class="nc" id="L243">        return (long) (pop() &amp; 0xff) &lt;&lt; 24 | (long) (pop() &amp; 0xff) &lt;&lt; 16</span>
+<span class="nc" id="L244">                | (long) (pop() &amp; 0xff) &lt;&lt; 8 | pop() &amp; 0xff;</span>
+    }
+
+    public int pop(final byte buf[]) {
+<span class="nc" id="L248">        return pop(buf, 0, buf.length);</span>
+    }
+
+    public int pop(final byte buf[], final int pos, int length) {
+<span class="fc" id="L252">        length = peek(buf, pos, length);</span>
+<span class="fc" id="L253">        size -= length;</span>
+<span class="pc bpc" id="L254" title="1 of 2 branches missed.">        if (size == 0) {</span>
+<span class="fc" id="L255">            head = -1;</span>
+<span class="fc" id="L256">            tail = 0;</span>
+        } else {
+<span class="nc" id="L258">            head = (head + length) % queue.length;</span>
+        }
+<span class="fc" id="L260">        return length;</span>
+    }
+
+    public int pop(int length) {
+<span class="nc bnc" id="L264" title="All 2 branches missed.">        if (length == 0) {</span>
+<span class="nc" id="L265">            return 0;</span>
+        }
+<span class="nc bnc" id="L267" title="All 2 branches missed.">        if (size == 0) {</span>
+<span class="nc" id="L268">            throw new ArrayIndexOutOfBoundsException(-1);</span>
+        }
+<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (length &gt; size) {</span>
+<span class="nc" id="L271">            length = size;</span>
+        }
+<span class="nc" id="L273">        size -= length;</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        if (size == 0) {</span>
+<span class="nc" id="L275">            head = -1;</span>
+<span class="nc" id="L276">            tail = 0;</span>
+        } else {
+<span class="nc" id="L278">            head = (head + length) % queue.length;</span>
+        }
+<span class="nc" id="L280">        return length;</span>
+    }
+
+    public String popString(final int length, final Charset charset) {
+<span class="nc" id="L284">        final byte b[] = new byte[length];</span>
+<span class="nc" id="L285">        pop(b);</span>
+<span class="nc" id="L286">        return new String(b, charset);</span>
+    }
+
+    public byte[] popAll() {
+<span class="fc" id="L290">        final byte data[] = new byte[size];</span>
+<span class="fc" id="L291">        pop(data, 0, data.length);</span>
+<span class="fc" id="L292">        return data;</span>
+    }
+
+    public void write(final OutputStream out) throws IOException {
+<span class="nc" id="L296">        write(out, size);</span>
+<span class="nc" id="L297">    }</span>
+
+    public void write(final OutputStream out, int length) throws IOException {
+<span class="nc bnc" id="L300" title="All 2 branches missed.">        if (length == 0) {</span>
+<span class="nc" id="L301">            return;</span>
+        }
+<span class="nc bnc" id="L303" title="All 2 branches missed.">        if (size == 0) {</span>
+<span class="nc" id="L304">            throw new ArrayIndexOutOfBoundsException(-1);</span>
+        }
+<span class="nc bnc" id="L306" title="All 2 branches missed.">        if (length &gt; size) {</span>
+<span class="nc" id="L307">            length = size;</span>
+        }
+<span class="nc" id="L309">        int firstCopyLen = queue.length - head;</span>
+<span class="nc bnc" id="L310" title="All 2 branches missed.">        if (length &lt; firstCopyLen) {</span>
+<span class="nc" id="L311">            firstCopyLen = length;</span>
+        }
+<span class="nc" id="L313">        out.write(queue, head, firstCopyLen);</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">        if (firstCopyLen &lt; length) {</span>
+<span class="nc" id="L315">            out.write(queue, 0, length - firstCopyLen);</span>
+        }
+<span class="nc" id="L317">        size -= length;</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">        if (size == 0) {</span>
+<span class="nc" id="L319">            head = -1;</span>
+<span class="nc" id="L320">            tail = 0;</span>
+        } else {
+<span class="nc" id="L322">            head = (head + length) % queue.length;</span>
+        }
+<span class="nc" id="L324">    }</span>
+
+    public byte tailPop() {
+<span class="nc bnc" id="L327" title="All 2 branches missed.">        if (size == 0) {</span>
+<span class="nc" id="L328">            throw new ArrayIndexOutOfBoundsException(-1);</span>
+        }
+<span class="nc" id="L330">        tail = ((tail + queue.length) - 1) % queue.length;</span>
+<span class="nc" id="L331">        final byte retval = queue[tail];</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">        if (size == 1) {</span>
+<span class="nc" id="L333">            head = -1;</span>
+<span class="nc" id="L334">            tail = 0;</span>
+        }
+<span class="nc" id="L336">        size--;</span>
+<span class="nc" id="L337">        return retval;</span>
+    }
+
+    public byte peek(int index) {
+<span class="pc bpc" id="L341" title="1 of 2 branches missed.">        if (index &gt;= size) {</span>
+<span class="nc" id="L342">            throw new IllegalArgumentException((new StringBuilder())</span>
+<span class="nc" id="L343">                    .append(&quot;index &quot;).append(index).append(&quot; is &gt;= queue size &quot;)</span>
+<span class="nc" id="L344">                    .append(size).toString());</span>
+        } else {
+<span class="fc" id="L346">            index = (index + head) % queue.length;</span>
+<span class="fc" id="L347">            return queue[index];</span>
+        }
+    }
+
+    public byte[] peek(final int index, final int length) {
+<span class="nc" id="L352">        final byte result[] = new byte[length];</span>
+<span class="nc bnc" id="L353" title="All 2 branches missed.">        for (int i = 0; i &lt; length; i++) {</span>
+<span class="nc" id="L354">            result[i] = peek(index + i);</span>
+        }
+
+<span class="nc" id="L357">        return result;</span>
+    }
+
+    public byte[] peekAll() {
+<span class="fc" id="L361">        final byte data[] = new byte[size];</span>
+<span class="fc" id="L362">        peek(data, 0, data.length);</span>
+<span class="fc" id="L363">        return data;</span>
+    }
+
+    public int peek(final byte buf[]) {
+<span class="nc" id="L367">        return peek(buf, 0, buf.length);</span>
+    }
+
+    public int peek(final byte buf[], final int pos, int length) {
+<span class="pc bpc" id="L371" title="1 of 2 branches missed.">        if (length == 0) {</span>
+<span class="nc" id="L372">            return 0;</span>
+        }
+<span class="pc bpc" id="L374" title="1 of 2 branches missed.">        if (size == 0) {</span>
+<span class="nc" id="L375">            throw new ArrayIndexOutOfBoundsException(-1);</span>
+        }
+<span class="pc bpc" id="L377" title="1 of 2 branches missed.">        if (length &gt; size) {</span>
+<span class="nc" id="L378">            length = size;</span>
+        }
+<span class="fc" id="L380">        int firstCopyLen = queue.length - head;</span>
+<span class="fc bfc" id="L381" title="All 2 branches covered.">        if (length &lt; firstCopyLen) {</span>
+<span class="fc" id="L382">            firstCopyLen = length;</span>
+        }
+<span class="fc" id="L384">        System.arraycopy(queue, head, buf, pos, firstCopyLen);</span>
+<span class="pc bpc" id="L385" title="1 of 2 branches missed.">        if (firstCopyLen &lt; length) {</span>
+<span class="nc" id="L386">            System.arraycopy(queue, 0, buf, pos + firstCopyLen,</span>
+                    length - firstCopyLen);
+        }
+<span class="fc" id="L389">        return length;</span>
+    }
+
+    public int indexOf(final byte b) {
+<span class="nc" id="L393">        return indexOf(b, 0);</span>
+    }
+
+    public int indexOf(final byte b, final int start) {
+<span class="nc bnc" id="L397" title="All 2 branches missed.">        if (start &gt;= size) {</span>
+<span class="nc" id="L398">            return -1;</span>
+        }
+<span class="nc" id="L400">        int index = (head + start) % queue.length;</span>
+<span class="nc bnc" id="L401" title="All 2 branches missed.">        for (int i = start; i &lt; size; i++) {</span>
+<span class="nc bnc" id="L402" title="All 2 branches missed.">            if (queue[index] == b) {</span>
+<span class="nc" id="L403">                return i;</span>
+            }
+<span class="nc" id="L405">            index = (index + 1) % queue.length;</span>
+        }
+<span class="nc" id="L407">        return -1;</span>
+    }
+
+    public int indexOf(final byte b[]) {
+<span class="nc" id="L411">        return indexOf(b, 0);</span>
+    }
+
+    public int indexOf(final byte b[], int start) {
+<span class="nc bnc" id="L415" title="All 4 branches missed.">        if (b == null || b.length == 0) {</span>
+<span class="nc" id="L416">            throw new IllegalArgumentException(</span>
+                    &quot;cannot search for empty values&quot;);
+        }
+<span class="nc bnc" id="L419" title="All 4 branches missed.">        for (; (start = indexOf(b[0], start)) != -1</span>
+<span class="nc" id="L420">                &amp;&amp; start &lt; (size - b.length) + 1; start++) {</span>
+<span class="nc" id="L421">            boolean found = true;</span>
+<span class="nc" id="L422">            int i = 1;</span>
+            do {
+<span class="nc bnc" id="L424" title="All 2 branches missed.">                if (i &gt;= b.length) {</span>
+<span class="nc" id="L425">                    break;</span>
+                }
+<span class="nc bnc" id="L427" title="All 2 branches missed.">                if (peek(start + i) != b[i]) {</span>
+<span class="nc" id="L428">                    found = false;</span>
+<span class="nc" id="L429">                    break;</span>
+                }
+<span class="nc" id="L431">                i++;</span>
+<span class="nc" id="L432">            } while (true);</span>
+<span class="nc bnc" id="L433" title="All 2 branches missed.">            if (found) {</span>
+<span class="nc" id="L434">                return start;</span>
+            }
+        }
+<span class="nc" id="L437">        return -1;</span>
+    }
+
+    public int size() {
+<span class="fc" id="L441">        return size;</span>
+    }
+
+    public void clear() {
+<span class="nc" id="L445">        size = 0;</span>
+<span class="nc" id="L446">        head = -1;</span>
+<span class="nc" id="L447">        tail = 0;</span>
+<span class="nc" id="L448">    }</span>
+
+    private int room() {
+<span class="fc" id="L451">        return queue.length - size;</span>
+    }
+
+    private void expand() {
+<span class="nc" id="L455">        final byte newb[] = new byte[queue.length * 2];</span>
+<span class="nc bnc" id="L456" title="All 2 branches missed.">        if (head == -1) {</span>
+<span class="nc" id="L457">            queue = newb;</span>
+<span class="nc" id="L458">            return;</span>
+        }
+<span class="nc bnc" id="L460" title="All 2 branches missed.">        if (tail &gt; head) {</span>
+<span class="nc" id="L461">            System.arraycopy(queue, head, newb, head, tail - head);</span>
+<span class="nc" id="L462">            queue = newb;</span>
+<span class="nc" id="L463">            return;</span>
+        } else {
+<span class="nc" id="L465">            System.arraycopy(queue, head, newb, head + queue.length,</span>
+                    queue.length - head);
+<span class="nc" id="L467">            System.arraycopy(queue, 0, newb, 0, tail);</span>
+<span class="nc" id="L468">            head += queue.length;</span>
+<span class="nc" id="L469">            queue = newb;</span>
+<span class="nc" id="L470">            return;</span>
+        }
+    }
+
+    @Override
+    public Object clone() {
+        try {
+<span class="nc" id="L477">            final _ByteQueue clone = (_ByteQueue) super.clone();</span>
+<span class="nc" id="L478">            clone.queue = queue.clone();</span>
+<span class="nc" id="L479">            return clone;</span>
+<span class="nc" id="L480">        } catch (final CloneNotSupportedException e) {</span>
+<span class="nc" id="L481">            return null;</span>
+        }
+    }
+
+    @Override
+    public String toString() {
+<span class="pc bpc" id="L487" title="1 of 2 branches missed.">        if (size == 0) {</span>
+<span class="nc" id="L488">            return &quot;[]&quot;;</span>
+        }
+<span class="fc" id="L490">        final StringBuffer sb = new StringBuffer();</span>
+<span class="fc" id="L491">        sb.append('[');</span>
+<span class="fc" id="L492">        sb.append(Integer.toHexString(peek(0) &amp; 0xff));</span>
+<span class="fc bfc" id="L493" title="All 2 branches covered.">        for (int i = 1; i &lt; size; i++) {</span>
+<span class="fc" id="L494">            sb.append(',').append(Integer.toHexString(peek(i) &amp; 0xff));</span>
+        }
+
+<span class="fc" id="L497">        sb.append(&quot;]&quot;);</span>
+<span class="fc" id="L498">        return sb.toString();</span>
+    }
+
+    public String dumpQueue() {
+<span class="nc" id="L502">        final StringBuffer sb = new StringBuffer();</span>
+<span class="nc bnc" id="L503" title="All 2 branches missed.">        if (queue.length == 0) {</span>
+<span class="nc" id="L504">            sb.append(&quot;[]&quot;);</span>
+        } else {
+<span class="nc" id="L506">            sb.append('[');</span>
+<span class="nc" id="L507">            sb.append(queue[0]);</span>
+<span class="nc bnc" id="L508" title="All 2 branches missed.">            for (int i = 1; i &lt; queue.length; i++) {</span>
+<span class="nc" id="L509">                sb.append(&quot;, &quot;);</span>
+<span class="nc" id="L510">                sb.append(queue[i]);</span>
+            }
+<span class="nc" id="L512">            sb.append(&quot;]&quot;);</span>
+        }
+<span class="nc" id="L514">        sb.append(&quot;, h=&quot;).append(head).append(&quot;, t=&quot;).append(tail)</span>
+<span class="nc" id="L515">                .append(&quot;, s=&quot;).append(size);</span>
+<span class="nc" id="L516">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

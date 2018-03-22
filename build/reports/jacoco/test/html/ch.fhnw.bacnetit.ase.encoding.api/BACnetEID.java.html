@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BACnetEID.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.ase.encoding.api</a> &gt; <span class="el_source">BACnetEID.java</span></div><h1>BACnetEID.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.ase.encoding.api;
+
+import ch.fhnw.bacnetit.ase.encoding.Serializer;
+import ch.fhnw.bacnetit.ase.encoding.UnsignedInteger31;
+import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
+
+/**
+ * class BACnetEID. &lt;br&gt;
+ * class BACnetEID is named after BACnet Entity Identifier which is a logical
+ * identifier for representing BACnet Devices or BACnet Device Groups, and
+ * BACnetEID options are &quot;Not Assigned&quot;, &quot;Device Identifier&quot;, &quot;Device Group
+ * Identifier&quot;
+ *
+ * @author IMVS, FHNW
+ *
+ */
+public class BACnetEID extends Serializer implements Comparable&lt;BACnetEID&gt; {
+
+	private static final long serialVersionUID = 3323595176060683977L;
+	private final UnsignedInteger31 identifier;
+	private final BACnetEIDOption choice;
+
+	/**
+	 * @param queue
+	 *            ByteQueue to initialize a BACnetEID instance
+	 * @param contextId
+	 * @throws Exception
+	 * @throws Exception
+	 */
+<span class="nc" id="L30">	public BACnetEID(final _ByteQueue queue, final int contextId, final BACnetEIDOption option) throws Exception {</span>
+<span class="nc" id="L31">		queue.pop();</span>
+<span class="nc" id="L32">		identifier = read(queue, UnsignedInteger31.class, contextId);</span>
+<span class="nc" id="L33">		choice = option;</span>
+<span class="nc" id="L34">	}</span>
+
+<span class="fc" id="L36">	public BACnetEID(final _ByteQueue queue) throws Exception {</span>
+<span class="fc" id="L37">		int c = queue.peek(0);</span>
+<span class="fc" id="L38">		c = c &gt;&gt; 4;</span>
+<span class="fc" id="L39">		this.choice = BACnetEIDOption.get((byte) c);</span>
+<span class="fc" id="L40">		identifier = read(queue, UnsignedInteger31.class);</span>
+
+<span class="fc" id="L42">	}</span>
+
+	/**
+	 * Initializes a BACnetEID instance with option Device Identifier
+	 *
+	 * @param eid
+	 *            EID as integer
+	 */
+	public BACnetEID(final int eid) {
+<span class="fc" id="L51">		this(new UnsignedInteger31(eid), BACnetEIDOption.DEVICE);</span>
+<span class="fc" id="L52">	}</span>
+
+	public BACnetEID(final int id, final BACnetEIDOption c) {
+<span class="fc" id="L55">		this(new UnsignedInteger31(id), c);</span>
+<span class="fc" id="L56">	}</span>
+
+	/**
+	 * Initializes a BACnetEID instance with option Device Identifier
+	 *
+	 * @param eid
+	 *            EID as UnsignedInteger instance
+	 */
+	public BACnetEID(final UnsignedInteger31 eid) {
+<span class="fc" id="L65">		this(eid, BACnetEIDOption.DEVICE);</span>
+<span class="fc" id="L66">	}</span>
+
+<span class="fc" id="L68">	public BACnetEID(final UnsignedInteger31 id, final BACnetEIDOption choice) {</span>
+<span class="fc" id="L69">		this.identifier = id;</span>
+<span class="fc" id="L70">		this.choice = choice;</span>
+<span class="fc" id="L71">	}</span>
+
+	public int getIdentifier() {
+<span class="fc" id="L74">		return this.identifier.intValue();</span>
+	}
+
+	public String getIdentifierAsString() {
+<span class="fc" id="L78">		return this.identifier.toString();</span>
+	}
+
+	public BACnetEIDOption getChoice() {
+<span class="fc" id="L82">		return this.choice;</span>
+	}
+
+	public byte[] bytes() {
+<span class="fc" id="L86">		final _ByteQueue queue = new _ByteQueue();</span>
+<span class="fc" id="L87">		final UnsignedInteger31 ui = this.identifier;</span>
+<span class="fc" id="L88">		ui.write(queue, this.choice.getId());</span>
+<span class="fc" id="L89">		return queue.peekAll();</span>
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		if (this == obj) {</span>
+<span class="fc" id="L95">			return true;</span>
+		}
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">		if (obj == null) {</span>
+<span class="nc" id="L98">			return false;</span>
+		}
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">		if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L101">			return false;</span>
+		}
+<span class="fc" id="L103">		final BACnetEID other = (BACnetEID) obj;</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">		if (choice != other.choice) {</span>
+<span class="nc" id="L105">			return false;</span>
+		}
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">		if (identifier == null) {</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">			if (other.identifier != null) {</span>
+<span class="nc" id="L109">				return false;</span>
+			}
+<span class="fc bfc" id="L111" title="All 2 branches covered.">		} else if (!identifier.equals(other.identifier)) {</span>
+<span class="fc" id="L112">			return false;</span>
+		}
+<span class="fc" id="L114">		return true;</span>
+	}
+
+	@Override
+	public int hashCode() {
+<span class="fc" id="L119">		final int prime = 31;</span>
+<span class="fc" id="L120">		int result = 1;</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">		result = prime * result + ((choice == null) ? 0 : choice.hashCode());</span>
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">		result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());</span>
+<span class="fc" id="L123">		return result;</span>
+	}
+
+	@Override
+	public String toString() {
+<span class="fc" id="L128">		final char[] hexArray = &quot;0123456789ABCDEF&quot;.toCharArray();</span>
+<span class="fc" id="L129">		final byte[] bytes = bytes();</span>
+<span class="fc" id="L130">		final char[] hexChars = new char[bytes.length * 3];</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">		for (int j = 0; j &lt; bytes.length; j++) {</span>
+<span class="fc" id="L132">			final int v = bytes[j] &amp; 0xFF;</span>
+<span class="fc" id="L133">			hexChars[j * 3] = hexArray[v &gt;&gt;&gt; 4];</span>
+<span class="fc" id="L134">			hexChars[j * 3 + 1] = hexArray[v &amp; 0x0F];</span>
+<span class="fc" id="L135">			hexChars[j * 3 + 2] = ' ';</span>
+		}
+<span class="fc" id="L137">		return new String(hexChars).trim();</span>
+	}
+
+	@Override
+	public void write(final _ByteQueue queue) {
+<span class="fc" id="L142">		queue.push(bytes());</span>
+
+<span class="fc" id="L144">	}</span>
+
+	@Override
+	public void write(final _ByteQueue queue, final int contextId) {
+<span class="fc" id="L148">		queue.push(bytes());</span>
+
+<span class="fc" id="L150">	}</span>
+
+	@Override
+	public int compareTo(final BACnetEID o) {
+<span class="nc bnc" id="L154" title="All 2 branches missed.">		if (this.getIdentifier() &gt; o.getIdentifier()) {</span>
+<span class="nc" id="L155">			return 1;</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">		} else if (this.getIdentifier() &lt; o.getIdentifier()) {</span>
+<span class="nc" id="L157">			return -1;</span>
+		} else {
+<span class="nc" id="L159">			return 0;</span>
+		}
+	}
+
+	/**
+	 * The ENUM represents the 3 BACnetEID Options
+	 *
+	 * @author IMVS, FHNW
+	 *
+	 */
+<span class="pc" id="L169">	public static enum BACnetEIDOption {</span>
+<span class="fc" id="L170">		NOTASSIGNED((byte) 0), DEVICE((byte) 1), GROUP((byte) 2);</span>
+
+		private byte id;
+
+<span class="fc" id="L174">		private BACnetEIDOption(final byte id) {</span>
+<span class="fc" id="L175">			this.id = id;</span>
+<span class="fc" id="L176">		}</span>
+
+		public byte getId() {
+<span class="fc" id="L179">			return id;</span>
+		}
+
+		@Override
+		public String toString() {
+<span class="nc" id="L184">			return String.valueOf(id);</span>
+		}
+
+		public static BACnetEIDOption get(final byte b) {
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">			for (final BACnetEIDOption choice : values()) {</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">				if (choice.getId() == b) {</span>
+<span class="fc" id="L190">					return choice;</span>
+				}
+			}
+<span class="nc" id="L193">			return null;</span>
+		}
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

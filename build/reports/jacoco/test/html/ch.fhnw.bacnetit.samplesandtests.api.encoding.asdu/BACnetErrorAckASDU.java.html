@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BACnetErrorAckASDU.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu</a> &gt; <span class="el_source">BACnetErrorAckASDU.java</span></div><h1>BACnetErrorAckASDU.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.error.BaseError;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+/**
+ * The BACnet-Error-PDU is used to convey the information contained in a service
+ * response primitive ('Result(-)') that indicates the reason why a previous
+ * confirmed service request failed in its entirety.
+ */
+public class BACnetErrorAckASDU extends AckASDU {
+    /**
+     * This parameter shall contain the value of the
+     * BACnetConfirmedServiceChoice corresponding to the service contained in
+     * the previous BACnet-Confirmed-Service-Request that has resulted in this
+     * acknowledgment.
+     */
+    private final int serviceAckChoice;
+
+    private static final long serialVersionUID = 1062847933272895140L;
+
+    public static final byte TYPE_ID = 4;
+
+    /**
+     * This parameter, of type BACnet-Error, indicates the reason the indicated
+     * service request could not be carried out. This parameter shall be encoded
+     * according to the rules of 20.2.
+     */
+    private final BaseError error;
+
+<span class="fc" id="L54">    public BACnetErrorAckASDU(final ByteQueue queue) throws BACnetException {</span>
+<span class="fc" id="L55">        queue.pop(); // no news here</span>
+<span class="fc" id="L56">        serviceAckChoice = (queue.pop() &amp; 0xf0) &gt;&gt; 4;</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (serviceAckChoice &gt;= 15) {</span>
+<span class="nc" id="L58">            queue.pop();</span>
+        }
+<span class="fc" id="L60">        error = new BaseError((byte) serviceAckChoice, queue);</span>
+<span class="fc" id="L61">    }</span>
+
+    public int getServiceAckChoice() {
+<span class="fc" id="L64">        return serviceAckChoice;</span>
+    }
+
+    @Override
+    public byte getPduType() {
+<span class="nc" id="L69">        return TYPE_ID;</span>
+    }
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L74">        queue.push(getShiftedTypeId(TYPE_ID));</span>
+<span class="nc" id="L75">        queue.push(originalInvokeId);</span>
+<span class="nc" id="L76">        error.write(queue);</span>
+<span class="nc" id="L77">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L81">        return &quot;ErrorAPDU(&quot; + error + &quot;)&quot;;</span>
+    }
+
+    public BaseError getError() {
+<span class="fc" id="L85">        return error;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L90">        final int PRIME = 31;</span>
+<span class="nc" id="L91">        int result = 1;</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        result = PRIME * result + ((error == null) ? 0 : error.hashCode());</span>
+<span class="nc" id="L93">        result = PRIME * result + originalInvokeId;</span>
+<span class="nc" id="L94">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L100">            return true;</span>
+        }
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L103">            return false;</span>
+        }
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L106">            return false;</span>
+        }
+<span class="nc" id="L108">        final BACnetErrorAckASDU other = (BACnetErrorAckASDU) obj;</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (error == null) {</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">            if (other.error != null) {</span>
+<span class="nc" id="L111">                return false;</span>
+            }
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        } else if (!error.equals(other.error)) {</span>
+<span class="nc" id="L114">            return false;</span>
+        }
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (originalInvokeId != other.originalInvokeId) {</span>
+<span class="nc" id="L117">            return false;</span>
+        }
+<span class="nc" id="L119">        return true;</span>
+    }
+
+    @Override
+    public boolean expectsReply() {
+<span class="nc" id="L124">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

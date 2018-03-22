@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DayOfWeek.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.enums</a> &gt; <span class="el_source">DayOfWeek.java</span></div><h1>DayOfWeek.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.enums;
+
+/**
+ * Per ASHRAE Standard 135-2012 p.713
+ *
+ *
+ */
+<span class="pc" id="L30">public enum DayOfWeek {</span>
+<span class="fc" id="L31">    MONDAY(1), TUESDAY(2), WEDNESDAY(3), THURSDAY(4), FRIDAY(5), SATURDAY(</span>
+<span class="fc" id="L32">            6), SUNDAY(7), UNSPECIFIED(255);// i.e.</span>
+                                            // X'FF'
+                                            // =
+                                            // any
+                                            // day
+                                            // of
+                                            // week
+
+    private byte id;
+
+<span class="fc" id="L42">    DayOfWeek(final int id) {</span>
+<span class="fc" id="L43">        this.id = (byte) id;</span>
+<span class="fc" id="L44">    }</span>
+
+    public byte getId() {
+<span class="fc" id="L47">        return id;</span>
+    }
+
+    public static DayOfWeek valueOf(final byte id) {
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (id == MONDAY.id) {</span>
+<span class="nc" id="L52">            return MONDAY;</span>
+        }
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (id == TUESDAY.id) {</span>
+<span class="nc" id="L55">            return TUESDAY;</span>
+        }
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (id == WEDNESDAY.id) {</span>
+<span class="fc" id="L58">            return WEDNESDAY;</span>
+        }
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (id == THURSDAY.id) {</span>
+<span class="nc" id="L61">            return THURSDAY;</span>
+        }
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (id == FRIDAY.id) {</span>
+<span class="nc" id="L64">            return FRIDAY;</span>
+        }
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (id == SATURDAY.id) {</span>
+<span class="nc" id="L67">            return SATURDAY;</span>
+        }
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (id == SUNDAY.id) {</span>
+<span class="nc" id="L70">            return SUNDAY;</span>
+        }
+<span class="nc" id="L72">        return UNSPECIFIED;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

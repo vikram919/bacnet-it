@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LogMultipleRecord.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">LogMultipleRecord.java</span></div><h1>LogMultipleRecord.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class LogMultipleRecord extends BaseType {
+    private static final long serialVersionUID = 3817374635968734673L;
+
+    private final DateTime timestamp;
+
+    private final LogData logData;
+
+<span class="nc" id="L35">    public LogMultipleRecord(final DateTime timestamp, final LogData logData) {</span>
+<span class="nc" id="L36">        this.timestamp = timestamp;</span>
+<span class="nc" id="L37">        this.logData = logData;</span>
+<span class="nc" id="L38">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L42">        write(queue, timestamp, 0);</span>
+<span class="nc" id="L43">        write(queue, logData, 1);</span>
+<span class="nc" id="L44">    }</span>
+
+    public DateTime getTimestamp() {
+<span class="nc" id="L47">        return timestamp;</span>
+    }
+
+    public LogData getLogData() {
+<span class="nc" id="L51">        return logData;</span>
+    }
+
+<span class="nc" id="L54">    public LogMultipleRecord(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L55">        timestamp = read(queue, DateTime.class, 0);</span>
+<span class="nc" id="L56">        logData = read(queue, LogData.class, 1);</span>
+<span class="nc" id="L57">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L61">        final int prime = 31;</span>
+<span class="nc" id="L62">        int result = 1;</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        result = prime * result + ((logData == null) ? 0 : logData.hashCode());</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        result = prime * result</span>
+<span class="nc" id="L65">                + ((timestamp == null) ? 0 : timestamp.hashCode());</span>
+<span class="nc" id="L66">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L72">            return true;</span>
+        }
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L75">            return false;</span>
+        }
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L78">            return false;</span>
+        }
+<span class="nc" id="L80">        final LogMultipleRecord other = (LogMultipleRecord) obj;</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (logData == null) {</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">            if (other.logData != null) {</span>
+<span class="nc" id="L83">                return false;</span>
+            }
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        } else if (!logData.equals(other.logData)) {</span>
+<span class="nc" id="L86">            return false;</span>
+        }
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (timestamp == null) {</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">            if (other.timestamp != null) {</span>
+<span class="nc" id="L90">                return false;</span>
+            }
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        } else if (!timestamp.equals(other.timestamp)) {</span>
+<span class="nc" id="L93">            return false;</span>
+        }
+<span class="nc" id="L95">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

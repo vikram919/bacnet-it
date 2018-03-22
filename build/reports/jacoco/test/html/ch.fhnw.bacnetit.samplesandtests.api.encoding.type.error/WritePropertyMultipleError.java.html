@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WritePropertyMultipleError.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.error</a> &gt; <span class="el_source">WritePropertyMultipleError.java</span></div><h1>WritePropertyMultipleError.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.error;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.BACnetError;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ObjectPropertyReference;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class WritePropertyMultipleError extends BaseError {
+    private static final long serialVersionUID = 7893783677289456368L;
+
+    private final ObjectPropertyReference firstFailedWriteAttempt;
+
+    public WritePropertyMultipleError(final byte choice,
+            final BACnetError error,
+            final ObjectPropertyReference firstFailedWriteAttempt) {
+<span class="nc" id="L38">        super(choice, error);</span>
+<span class="nc" id="L39">        this.firstFailedWriteAttempt = firstFailedWriteAttempt;</span>
+<span class="nc" id="L40">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L44">        queue.push(choice);</span>
+<span class="nc" id="L45">        write(queue, error, 0);</span>
+<span class="nc" id="L46">        firstFailedWriteAttempt.write(queue, 1);</span>
+<span class="nc" id="L47">    }</span>
+
+    WritePropertyMultipleError(final byte choice, final ByteQueue queue)
+            throws BACnetException {
+<span class="nc" id="L51">        super(choice, queue, 0);</span>
+<span class="nc" id="L52">        firstFailedWriteAttempt = read(queue, ObjectPropertyReference.class, 1);</span>
+<span class="nc" id="L53">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L57">        final int PRIME = 31;</span>
+<span class="nc" id="L58">        int result = super.hashCode();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        result = PRIME * result + ((firstFailedWriteAttempt == null) ? 0</span>
+<span class="nc" id="L60">                : firstFailedWriteAttempt.hashCode());</span>
+<span class="nc" id="L61">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L67">            return true;</span>
+        }
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (!super.equals(obj)) {</span>
+<span class="nc" id="L70">            return false;</span>
+        }
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L73">            return false;</span>
+        }
+<span class="nc" id="L75">        final WritePropertyMultipleError other = (WritePropertyMultipleError) obj;</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (firstFailedWriteAttempt == null) {</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">            if (other.firstFailedWriteAttempt != null) {</span>
+<span class="nc" id="L78">                return false;</span>
+            }
+<span class="nc" id="L80">        } else if (!firstFailedWriteAttempt</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">                .equals(other.firstFailedWriteAttempt)) {</span>
+<span class="nc" id="L82">            return false;</span>
+        }
+<span class="nc" id="L84">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

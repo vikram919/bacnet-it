@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Destination.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">Destination.java</span></div><h1>Destination.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.EventState;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Boolean;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Time;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class Destination extends BaseType {
+    private static final long serialVersionUID = 5382539059135665624L;
+
+    private final DaysOfWeek validDays;
+
+    private final Time fromTime;
+
+    private final Time toTime;
+
+    private final Recipient recipient;
+
+    private final UnsignedInteger processIdentifier;
+
+    private final Boolean issueConfirmedNotifications;
+
+    private final EventTransitionBits transitions;
+
+    public Destination(final DaysOfWeek validDays, final Time fromTime,
+            final Time toTime, final Recipient recipient,
+            final UnsignedInteger processIdentifier,
+            final Boolean issueConfirmedNotifications,
+<span class="nc" id="L53">            final EventTransitionBits transitions) {</span>
+<span class="nc" id="L54">        this.validDays = validDays;</span>
+<span class="nc" id="L55">        this.fromTime = fromTime;</span>
+<span class="nc" id="L56">        this.toTime = toTime;</span>
+<span class="nc" id="L57">        this.recipient = recipient;</span>
+<span class="nc" id="L58">        this.processIdentifier = processIdentifier;</span>
+<span class="nc" id="L59">        this.issueConfirmedNotifications = issueConfirmedNotifications;</span>
+<span class="nc" id="L60">        this.transitions = transitions;</span>
+<span class="nc" id="L61">    }</span>
+
+    public Destination(final Recipient recipient,
+            final UnsignedInteger processIdentifier,
+            final Boolean issueConfirmedNotifications,
+<span class="nc" id="L66">            final EventTransitionBits transitions) {</span>
+<span class="nc" id="L67">        this.validDays = new DaysOfWeek(true);</span>
+<span class="nc" id="L68">        this.fromTime = new Time(0, 0, 0, 0);</span>
+<span class="nc" id="L69">        this.toTime = new Time(23, 59, 59, 99);</span>
+<span class="nc" id="L70">        this.recipient = recipient;</span>
+<span class="nc" id="L71">        this.processIdentifier = processIdentifier;</span>
+<span class="nc" id="L72">        this.issueConfirmedNotifications = issueConfirmedNotifications;</span>
+<span class="nc" id="L73">        this.transitions = transitions;</span>
+<span class="nc" id="L74">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L78">        write(queue, validDays);</span>
+<span class="nc" id="L79">        write(queue, fromTime);</span>
+<span class="nc" id="L80">        write(queue, toTime);</span>
+<span class="nc" id="L81">        write(queue, recipient);</span>
+<span class="nc" id="L82">        write(queue, processIdentifier);</span>
+<span class="nc" id="L83">        write(queue, issueConfirmedNotifications);</span>
+<span class="nc" id="L84">        write(queue, transitions);</span>
+<span class="nc" id="L85">    }</span>
+
+<span class="nc" id="L87">    public Destination(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L88">        validDays = read(queue, DaysOfWeek.class);</span>
+<span class="nc" id="L89">        fromTime = read(queue, Time.class);</span>
+<span class="nc" id="L90">        toTime = read(queue, Time.class);</span>
+<span class="nc" id="L91">        recipient = read(queue, Recipient.class);</span>
+<span class="nc" id="L92">        processIdentifier = read(queue, UnsignedInteger.class);</span>
+<span class="nc" id="L93">        issueConfirmedNotifications = read(queue, Boolean.class);</span>
+<span class="nc" id="L94">        transitions = read(queue, EventTransitionBits.class);</span>
+<span class="nc" id="L95">    }</span>
+
+    public boolean isSuitableForEvent(final TimeStamp timeStamp,
+            final EventState toState) {
+        // Only check date fields if the timestamp is not a sequence number.
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (!timeStamp.isSequenceNumber()) {</span>
+            // Check if the timestamp day of week is in the valid days of week
+            // list.
+<span class="nc bnc" id="L103" title="All 2 branches missed.">            if (!validDays.contains(</span>
+<span class="nc" id="L104">                    timeStamp.getDateTime().getDate().getDayOfWeek().getId())) {</span>
+<span class="nc" id="L105">                return false;</span>
+            }
+
+            // Check if the timestamp is between the from and to times.
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            if (timeStamp.getDateTime().getTime().before(fromTime)</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">                    || timeStamp.getDateTime().getTime().after(toTime)) {</span>
+<span class="nc" id="L111">                return false;</span>
+            }
+        }
+
+        // Check if the destination is interested in this new event state.
+<span class="nc" id="L116">        return transitions.contains(toState);</span>
+    }
+
+    public DaysOfWeek getValidDays() {
+<span class="nc" id="L120">        return validDays;</span>
+    }
+
+    public Time getFromTime() {
+<span class="nc" id="L124">        return fromTime;</span>
+    }
+
+    public Time getToTime() {
+<span class="nc" id="L128">        return toTime;</span>
+    }
+
+    public Recipient getRecipient() {
+<span class="nc" id="L132">        return recipient;</span>
+    }
+
+    public UnsignedInteger getProcessIdentifier() {
+<span class="nc" id="L136">        return processIdentifier;</span>
+    }
+
+    public Boolean getIssueConfirmedNotifications() {
+<span class="nc" id="L140">        return issueConfirmedNotifications;</span>
+    }
+
+    public EventTransitionBits getTransitions() {
+<span class="nc" id="L144">        return transitions;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L149">        final int PRIME = 31;</span>
+<span class="nc" id="L150">        int result = 1;</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L152">                + ((fromTime == null) ? 0 : fromTime.hashCode());</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        result = PRIME * result + ((issueConfirmedNotifications == null) ? 0</span>
+<span class="nc" id="L154">                : issueConfirmedNotifications.hashCode());</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        result = PRIME * result + ((processIdentifier == null) ? 0</span>
+<span class="nc" id="L156">                : processIdentifier.hashCode());</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L158">                + ((recipient == null) ? 0 : recipient.hashCode());</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        result = PRIME * result + ((toTime == null) ? 0 : toTime.hashCode());</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L161">                + ((transitions == null) ? 0 : transitions.hashCode());</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L163">                + ((validDays == null) ? 0 : validDays.hashCode());</span>
+<span class="nc" id="L164">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L170">            return true;</span>
+        }
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L173">            return false;</span>
+        }
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L176">            return false;</span>
+        }
+<span class="nc" id="L178">        final Destination other = (Destination) obj;</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (fromTime == null) {</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">            if (other.fromTime != null) {</span>
+<span class="nc" id="L181">                return false;</span>
+            }
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        } else if (!fromTime.equals(other.fromTime)) {</span>
+<span class="nc" id="L184">            return false;</span>
+        }
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (issueConfirmedNotifications == null) {</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">            if (other.issueConfirmedNotifications != null) {</span>
+<span class="nc" id="L188">                return false;</span>
+            }
+<span class="nc" id="L190">        } else if (!issueConfirmedNotifications</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">                .equals(other.issueConfirmedNotifications)) {</span>
+<span class="nc" id="L192">            return false;</span>
+        }
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (processIdentifier == null) {</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">            if (other.processIdentifier != null) {</span>
+<span class="nc" id="L196">                return false;</span>
+            }
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        } else if (!processIdentifier.equals(other.processIdentifier)) {</span>
+<span class="nc" id="L199">            return false;</span>
+        }
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        if (recipient == null) {</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">            if (other.recipient != null) {</span>
+<span class="nc" id="L203">                return false;</span>
+            }
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        } else if (!recipient.equals(other.recipient)) {</span>
+<span class="nc" id="L206">            return false;</span>
+        }
+<span class="nc bnc" id="L208" title="All 2 branches missed.">        if (toTime == null) {</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">            if (other.toTime != null) {</span>
+<span class="nc" id="L210">                return false;</span>
+            }
+<span class="nc bnc" id="L212" title="All 2 branches missed.">        } else if (!toTime.equals(other.toTime)) {</span>
+<span class="nc" id="L213">            return false;</span>
+        }
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (transitions == null) {</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">            if (other.transitions != null) {</span>
+<span class="nc" id="L217">                return false;</span>
+            }
+<span class="nc bnc" id="L219" title="All 2 branches missed.">        } else if (!transitions.equals(other.transitions)) {</span>
+<span class="nc" id="L220">            return false;</span>
+        }
+<span class="nc bnc" id="L222" title="All 2 branches missed.">        if (validDays == null) {</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">            if (other.validDays != null) {</span>
+<span class="nc" id="L224">                return false;</span>
+            }
+<span class="nc bnc" id="L226" title="All 2 branches missed.">        } else if (!validDays.equals(other.validDays)) {</span>
+<span class="nc" id="L227">            return false;</span>
+        }
+<span class="nc" id="L229">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BACnetObjectType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.deviceobjects</a> &gt; <span class="el_source">BACnetObjectType.java</span></div><h1>BACnetObjectType.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.deviceobjects;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Enumerated;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class BACnetObjectType extends Enumerated {
+    private static final long serialVersionUID = 5428575132396799009L;
+
+<span class="fc" id="L31">    public static final BACnetObjectType analogInput = new BACnetObjectType(0);</span>
+
+<span class="fc" id="L33">    public static final BACnetObjectType analogOutput = new BACnetObjectType(1);</span>
+
+<span class="fc" id="L35">    public static final BACnetObjectType analogValue = new BACnetObjectType(2);</span>
+
+<span class="fc" id="L37">    public static final BACnetObjectType binaryInput = new BACnetObjectType(3);</span>
+
+<span class="fc" id="L39">    public static final BACnetObjectType binaryOutput = new BACnetObjectType(4);</span>
+
+<span class="fc" id="L41">    public static final BACnetObjectType binaryValue = new BACnetObjectType(5);</span>
+
+<span class="fc" id="L43">    public static final BACnetObjectType calendar = new BACnetObjectType(6);</span>
+
+<span class="fc" id="L45">    public static final BACnetObjectType command = new BACnetObjectType(7);</span>
+
+<span class="fc" id="L47">    public static final BACnetObjectType device = new BACnetObjectType(8);</span>
+
+<span class="fc" id="L49">    public static final BACnetObjectType eventEnrollment = new BACnetObjectType(</span>
+            9);
+
+<span class="fc" id="L52">    public static final BACnetObjectType file = new BACnetObjectType(10);</span>
+
+<span class="fc" id="L54">    public static final BACnetObjectType group = new BACnetObjectType(11);</span>
+
+<span class="fc" id="L56">    public static final BACnetObjectType loop = new BACnetObjectType(12);</span>
+
+<span class="fc" id="L58">    public static final BACnetObjectType multiStateInput = new BACnetObjectType(</span>
+            13);
+
+<span class="fc" id="L61">    public static final BACnetObjectType multiStateOutput = new BACnetObjectType(</span>
+            14);
+
+<span class="fc" id="L64">    public static final BACnetObjectType notificationClass = new BACnetObjectType(</span>
+            15);
+
+<span class="fc" id="L67">    public static final BACnetObjectType program = new BACnetObjectType(16);</span>
+
+<span class="fc" id="L69">    public static final BACnetObjectType schedule = new BACnetObjectType(17);</span>
+
+<span class="fc" id="L71">    public static final BACnetObjectType averaging = new BACnetObjectType(18);</span>
+
+<span class="fc" id="L73">    public static final BACnetObjectType multiStateValue = new BACnetObjectType(</span>
+            19);
+
+<span class="fc" id="L76">    public static final BACnetObjectType trendLog = new BACnetObjectType(20);</span>
+
+<span class="fc" id="L78">    public static final BACnetObjectType lifeSafetyPoint = new BACnetObjectType(</span>
+            21);
+
+<span class="fc" id="L81">    public static final BACnetObjectType lifeSafetyZone = new BACnetObjectType(</span>
+            22);
+
+<span class="fc" id="L84">    public static final BACnetObjectType accumulator = new BACnetObjectType(23);</span>
+
+<span class="fc" id="L86">    public static final BACnetObjectType pulseConverter = new BACnetObjectType(</span>
+            24);
+
+<span class="fc" id="L89">    public static final BACnetObjectType eventLog = new BACnetObjectType(25);</span>
+
+<span class="fc" id="L91">    public static final BACnetObjectType trendLogMultiple = new BACnetObjectType(</span>
+            27);
+
+<span class="fc" id="L94">    public static final BACnetObjectType loadControl = new BACnetObjectType(28);</span>
+
+<span class="fc" id="L96">    public static final BACnetObjectType structuredView = new BACnetObjectType(</span>
+            29);
+
+<span class="fc" id="L99">    public static final BACnetObjectType accessDoor = new BACnetObjectType(30);</span>
+
+<span class="fc" id="L101">    public static final BACnetObjectType siemensWallLight = new BACnetObjectType(</span>
+            260);
+
+<span class="fc" id="L104">    public static final BACnetObjectType[] ALL = { analogInput, analogOutput,</span>
+            analogValue, binaryInput, binaryOutput, binaryValue, calendar,
+            command, device, eventEnrollment, file, group, loop,
+            multiStateInput, multiStateOutput, notificationClass, program,
+            schedule, averaging, multiStateValue, trendLog, lifeSafetyPoint,
+            lifeSafetyZone, accumulator, pulseConverter, eventLog,
+            trendLogMultiple, loadControl, structuredView, accessDoor,
+            siemensWallLight };
+
+    public BACnetObjectType(final int value) {
+<span class="fc" id="L114">        super(value);</span>
+<span class="fc" id="L115">    }</span>
+
+    public BACnetObjectType(final ByteQueue queue) {
+<span class="nc" id="L118">        super(queue);</span>
+<span class="nc" id="L119">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L123">        final int type = intValue();</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (type == analogInput.intValue()) {</span>
+<span class="nc" id="L125">            return &quot;Analog Input&quot;;</span>
+        }
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (type == analogOutput.intValue()) {</span>
+<span class="nc" id="L128">            return &quot;Analog Output&quot;;</span>
+        }
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (type == analogValue.intValue()) {</span>
+<span class="nc" id="L131">            return &quot;Analog Value&quot;;</span>
+        }
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (type == binaryInput.intValue()) {</span>
+<span class="nc" id="L134">            return &quot;Binary Input&quot;;</span>
+        }
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (type == binaryOutput.intValue()) {</span>
+<span class="nc" id="L137">            return &quot;Binary Output&quot;;</span>
+        }
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (type == binaryValue.intValue()) {</span>
+<span class="nc" id="L140">            return &quot;Binary Value&quot;;</span>
+        }
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (type == calendar.intValue()) {</span>
+<span class="nc" id="L143">            return &quot;Calendar&quot;;</span>
+        }
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (type == command.intValue()) {</span>
+<span class="nc" id="L146">            return &quot;Command&quot;;</span>
+        }
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (type == device.intValue()) {</span>
+<span class="nc" id="L149">            return &quot;Device&quot;;</span>
+        }
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (type == eventEnrollment.intValue()) {</span>
+<span class="nc" id="L152">            return &quot;Event Enrollment&quot;;</span>
+        }
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (type == file.intValue()) {</span>
+<span class="nc" id="L155">            return &quot;File&quot;;</span>
+        }
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (type == group.intValue()) {</span>
+<span class="nc" id="L158">            return &quot;Group&quot;;</span>
+        }
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        if (type == loop.intValue()) {</span>
+<span class="nc" id="L161">            return &quot;Loop&quot;;</span>
+        }
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        if (type == multiStateInput.intValue()) {</span>
+<span class="nc" id="L164">            return &quot;Multi-state Input&quot;;</span>
+        }
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (type == multiStateOutput.intValue()) {</span>
+<span class="nc" id="L167">            return &quot;Multi-state Output&quot;;</span>
+        }
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (type == notificationClass.intValue()) {</span>
+<span class="nc" id="L170">            return &quot;Notification Class&quot;;</span>
+        }
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (type == program.intValue()) {</span>
+<span class="nc" id="L173">            return &quot;Program&quot;;</span>
+        }
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (type == schedule.intValue()) {</span>
+<span class="nc" id="L176">            return &quot;Schedule&quot;;</span>
+        }
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (type == averaging.intValue()) {</span>
+<span class="nc" id="L179">            return &quot;Averaging&quot;;</span>
+        }
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (type == multiStateValue.intValue()) {</span>
+<span class="nc" id="L182">            return &quot;Multi-state Value&quot;;</span>
+        }
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (type == trendLog.intValue()) {</span>
+<span class="nc" id="L185">            return &quot;Trend Log&quot;;</span>
+        }
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (type == lifeSafetyPoint.intValue()) {</span>
+<span class="nc" id="L188">            return &quot;Life Safety Point&quot;;</span>
+        }
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (type == lifeSafetyZone.intValue()) {</span>
+<span class="nc" id="L191">            return &quot;Life Safety Zone&quot;;</span>
+        }
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (type == accumulator.intValue()) {</span>
+<span class="nc" id="L194">            return &quot;Accumulator&quot;;</span>
+        }
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        if (type == pulseConverter.intValue()) {</span>
+<span class="nc" id="L197">            return &quot;Pulse Converter&quot;;</span>
+        }
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (type == eventLog.intValue()) {</span>
+<span class="nc" id="L200">            return &quot;Event Log&quot;;</span>
+        }
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        if (type == trendLogMultiple.intValue()) {</span>
+<span class="nc" id="L203">            return &quot;Trend Log Multiple&quot;;</span>
+        }
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (type == loadControl.intValue()) {</span>
+<span class="nc" id="L206">            return &quot;Load Control&quot;;</span>
+        }
+<span class="nc bnc" id="L208" title="All 2 branches missed.">        if (type == structuredView.intValue()) {</span>
+<span class="nc" id="L209">            return &quot;Structured View&quot;;</span>
+        }
+<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (type == accessDoor.intValue()) {</span>
+<span class="nc" id="L212">            return &quot;Access Door&quot;;</span>
+        }
+<span class="nc" id="L214">        return &quot;Vendor Specific (&quot; + type + &quot;)&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

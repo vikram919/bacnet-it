@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BACnetObject.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.deviceobjects</a> &gt; <span class="el_source">BACnetObject.java</span></div><h1>BACnetObject.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.deviceobjects;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.ObjectCovSubscription;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetRuntimeException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetServiceException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.Address;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.BaseType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.PriorityArray;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.PriorityValue;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.PropertyValue;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.BinaryPV;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ErrorClass;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ErrorCode;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.CharacterString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Date;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Null;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.OctetString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Real;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Time;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+
+/**
+ * BACnetObject Representation
+ *
+ * @author IMVS, FHNW
+ *
+ */
+public class BACnetObject implements Serializable {
+    private static final long serialVersionUID = 569892306207282576L;
+    private final BACnetObjectIdentifier id;
+<span class="nc" id="L62">    private final Map&lt;BACnetPropertyIdentifier, Encodable&gt; properties = new HashMap&lt;BACnetPropertyIdentifier, Encodable&gt;();</span>
+<span class="nc" id="L63">    private final List&lt;ObjectCovSubscription&gt; covSubscriptions = new ArrayList&lt;ObjectCovSubscription&gt;();</span>
+
+<span class="nc" id="L65">    public BACnetObject(final BACnetObjectIdentifier id) {</span>
+
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (id == null) {</span>
+<span class="nc" id="L68">            throw new IllegalArgumentException(&quot;object id cannot be null&quot;);</span>
+        }
+<span class="nc" id="L70">        this.id = id;</span>
+
+        try {
+            // setProperty(BACnetPropertyIdentifier.objectName, new
+            // CharacterString(id.toString()));
+
+            // Set any default values.
+<span class="nc" id="L77">            final List&lt;BACnetProperty&gt; defs = BACnetObjectFactory</span>
+<span class="nc" id="L78">                    .getPropertyTypeDefinitions(id.getObjectType());</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">            for (final BACnetProperty def : defs) {</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">                if (def.getDefaultValue() != null) {</span>
+<span class="nc" id="L81">                    setProperty(def.getPropertyIdentifier(),</span>
+<span class="nc" id="L82">                            def.getDefaultValue());</span>
+                }
+<span class="nc" id="L84">            }</span>
+<span class="nc" id="L85">        } catch (final BACnetServiceException e) {</span>
+            // Should never happen, but wrap in an unchecked just in case.
+<span class="nc" id="L87">            throw new BACnetRuntimeException(e);</span>
+<span class="nc" id="L88">        }</span>
+<span class="nc" id="L89">    }</span>
+
+    public BACnetObjectIdentifier getId() {
+<span class="nc" id="L92">        return id;</span>
+    }
+
+    public int getInstanceId() {
+<span class="nc" id="L96">        return id.getInstanceNumber();</span>
+    }
+
+    public String getObjectName() {
+<span class="nc" id="L100">        final CharacterString name = getRawObjectName();</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (name == null) {</span>
+<span class="nc" id="L102">            return null;</span>
+        }
+<span class="nc" id="L104">        return name.getValue();</span>
+    }
+
+    public CharacterString getRawObjectName() {
+<span class="nc" id="L108">        return (CharacterString) properties</span>
+<span class="nc" id="L109">                .get(BACnetPropertyIdentifier.objectName);</span>
+    }
+
+    public String getDescription() {
+<span class="nc" id="L113">        final CharacterString name = (CharacterString) properties</span>
+<span class="nc" id="L114">                .get(BACnetPropertyIdentifier.description);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (name == null) {</span>
+<span class="nc" id="L116">            return null;</span>
+        }
+<span class="nc" id="L118">        return name.getValue();</span>
+    }
+
+    //
+    //
+    // Get property
+    //
+    public Encodable getProperty(final BACnetPropertyIdentifier pid)
+            throws BACnetServiceException {
+<span class="nc" id="L127">        if (pid.intValue() == BACnetPropertyIdentifier.objectIdentifier</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">                .intValue()) {</span>
+<span class="nc" id="L129">            return id;</span>
+        }
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        if (pid.intValue() == BACnetPropertyIdentifier.objectType.intValue()) {</span>
+<span class="nc" id="L132">            return id.getObjectType();</span>
+        }
+
+        // Check that the requested property is valid for the object. This will
+        // throw an exception if the
+        // property doesn't belong.
+<span class="nc" id="L138">        BACnetObjectFactory</span>
+<span class="nc" id="L139">                .getPropertyTypeDefinitionRequired(id.getObjectType(), pid);</span>
+
+        // Do some property-specific checking here.
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (pid.intValue() == BACnetPropertyIdentifier.localTime.intValue()) {</span>
+<span class="nc" id="L143">            return new Time();</span>
+        }
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (pid.intValue() == BACnetPropertyIdentifier.localDate.intValue()) {</span>
+<span class="nc" id="L146">            return new Date();</span>
+        }
+
+<span class="nc" id="L149">        return properties.get(pid);</span>
+    }
+
+    public Encodable getPropertyRequired(final BACnetPropertyIdentifier pid)
+            throws BACnetServiceException {
+<span class="nc" id="L154">        final Encodable p = getProperty(pid);</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (p == null) {</span>
+<span class="nc" id="L156">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.unknownProperty);
+        }
+<span class="nc" id="L159">        return p;</span>
+    }
+
+    public Encodable getProperty(final BACnetPropertyIdentifier pid,
+            final UnsignedInteger propertyArrayIndex)
+            throws BACnetServiceException {
+<span class="nc" id="L165">        final Encodable result = getProperty(pid);</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (propertyArrayIndex == null) {</span>
+<span class="nc" id="L167">            return result;</span>
+        }
+
+<span class="nc bnc" id="L170" title="All 2 branches missed.">        if (!(result instanceof SequenceOf&lt;?&gt;)) {</span>
+<span class="nc" id="L171">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.propertyIsNotAnArray);
+        }
+
+<span class="nc" id="L175">        final SequenceOf&lt;?&gt; array = (SequenceOf&lt;?&gt;) result;</span>
+<span class="nc" id="L176">        final int index = propertyArrayIndex.intValue();</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        if (index == 0) {</span>
+<span class="nc" id="L178">            return new UnsignedInteger(array.getCount());</span>
+        }
+
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (index &gt; array.getCount()) {</span>
+<span class="nc" id="L182">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.invalidArrayIndex);
+        }
+
+<span class="nc" id="L186">        return array.get(index);</span>
+    }
+
+    public Encodable getPropertyRequired(final BACnetPropertyIdentifier pid,
+            final UnsignedInteger propertyArrayIndex)
+            throws BACnetServiceException {
+<span class="nc" id="L192">        final Encodable p = getProperty(pid, propertyArrayIndex);</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (p == null) {</span>
+<span class="nc" id="L194">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.unknownProperty);
+        }
+<span class="nc" id="L197">        return p;</span>
+    }
+
+    //
+    //
+    // Set property
+    //
+    public void setProperty(final BACnetPropertyIdentifier pid,
+            final Encodable value) throws BACnetServiceException {
+<span class="nc" id="L206">        BACnetObjectFactory.validateValue(id.getObjectType(), pid, value);</span>
+<span class="nc" id="L207">        setPropertyImpl(pid, value);</span>
+
+        // If the relinquish default was set, make sure the present value gets
+        // updated as necessary.
+<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (pid.equals(BACnetPropertyIdentifier.relinquishDefault)) {</span>
+<span class="nc" id="L212">            setCommandableImpl((PriorityArray) getProperty(</span>
+                    BACnetPropertyIdentifier.priorityArray));
+        }
+<span class="nc" id="L215">    }</span>
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public void setProperty(final BACnetPropertyIdentifier propId,
+            final int index, final Encodable value)
+            throws BACnetServiceException {
+<span class="nc" id="L221">        BACnetObjectFactory.validateSequenceValue(id.getObjectType(), propId,</span>
+                value);
+<span class="nc" id="L223">        SequenceOf&lt;Encodable&gt; list = (SequenceOf&lt;Encodable&gt;) properties</span>
+<span class="nc" id="L224">                .get(propId);</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">        if (list == null) {</span>
+<span class="nc" id="L226">            list = new SequenceOf&lt;Encodable&gt;();</span>
+<span class="nc" id="L227">            setPropertyImpl(propId, list);</span>
+        }
+<span class="nc" id="L229">        list.set(index, value);</span>
+<span class="nc" id="L230">    }</span>
+
+    public void setProperty(final PropertyValue value)
+            throws BACnetServiceException {
+<span class="nc" id="L234">        final BACnetPropertyIdentifier pid = value.getPropertyIdentifier();</span>
+
+<span class="nc" id="L236">        if (pid.intValue() == BACnetPropertyIdentifier.objectIdentifier</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">                .intValue()) {</span>
+<span class="nc" id="L238">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.writeAccessDenied);
+        }
+<span class="nc bnc" id="L241" title="All 2 branches missed.">        if (pid.intValue() == BACnetPropertyIdentifier.objectType.intValue()) {</span>
+<span class="nc" id="L242">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.writeAccessDenied);
+        }
+<span class="nc" id="L245">        if (pid.intValue() == BACnetPropertyIdentifier.priorityArray</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">                .intValue()) {</span>
+<span class="nc" id="L247">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.writeAccessDenied);
+            // if (pid.intValue() ==
+            // PropertyIdentifier.relinquishDefault.intValue())
+            // throw new BACnetServiceException(ErrorClass.property,
+            // ErrorCode.writeAccessDenied);
+        }
+
+<span class="nc bnc" id="L255" title="All 2 branches missed.">        if (BACnetObjectFactory.isCommandable((BACnetObjectType) getProperty(</span>
+                BACnetPropertyIdentifier.objectType), pid)) {
+<span class="nc" id="L257">            setCommandable(value.getValue(), value.getPriority());</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">        } else if (value.getValue() == null) {</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">            if (value.getPropertyArrayIndex() == null) {</span>
+<span class="nc" id="L260">                removeProperty(value.getPropertyIdentifier());</span>
+            } else {
+<span class="nc" id="L262">                removeProperty(value.getPropertyIdentifier(),</span>
+<span class="nc" id="L263">                        value.getPropertyArrayIndex());</span>
+            }
+        } else {
+<span class="nc bnc" id="L266" title="All 2 branches missed.">            if (value.getPropertyArrayIndex() != null) {</span>
+<span class="nc" id="L267">                setProperty(pid, value.getPropertyArrayIndex().intValue(),</span>
+<span class="nc" id="L268">                        value.getValue());</span>
+            } else {
+<span class="nc" id="L270">                setProperty(pid, value.getValue());</span>
+            }
+        }
+<span class="nc" id="L273">    }</span>
+
+    public void setCommandable(final Encodable value,
+            final UnsignedInteger priority) throws BACnetServiceException {
+<span class="nc" id="L277">        int pri = 16;</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">        if (priority != null) {</span>
+<span class="nc" id="L279">            pri = priority.intValue();</span>
+        }
+
+<span class="nc" id="L282">        final PriorityArray priorityArray = (PriorityArray) getProperty(</span>
+                BACnetPropertyIdentifier.priorityArray);
+<span class="nc" id="L284">        priorityArray.set(pri, createCommandValue(value));</span>
+<span class="nc" id="L285">        setCommandableImpl(priorityArray);</span>
+<span class="nc" id="L286">    }</span>
+
+    private void setCommandableImpl(final PriorityArray priorityArray)
+            throws BACnetServiceException {
+<span class="nc" id="L290">        PriorityValue priorityValue = null;</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">        for (final PriorityValue priv : priorityArray) {</span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">            if (!priv.isNull()) {</span>
+<span class="nc" id="L293">                priorityValue = priv;</span>
+<span class="nc" id="L294">                break;</span>
+            }
+<span class="nc" id="L296">        }</span>
+
+<span class="nc" id="L298">        Encodable newValue = getProperty(</span>
+                BACnetPropertyIdentifier.relinquishDefault);
+<span class="nc bnc" id="L300" title="All 2 branches missed.">        if (priorityValue != null) {</span>
+<span class="nc" id="L301">            newValue = priorityValue.getValue();</span>
+        }
+
+<span class="nc" id="L304">        setPropertyImpl(BACnetPropertyIdentifier.presentValue, newValue);</span>
+<span class="nc" id="L305">    }</span>
+
+    private void setPropertyImpl(final BACnetPropertyIdentifier pid,
+            final Encodable value) {
+<span class="nc" id="L309">        final Encodable oldValue = properties.get(pid);</span>
+<span class="nc" id="L310">        properties.put(pid, value);</span>
+
+<span class="nc bnc" id="L312" title="All 2 branches missed.">        if (!Objects.equals(value, oldValue)) {</span>
+            // Check for subscriptions.
+<span class="nc bnc" id="L314" title="All 2 branches missed.">            if (ObjectCovSubscription.sendCovNotification(id.getObjectType(),</span>
+<span class="nc" id="L315">                    pid, this.getCovIncrement())) {</span>
+<span class="nc" id="L316">                synchronized (covSubscriptions) {</span>
+<span class="nc" id="L317">                    final long now = System.currentTimeMillis();</span>
+                    ObjectCovSubscription sub;
+<span class="nc bnc" id="L319" title="All 2 branches missed.">                    for (int i = covSubscriptions.size() - 1; i &gt;= 0; i--) {</span>
+<span class="nc" id="L320">                        sub = covSubscriptions.get(i);</span>
+<span class="nc bnc" id="L321" title="All 2 branches missed.">                        if (sub.hasExpired(now)) {</span>
+<span class="nc" id="L322">                            covSubscriptions.remove(i);</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">                        } else if (sub.isNotificationRequired(pid, value)) {</span>
+<span class="nc" id="L324">                            sendCovNotification(sub, now);</span>
+                        }
+                    }
+<span class="nc" id="L327">                }</span>
+            }
+        }
+<span class="nc" id="L330">    }</span>
+
+    private PriorityValue createCommandValue(final Encodable value)
+            throws BACnetServiceException {
+<span class="nc bnc" id="L334" title="All 2 branches missed.">        if (value instanceof Null) {</span>
+<span class="nc" id="L335">            return new PriorityValue((Null) value);</span>
+        }
+
+<span class="nc" id="L338">        final BACnetObjectType type = (BACnetObjectType) getProperty(</span>
+                BACnetPropertyIdentifier.objectType);
+<span class="nc bnc" id="L340" title="All 2 branches missed.">        if (type.equals(BACnetObjectType.accessDoor)) {</span>
+<span class="nc" id="L341">            return new PriorityValue((BaseType) value);</span>
+        }
+<span class="nc bnc" id="L343" title="All 2 branches missed.">        if (type.equals(BACnetObjectType.analogOutput)</span>
+<span class="nc bnc" id="L344" title="All 2 branches missed.">                || type.equals(BACnetObjectType.analogValue)) {</span>
+<span class="nc" id="L345">            return new PriorityValue((Real) value);</span>
+        }
+<span class="nc bnc" id="L347" title="All 2 branches missed.">        if (type.equals(BACnetObjectType.binaryOutput)</span>
+<span class="nc bnc" id="L348" title="All 2 branches missed.">                || type.equals(BACnetObjectType.binaryValue)) {</span>
+<span class="nc" id="L349">            return new PriorityValue((BinaryPV) value);</span>
+        }
+<span class="nc" id="L351">        return new PriorityValue((UnsignedInteger) value);</span>
+    }
+
+    /**
+     * return all implemented properties
+     *
+     * @return
+     */
+    public List&lt;BACnetPropertyIdentifier&gt; getProperties() {
+<span class="nc" id="L360">        final ArrayList&lt;BACnetPropertyIdentifier&gt; list = new ArrayList&lt;BACnetPropertyIdentifier&gt;();</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">        for (final BACnetPropertyIdentifier pid : properties.keySet()) {</span>
+<span class="nc" id="L362">            list.add(pid);</span>
+<span class="nc" id="L363">        }</span>
+<span class="nc" id="L364">        return list;</span>
+    }
+
+    //
+    //
+    // COV subscriptions
+    //
+    public void addCovSubscription(final Address from,
+            final OctetString linkService,
+            final UnsignedInteger subscriberProcessIdentifier,
+            final Boolean issueConfirmedNotifications,
+            final UnsignedInteger lifetime) throws BACnetServiceException {
+<span class="nc" id="L376">        synchronized (covSubscriptions) {</span>
+<span class="nc" id="L377">            ObjectCovSubscription sub = findCovSubscription(from,</span>
+                    subscriberProcessIdentifier);
+<span class="nc" id="L379">            final boolean confirmed = issueConfirmedNotifications</span>
+<span class="nc" id="L380">                    .booleanValue();</span>
+
+<span class="nc bnc" id="L382" title="All 2 branches missed.">            if (sub == null) {</span>
+                // Ensure that this object is valid for COV notifications.
+<span class="nc bnc" id="L384" title="All 2 branches missed.">                if (!ObjectCovSubscription.sendCovNotification(</span>
+<span class="nc" id="L385">                        id.getObjectType(), null, this.getCovIncrement())) {</span>
+<span class="nc" id="L386">                    throw new BACnetServiceException(ErrorClass.services,</span>
+                            ErrorCode.covSubscriptionFailed,
+                            &quot;Object is invalid for COV notifications&quot;);
+                }
+
+<span class="nc bnc" id="L391" title="All 2 branches missed.">                if (confirmed) {</span>
+                    // If the peer wants confirmed notifications, it must be in
+                    // the remote device list.
+                    // RemoteDevice d = localDevice.getRemoteDevice(from);
+                    // if (d == null)
+                    // throw new BACnetServiceException(ErrorClass.services,
+                    // ErrorCode.covSubscriptionFailed,
+                    // &quot;From address not found in remote device list. Cannot
+                    // send confirmed notifications&quot;);
+                }
+
+<span class="nc" id="L402">                sub = new ObjectCovSubscription(from, linkService,</span>
+<span class="nc" id="L403">                        subscriberProcessIdentifier, this.getCovIncrement());</span>
+<span class="nc" id="L404">                covSubscriptions.add(sub);</span>
+            }
+
+<span class="nc" id="L407">            sub.setIssueConfirmedNotifications(</span>
+<span class="nc" id="L408">                    issueConfirmedNotifications.booleanValue());</span>
+<span class="nc" id="L409">            sub.setExpiryTime(lifetime.intValue());</span>
+<span class="nc" id="L410">        }</span>
+<span class="nc" id="L411">    }</span>
+
+    public Real getCovIncrement() {
+<span class="nc" id="L414">        return (Real) properties.get(BACnetPropertyIdentifier.covIncrement);</span>
+    }
+
+    public void removeCovSubscription(final Address from,
+            final UnsignedInteger subscriberProcessIdentifier) {
+<span class="nc" id="L419">        synchronized (covSubscriptions) {</span>
+<span class="nc" id="L420">            final ObjectCovSubscription sub = findCovSubscription(from,</span>
+                    subscriberProcessIdentifier);
+<span class="nc bnc" id="L422" title="All 2 branches missed.">            if (sub != null) {</span>
+<span class="nc" id="L423">                covSubscriptions.remove(sub);</span>
+            }
+<span class="nc" id="L425">        }</span>
+<span class="nc" id="L426">    }</span>
+
+    private ObjectCovSubscription findCovSubscription(final Address from,
+            final UnsignedInteger subscriberProcessIdentifier) {
+<span class="nc bnc" id="L430" title="All 2 branches missed.">        for (final ObjectCovSubscription sub : covSubscriptions) {</span>
+<span class="nc bnc" id="L431" title="All 2 branches missed.">            if (sub.getAddress().equals(from)</span>
+<span class="nc" id="L432">                    &amp;&amp; sub.getSubscriberProcessIdentifier()</span>
+<span class="nc bnc" id="L433" title="All 2 branches missed.">                            .equals(subscriberProcessIdentifier)) {</span>
+<span class="nc" id="L434">                return sub;</span>
+            }
+<span class="nc" id="L436">        }</span>
+<span class="nc" id="L437">        return null;</span>
+    }
+
+    private void sendCovNotification(final ObjectCovSubscription sub,
+            final long now) {
+        // try {
+        // UnsignedInteger timeLeft = new
+        // UnsignedInteger(sub.getTimeRemaining(now));
+        // SequenceOf&lt;PropertyValue&gt; values = new
+        // SequenceOf&lt;PropertyValue&gt;(ObjectCovSubscription.getValues(this));
+        //
+        // if (sub.isIssueConfirmedNotifications()) {
+        // // Confirmed
+        // ConfirmedCovNotificationRequest req = new
+        // ConfirmedCovNotificationRequest(
+        // sub.getSubscriberProcessIdentifier(),
+        // localDevice.getConfiguration().getId(), id, timeLeft,
+        // values);
+        // RemoteDevice d = localDevice.getRemoteDevice(sub.getAddress());
+        // localDevice.send(d, req);
+        // }
+        // else {
+        // // Unconfirmed
+        // UnconfirmedCovNotificationRequest req = new
+        // UnconfirmedCovNotificationRequest(
+        // sub.getSubscriberProcessIdentifier(),
+        // localDevice.getConfiguration().getId(), id, timeLeft,
+        // values);
+        // localDevice.sendUnconfirmed(sub.getAddress(), sub.getLinkService(),
+        // req);
+        // }
+        // }
+        // catch (BACnetException e) {
+        // ExceptionDispatch.fireReceivedException(e);
+        // }
+<span class="nc" id="L472">    }</span>
+
+    public void validate() throws BACnetServiceException {
+        // Ensure that all required properties have values.
+<span class="nc" id="L476">        final List&lt;BACnetProperty&gt; defs = BACnetObjectFactory</span>
+<span class="nc" id="L477">                .getRequiredPropertyTypeDefinitions(id.getObjectType());</span>
+<span class="nc bnc" id="L478" title="All 2 branches missed.">        for (final BACnetProperty def : defs) {</span>
+<span class="nc bnc" id="L479" title="All 2 branches missed.">            if (getProperty(def.getPropertyIdentifier()) == null) {</span>
+<span class="nc" id="L480">                throw new BACnetServiceException(ErrorClass.property,</span>
+                        ErrorCode.other, &quot;Required property not set: &quot;
+<span class="nc" id="L482">                                + def.getPropertyIdentifier());</span>
+            }
+<span class="nc" id="L484">        }</span>
+<span class="nc" id="L485">    }</span>
+
+    public void removeProperty(final BACnetPropertyIdentifier pid)
+            throws BACnetServiceException {
+<span class="nc" id="L489">        final BACnetProperty def = BACnetObjectFactory</span>
+<span class="nc" id="L490">                .getPropertyTypeDefinitionRequired(id.getObjectType(), pid);</span>
+<span class="nc bnc" id="L491" title="All 2 branches missed.">        if (def.isRequired()) {</span>
+<span class="nc" id="L492">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.writeAccessDenied);
+        }
+<span class="nc" id="L495">        properties.remove(pid);</span>
+<span class="nc" id="L496">    }</span>
+
+    public void removeProperty(final BACnetPropertyIdentifier pid,
+            final UnsignedInteger propertyArrayIndex)
+            throws BACnetServiceException {
+<span class="nc" id="L501">        final BACnetProperty def = BACnetObjectFactory</span>
+<span class="nc" id="L502">                .getPropertyTypeDefinitionRequired(id.getObjectType(), pid);</span>
+<span class="nc bnc" id="L503" title="All 2 branches missed.">        if (!def.isSequence()) {</span>
+<span class="nc" id="L504">            throw new BACnetServiceException(ErrorClass.property,</span>
+                    ErrorCode.invalidArrayIndex);
+        }
+<span class="nc" id="L507">        final SequenceOf&lt;?&gt; sequence = (SequenceOf&lt;?&gt;) properties.get(pid);</span>
+<span class="nc bnc" id="L508" title="All 2 branches missed.">        if (sequence != null) {</span>
+<span class="nc" id="L509">            sequence.remove(propertyArrayIndex.intValue());</span>
+        }
+<span class="nc" id="L511">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L515">        final int PRIME = 31;</span>
+<span class="nc" id="L516">        int result = 1;</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">        result = PRIME * result + ((id == null) ? 0 : id.hashCode());</span>
+<span class="nc" id="L518">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L523" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L524">            return true;</span>
+        }
+<span class="nc bnc" id="L526" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L527">            return false;</span>
+        }
+<span class="nc bnc" id="L529" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L530">            return false;</span>
+        }
+<span class="nc" id="L532">        final BACnetObject other = (BACnetObject) obj;</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">        if (id == null) {</span>
+<span class="nc bnc" id="L534" title="All 2 branches missed.">            if (other.id != null) {</span>
+<span class="nc" id="L535">                return false;</span>
+            }
+<span class="nc bnc" id="L537" title="All 2 branches missed.">        } else if (!id.equals(other.id)) {</span>
+<span class="nc" id="L538">            return false;</span>
+        }
+<span class="nc" id="L540">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

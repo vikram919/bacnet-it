@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ch.fhnw.bacnetit.samplesandtests.encoding.BACnetErrorAckASDUTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2018-03-21T20:19:17" hostname="DESKTOP-QBU1TN7" time="0.045">
+  <properties/>
+  <testcase name="testSerialize" classname="ch.fhnw.bacnetit.samplesandtests.encoding.BACnetErrorAckASDUTest" time="0.032"/>
+  <testcase name="testDeserialize" classname="ch.fhnw.bacnetit.samplesandtests.encoding.BACnetErrorAckASDUTest" time="0.013"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DaysOfWeek.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">DaysOfWeek.java</span></div><h1>DaysOfWeek.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.BitString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class DaysOfWeek extends BitString {
+    private static final long serialVersionUID = -7381461753680751900L;
+
+    public DaysOfWeek() {
+<span class="nc" id="L32">        super(new boolean[7]);</span>
+<span class="nc" id="L33">    }</span>
+
+    public DaysOfWeek(final boolean defaultValue) {
+<span class="nc" id="L36">        super(7, defaultValue);</span>
+<span class="nc" id="L37">    }</span>
+
+    public DaysOfWeek(final ByteQueue queue) {
+<span class="nc" id="L40">        super(queue);</span>
+<span class="nc" id="L41">    }</span>
+
+    public boolean contains(final int day) {
+<span class="nc" id="L44">        return getValue()[day];</span>
+    }
+
+    public boolean isMonday() {
+<span class="nc" id="L48">        return getValue()[0];</span>
+    }
+
+    public void setMonday(final boolean monday) {
+<span class="nc" id="L52">        getValue()[0] = monday;</span>
+<span class="nc" id="L53">    }</span>
+
+    public boolean isTuesday() {
+<span class="nc" id="L56">        return getValue()[1];</span>
+    }
+
+    public void setTuesday(final boolean tuesday) {
+<span class="nc" id="L60">        getValue()[1] = tuesday;</span>
+<span class="nc" id="L61">    }</span>
+
+    public boolean isWednesday() {
+<span class="nc" id="L64">        return getValue()[2];</span>
+    }
+
+    public void setWednesday(final boolean wednesday) {
+<span class="nc" id="L68">        getValue()[2] = wednesday;</span>
+<span class="nc" id="L69">    }</span>
+
+    public boolean isThursday() {
+<span class="nc" id="L72">        return getValue()[3];</span>
+    }
+
+    public void setThursday(final boolean thursday) {
+<span class="nc" id="L76">        getValue()[3] = thursday;</span>
+<span class="nc" id="L77">    }</span>
+
+    public boolean isFriday() {
+<span class="nc" id="L80">        return getValue()[4];</span>
+    }
+
+    public void setFriday(final boolean friday) {
+<span class="nc" id="L84">        getValue()[4] = friday;</span>
+<span class="nc" id="L85">    }</span>
+
+    public boolean isSaturday() {
+<span class="nc" id="L88">        return getValue()[5];</span>
+    }
+
+    public void setSaturday(final boolean saturday) {
+<span class="nc" id="L92">        getValue()[5] = saturday;</span>
+<span class="nc" id="L93">    }</span>
+
+    public boolean isSunday() {
+<span class="nc" id="L96">        return getValue()[6];</span>
+    }
+
+    public void setSunday(final boolean sunday) {
+<span class="nc" id="L100">        getValue()[6] = sunday;</span>
+<span class="nc" id="L101">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

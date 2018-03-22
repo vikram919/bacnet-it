@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WSConnectionServer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.transportbinding.ws.incoming</a> &gt; <span class="el_source">WSConnectionServer.java</span></div><h1>WSConnectionServer.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.transportbinding.ws.incoming;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.fhnw.bacnetit.ase.application.configuration.api.HttpAuthConfig;
+import ch.fhnw.bacnetit.transportbinding.auth.http.HttpBasicAuthHandler;
+import ch.fhnw.bacnetit.transportbinding.auth.http.HttpCorsHandler;
+import ch.fhnw.bacnetit.transportbinding.ws.ConnectionServer;
+import io.netty.channel.ChannelHandler;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.cors.CorsConfig;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+
+public class WSConnectionServer implements ConnectionServer {
+<span class="fc" id="L18">    private CorsConfig corsConfig = null;</span>
+<span class="fc" id="L19">    private HttpAuthConfig httpAuthConfig = null;</span>
+<span class="fc" id="L20">    private String secProtocol = null;</span>
+
+<span class="fc" id="L22">    public WSConnectionServer() {</span>
+
+<span class="fc" id="L24">    }</span>
+
+    public void setCorsConfig(final CorsConfig config) {
+<span class="nc" id="L27">        this.corsConfig = config;</span>
+<span class="nc" id="L28">    }</span>
+
+    public void setHttpAuthConfig(final HttpAuthConfig config) {
+<span class="nc" id="L31">        this.httpAuthConfig = config;</span>
+<span class="nc" id="L32">    }</span>
+
+    public void setSecprotocol(final String secProtocol) {
+<span class="nc" id="L35">        this.secProtocol = secProtocol;</span>
+<span class="nc" id="L36">    }</span>
+
+    // Initial Pipeline
+    @Override
+    public ChannelHandler[] getChannelHandlers() {
+<span class="fc" id="L41">        final List&lt;ChannelHandler&gt; handlers = new ArrayList&lt;ChannelHandler&gt;();</span>
+
+<span class="fc" id="L43">        handlers.add(new HttpServerCodec());</span>
+<span class="fc" id="L44">        handlers.add(new HttpObjectAggregator(8192));</span>
+        // Allowing CORS
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        if (corsConfig != null) {</span>
+            // Building CORS Config
+            // CorsConfig corsConfig =
+            // CorsConfigBuilder.forAnyOrigin().allowCredentials()
+            // .allowedRequestHeaders(&quot;Authorization&quot;, &quot;Vary&quot;, &quot;Cookie&quot;,
+            // &quot;Content-Type&quot;, &quot;Accept&quot;, &quot;X-Requested-With&quot;)
+            // .allowedRequestMethods(HttpMethod.GET,
+            // HttpMethod.OPTIONS).build();
+<span class="nc" id="L54">            handlers.add(new HttpCorsHandler(corsConfig));</span>
+        }
+        // Allow Http Auth
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (httpAuthConfig != null) {</span>
+<span class="nc" id="L58">            handlers.add(new HttpBasicAuthHandler(httpAuthConfig));</span>
+        }
+
+        // TODO must be easier to construct a connection -&gt; through factory
+        // keystore configs are passed all the way from WSConnectionFactory
+        // pass a factory or initiate one here
+<span class="fc" id="L64">        final WSConnectionServerHandler serverHandler = new WSConnectionServerHandler();</span>
+<span class="fc" id="L65">        serverHandler.setSecProtocol(secProtocol);</span>
+<span class="fc" id="L66">        handlers.add(serverHandler);</span>
+<span class="fc" id="L67">        handlers.add(new LoggingHandler(LogLevel.DEBUG));</span>
+<span class="fc" id="L68">        return handlers.toArray(new ChannelHandler[handlers.size()]);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

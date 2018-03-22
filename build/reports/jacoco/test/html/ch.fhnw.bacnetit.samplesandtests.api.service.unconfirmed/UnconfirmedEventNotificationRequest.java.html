@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UnconfirmedEventNotificationRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.service.unconfirmed</a> &gt; <span class="el_source">UnconfirmedEventNotificationRequest.java</span></div><h1>UnconfirmedEventNotificationRequest.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.service.unconfirmed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.TimeStamp;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.EventState;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.EventType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.NotifyType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.notificationParameter.NotificationParameters;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Boolean;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.CharacterString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class UnconfirmedEventNotificationRequest
+        extends UnconfirmedRequestService {
+    private static final long serialVersionUID = -2283491076065625819L;
+
+    public static final byte TYPE_ID = 3;
+
+    private final UnsignedInteger processIdentifier; // 0
+
+    private final BACnetObjectIdentifier initiatingDeviceIdentifier; // 1
+
+    private final BACnetObjectIdentifier eventObjectIdentifier; // 2
+
+    private final TimeStamp timeStamp; // 3
+
+    private final UnsignedInteger notificationClass; // 4
+
+    private final UnsignedInteger priority; // 5
+
+    private final EventType eventType; // 6
+
+    private final CharacterString messageText; // 7 optional
+
+    private final NotifyType notifyType; // 8
+
+    private final Boolean ackRequired; // 9 optional
+
+    private final EventState fromState; // 10 optional
+
+    private final EventState toState; // 11
+
+    private final NotificationParameters eventValues; // 12 optional
+
+    public UnconfirmedEventNotificationRequest(
+            final UnsignedInteger processIdentifier,
+            final BACnetObjectIdentifier initiatingDeviceIdentifier,
+            final BACnetObjectIdentifier eventObjectIdentifier,
+            final TimeStamp timeStamp, final UnsignedInteger notificationClass,
+            final UnsignedInteger priority, final EventType eventType,
+            final CharacterString messageText, final NotifyType notifyType,
+            final Boolean ackRequired, final EventState fromState,
+            final EventState toState,
+<span class="nc" id="L78">            final NotificationParameters eventValues) {</span>
+<span class="nc" id="L79">        this.processIdentifier = processIdentifier;</span>
+<span class="nc" id="L80">        this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;</span>
+<span class="nc" id="L81">        this.eventObjectIdentifier = eventObjectIdentifier;</span>
+<span class="nc" id="L82">        this.timeStamp = timeStamp;</span>
+<span class="nc" id="L83">        this.notificationClass = notificationClass;</span>
+<span class="nc" id="L84">        this.priority = priority;</span>
+<span class="nc" id="L85">        this.eventType = eventType;</span>
+<span class="nc" id="L86">        this.messageText = messageText;</span>
+<span class="nc" id="L87">        this.notifyType = notifyType;</span>
+<span class="nc" id="L88">        this.ackRequired = ackRequired;</span>
+<span class="nc" id="L89">        this.fromState = fromState;</span>
+<span class="nc" id="L90">        this.toState = toState;</span>
+<span class="nc" id="L91">        this.eventValues = eventValues;</span>
+<span class="nc" id="L92">    }</span>
+
+    @Override
+    public byte getChoiceId() {
+<span class="nc" id="L96">        return TYPE_ID;</span>
+    }
+
+    // @Override
+    // public void handle(LocalDevice localDevice, Address from, OctetString
+    // linkService) {
+    // localDevice.getEventHandler().fireEventNotification(processIdentifier,
+    // localDevice.getRemoteDeviceCreate(initiatingDeviceIdentifier.getInstanceNumber(),
+    // from, linkService),
+    // eventObjectIdentifier, timeStamp, notificationClass, priority, eventType,
+    // messageText, notifyType,
+    // ackRequired, fromState, toState, eventValues);
+    // }
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L112">        write(queue, processIdentifier, 0);</span>
+<span class="nc" id="L113">        write(queue, initiatingDeviceIdentifier, 1);</span>
+<span class="nc" id="L114">        write(queue, eventObjectIdentifier, 2);</span>
+<span class="nc" id="L115">        write(queue, timeStamp, 3);</span>
+<span class="nc" id="L116">        write(queue, notificationClass, 4);</span>
+<span class="nc" id="L117">        write(queue, priority, 5);</span>
+<span class="nc" id="L118">        write(queue, eventType, 6);</span>
+<span class="nc" id="L119">        writeOptional(queue, messageText, 7);</span>
+<span class="nc" id="L120">        write(queue, notifyType, 8);</span>
+<span class="nc" id="L121">        writeOptional(queue, ackRequired, 9);</span>
+<span class="nc" id="L122">        writeOptional(queue, fromState, 10);</span>
+<span class="nc" id="L123">        write(queue, toState, 11);</span>
+<span class="nc" id="L124">        writeOptional(queue, eventValues, 12);</span>
+<span class="nc" id="L125">    }</span>
+
+    UnconfirmedEventNotificationRequest(final ByteQueue queue)
+<span class="nc" id="L128">            throws BACnetException {</span>
+<span class="nc" id="L129">        processIdentifier = read(queue, UnsignedInteger.class, 0);</span>
+<span class="nc" id="L130">        initiatingDeviceIdentifier = read(queue, BACnetObjectIdentifier.class,</span>
+                1);
+<span class="nc" id="L132">        eventObjectIdentifier = read(queue, BACnetObjectIdentifier.class, 2);</span>
+<span class="nc" id="L133">        timeStamp = read(queue, TimeStamp.class, 3);</span>
+<span class="nc" id="L134">        notificationClass = read(queue, UnsignedInteger.class, 4);</span>
+<span class="nc" id="L135">        priority = read(queue, UnsignedInteger.class, 5);</span>
+<span class="nc" id="L136">        eventType = read(queue, EventType.class, 6);</span>
+<span class="nc" id="L137">        messageText = readOptional(queue, CharacterString.class, 7);</span>
+<span class="nc" id="L138">        notifyType = read(queue, NotifyType.class, 8);</span>
+<span class="nc" id="L139">        ackRequired = readOptional(queue, Boolean.class, 9);</span>
+<span class="nc" id="L140">        fromState = readOptional(queue, EventState.class, 10);</span>
+<span class="nc" id="L141">        toState = read(queue, EventState.class, 11);</span>
+<span class="nc" id="L142">        eventValues = NotificationParameters</span>
+<span class="nc" id="L143">                .createNotificationParametersOptional(queue, 12);</span>
+<span class="nc" id="L144">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L148">        final int PRIME = 31;</span>
+<span class="nc" id="L149">        int result = 1;</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L151">                + ((ackRequired == null) ? 0 : ackRequired.hashCode());</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        result = PRIME * result + ((eventObjectIdentifier == null) ? 0</span>
+<span class="nc" id="L153">                : eventObjectIdentifier.hashCode());</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L155">                + ((eventType == null) ? 0 : eventType.hashCode());</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L157">                + ((eventValues == null) ? 0 : eventValues.hashCode());</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L159">                + ((fromState == null) ? 0 : fromState.hashCode());</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        result = PRIME * result + ((initiatingDeviceIdentifier == null) ? 0</span>
+<span class="nc" id="L161">                : initiatingDeviceIdentifier.hashCode());</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L163">                + ((messageText == null) ? 0 : messageText.hashCode());</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        result = PRIME * result + ((notificationClass == null) ? 0</span>
+<span class="nc" id="L165">                : notificationClass.hashCode());</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L167">                + ((notifyType == null) ? 0 : notifyType.hashCode());</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L169">                + ((priority == null) ? 0 : priority.hashCode());</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">        result = PRIME * result + ((processIdentifier == null) ? 0</span>
+<span class="nc" id="L171">                : processIdentifier.hashCode());</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L173">                + ((timeStamp == null) ? 0 : timeStamp.hashCode());</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">        result = PRIME * result + ((toState == null) ? 0 : toState.hashCode());</span>
+<span class="nc" id="L175">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L181">            return true;</span>
+        }
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L184">            return false;</span>
+        }
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L187">            return false;</span>
+        }
+<span class="nc" id="L189">        final UnconfirmedEventNotificationRequest other = (UnconfirmedEventNotificationRequest) obj;</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (ackRequired == null) {</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">            if (other.ackRequired != null) {</span>
+<span class="nc" id="L192">                return false;</span>
+            }
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        } else if (!ackRequired.equals(other.ackRequired)) {</span>
+<span class="nc" id="L195">            return false;</span>
+        }
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (eventObjectIdentifier == null) {</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">            if (other.eventObjectIdentifier != null) {</span>
+<span class="nc" id="L199">                return false;</span>
+            }
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        } else if (!eventObjectIdentifier.equals(other.eventObjectIdentifier)) {</span>
+<span class="nc" id="L202">            return false;</span>
+        }
+<span class="nc bnc" id="L204" title="All 2 branches missed.">        if (eventType == null) {</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">            if (other.eventType != null) {</span>
+<span class="nc" id="L206">                return false;</span>
+            }
+<span class="nc bnc" id="L208" title="All 2 branches missed.">        } else if (!eventType.equals(other.eventType)) {</span>
+<span class="nc" id="L209">            return false;</span>
+        }
+<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (eventValues == null) {</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">            if (other.eventValues != null) {</span>
+<span class="nc" id="L213">                return false;</span>
+            }
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        } else if (!eventValues.equals(other.eventValues)) {</span>
+<span class="nc" id="L216">            return false;</span>
+        }
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (fromState == null) {</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">            if (other.fromState != null) {</span>
+<span class="nc" id="L220">                return false;</span>
+            }
+<span class="nc bnc" id="L222" title="All 2 branches missed.">        } else if (!fromState.equals(other.fromState)) {</span>
+<span class="nc" id="L223">            return false;</span>
+        }
+<span class="nc bnc" id="L225" title="All 2 branches missed.">        if (initiatingDeviceIdentifier == null) {</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">            if (other.initiatingDeviceIdentifier != null) {</span>
+<span class="nc" id="L227">                return false;</span>
+            }
+<span class="nc" id="L229">        } else if (!initiatingDeviceIdentifier</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">                .equals(other.initiatingDeviceIdentifier)) {</span>
+<span class="nc" id="L231">            return false;</span>
+        }
+<span class="nc bnc" id="L233" title="All 2 branches missed.">        if (messageText == null) {</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">            if (other.messageText != null) {</span>
+<span class="nc" id="L235">                return false;</span>
+            }
+<span class="nc bnc" id="L237" title="All 2 branches missed.">        } else if (!messageText.equals(other.messageText)) {</span>
+<span class="nc" id="L238">            return false;</span>
+        }
+<span class="nc bnc" id="L240" title="All 2 branches missed.">        if (notificationClass == null) {</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">            if (other.notificationClass != null) {</span>
+<span class="nc" id="L242">                return false;</span>
+            }
+<span class="nc bnc" id="L244" title="All 2 branches missed.">        } else if (!notificationClass.equals(other.notificationClass)) {</span>
+<span class="nc" id="L245">            return false;</span>
+        }
+<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (notifyType == null) {</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">            if (other.notifyType != null) {</span>
+<span class="nc" id="L249">                return false;</span>
+            }
+<span class="nc bnc" id="L251" title="All 2 branches missed.">        } else if (!notifyType.equals(other.notifyType)) {</span>
+<span class="nc" id="L252">            return false;</span>
+        }
+<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (priority == null) {</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">            if (other.priority != null) {</span>
+<span class="nc" id="L256">                return false;</span>
+            }
+<span class="nc bnc" id="L258" title="All 2 branches missed.">        } else if (!priority.equals(other.priority)) {</span>
+<span class="nc" id="L259">            return false;</span>
+        }
+<span class="nc bnc" id="L261" title="All 2 branches missed.">        if (processIdentifier == null) {</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">            if (other.processIdentifier != null) {</span>
+<span class="nc" id="L263">                return false;</span>
+            }
+<span class="nc bnc" id="L265" title="All 2 branches missed.">        } else if (!processIdentifier.equals(other.processIdentifier)) {</span>
+<span class="nc" id="L266">            return false;</span>
+        }
+<span class="nc bnc" id="L268" title="All 2 branches missed.">        if (timeStamp == null) {</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">            if (other.timeStamp != null) {</span>
+<span class="nc" id="L270">                return false;</span>
+            }
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        } else if (!timeStamp.equals(other.timeStamp)) {</span>
+<span class="nc" id="L273">            return false;</span>
+        }
+<span class="nc bnc" id="L275" title="All 2 branches missed.">        if (toState == null) {</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">            if (other.toState != null) {</span>
+<span class="nc" id="L277">                return false;</span>
+            }
+<span class="nc bnc" id="L279" title="All 2 branches missed.">        } else if (!toState.equals(other.toState)) {</span>
+<span class="nc" id="L280">            return false;</span>
+        }
+<span class="nc" id="L282">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

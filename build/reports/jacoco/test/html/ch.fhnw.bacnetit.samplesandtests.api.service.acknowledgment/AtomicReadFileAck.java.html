@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AtomicReadFileAck.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.service.acknowledgment</a> &gt; <span class="el_source">AtomicReadFileAck.java</span></div><h1>AtomicReadFileAck.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.service.acknowledgment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Boolean;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.OctetString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.SignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class AtomicReadFileAck extends AcknowledgementService {
+    private static final long serialVersionUID = 7850183659621947037L;
+
+    public static final byte TYPE_ID = 6;
+
+    private final Boolean endOfFile;
+
+    private final SignedInteger fileStartPosition;
+
+    private final OctetString fileData;
+
+    private final UnsignedInteger returnedRecordCount;
+
+    private final SequenceOf&lt;OctetString&gt; fileRecordData;
+
+    public AtomicReadFileAck(final Boolean endOfFile,
+            final SignedInteger fileStartPosition, final OctetString fileData) {
+<span class="nc" id="L53">        super();</span>
+<span class="nc" id="L54">        this.endOfFile = endOfFile;</span>
+<span class="nc" id="L55">        this.fileStartPosition = fileStartPosition;</span>
+<span class="nc" id="L56">        this.fileData = fileData;</span>
+<span class="nc" id="L57">        returnedRecordCount = null;</span>
+<span class="nc" id="L58">        fileRecordData = null;</span>
+<span class="nc" id="L59">    }</span>
+
+    public AtomicReadFileAck(final Boolean endOfFile,
+            final SignedInteger fileStartPosition,
+            final UnsignedInteger returnedRecordCount,
+            final SequenceOf&lt;OctetString&gt; fileRecordData) {
+<span class="nc" id="L65">        super();</span>
+<span class="nc" id="L66">        this.endOfFile = endOfFile;</span>
+<span class="nc" id="L67">        this.fileStartPosition = fileStartPosition;</span>
+<span class="nc" id="L68">        fileData = null;</span>
+<span class="nc" id="L69">        this.returnedRecordCount = returnedRecordCount;</span>
+<span class="nc" id="L70">        this.fileRecordData = fileRecordData;</span>
+<span class="nc" id="L71">    }</span>
+
+    @Override
+    public byte getChoiceId() {
+<span class="nc" id="L75">        return TYPE_ID;</span>
+    }
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L80">        write(queue, endOfFile);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (fileData != null) {</span>
+<span class="nc" id="L82">            writeContextTag(queue, 0, true);</span>
+<span class="nc" id="L83">            write(queue, fileStartPosition);</span>
+<span class="nc" id="L84">            write(queue, fileData);</span>
+<span class="nc" id="L85">            writeContextTag(queue, 0, false);</span>
+        } else {
+<span class="nc" id="L87">            writeContextTag(queue, 1, true);</span>
+<span class="nc" id="L88">            write(queue, fileStartPosition);</span>
+<span class="nc" id="L89">            write(queue, returnedRecordCount);</span>
+<span class="nc" id="L90">            write(queue, fileRecordData);</span>
+<span class="nc" id="L91">            writeContextTag(queue, 1, false);</span>
+        }
+<span class="nc" id="L93">    }</span>
+
+<span class="nc" id="L95">    AtomicReadFileAck(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L96">        endOfFile = read(queue, Boolean.class);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (popStart(queue) == 0) {</span>
+<span class="nc" id="L98">            fileStartPosition = read(queue, SignedInteger.class);</span>
+<span class="nc" id="L99">            fileData = read(queue, OctetString.class);</span>
+<span class="nc" id="L100">            returnedRecordCount = null;</span>
+<span class="nc" id="L101">            fileRecordData = null;</span>
+<span class="nc" id="L102">            popEnd(queue, 0);</span>
+        } else {
+<span class="nc" id="L104">            fileStartPosition = read(queue, SignedInteger.class);</span>
+<span class="nc" id="L105">            returnedRecordCount = read(queue, UnsignedInteger.class);</span>
+<span class="nc" id="L106">            fileData = null;</span>
+<span class="nc" id="L107">            final List&lt;OctetString&gt; records = new ArrayList&lt;OctetString&gt;();</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            for (int i = 0; i &lt; returnedRecordCount.intValue(); i++) {</span>
+<span class="nc" id="L109">                records.add(read(queue, OctetString.class));</span>
+            }
+<span class="nc" id="L111">            fileRecordData = new SequenceOf&lt;OctetString&gt;(records);</span>
+<span class="nc" id="L112">            popEnd(queue, 1);</span>
+        }
+<span class="nc" id="L114">    }</span>
+
+    public Boolean getEndOfFile() {
+<span class="nc" id="L117">        return endOfFile;</span>
+    }
+
+    public SignedInteger getFileStartPosition() {
+<span class="nc" id="L121">        return fileStartPosition;</span>
+    }
+
+    public OctetString getFileData() {
+<span class="nc" id="L125">        return fileData;</span>
+    }
+
+    public UnsignedInteger getReturnedRecordCount() {
+<span class="nc" id="L129">        return returnedRecordCount;</span>
+    }
+
+    public SequenceOf&lt;OctetString&gt; getFileRecordData() {
+<span class="nc" id="L133">        return fileRecordData;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L138">        final int PRIME = 31;</span>
+<span class="nc" id="L139">        int result = 1;</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L141">                + ((endOfFile == null) ? 0 : endOfFile.hashCode());</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L143">                + ((fileData == null) ? 0 : fileData.hashCode());</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L145">                + ((fileRecordData == null) ? 0 : fileRecordData.hashCode());</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        result = PRIME * result + ((fileStartPosition == null) ? 0</span>
+<span class="nc" id="L147">                : fileStartPosition.hashCode());</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        result = PRIME * result + ((returnedRecordCount == null) ? 0</span>
+<span class="nc" id="L149">                : returnedRecordCount.hashCode());</span>
+<span class="nc" id="L150">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L156">            return true;</span>
+        }
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L159">            return false;</span>
+        }
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L162">            return false;</span>
+        }
+<span class="nc" id="L164">        final AtomicReadFileAck other = (AtomicReadFileAck) obj;</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        if (endOfFile == null) {</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">            if (other.endOfFile != null) {</span>
+<span class="nc" id="L167">                return false;</span>
+            }
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        } else if (!endOfFile.equals(other.endOfFile)) {</span>
+<span class="nc" id="L170">            return false;</span>
+        }
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (fileData == null) {</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">            if (other.fileData != null) {</span>
+<span class="nc" id="L174">                return false;</span>
+            }
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        } else if (!fileData.equals(other.fileData)) {</span>
+<span class="nc" id="L177">            return false;</span>
+        }
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (fileRecordData == null) {</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">            if (other.fileRecordData != null) {</span>
+<span class="nc" id="L181">                return false;</span>
+            }
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        } else if (!fileRecordData.equals(other.fileRecordData)) {</span>
+<span class="nc" id="L184">            return false;</span>
+        }
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (fileStartPosition == null) {</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">            if (other.fileStartPosition != null) {</span>
+<span class="nc" id="L188">                return false;</span>
+            }
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        } else if (!fileStartPosition.equals(other.fileStartPosition)) {</span>
+<span class="nc" id="L191">            return false;</span>
+        }
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (returnedRecordCount == null) {</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">            if (other.returnedRecordCount != null) {</span>
+<span class="nc" id="L195">                return false;</span>
+            }
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        } else if (!returnedRecordCount.equals(other.returnedRecordCount)) {</span>
+<span class="nc" id="L198">            return false;</span>
+        }
+<span class="nc" id="L200">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

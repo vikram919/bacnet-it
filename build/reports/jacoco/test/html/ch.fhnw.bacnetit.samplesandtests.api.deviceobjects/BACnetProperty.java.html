@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BACnetProperty.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.deviceobjects</a> &gt; <span class="el_source">BACnetProperty.java</span></div><h1>BACnetProperty.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.deviceobjects;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.PriorityArray;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.PriorityValue;
+
+public class BACnetProperty {
+    private final BACnetObjectType objectType;
+
+    private final BACnetPropertyIdentifier propertyIdentifier;
+
+    private final Class&lt;? extends Encodable&gt; clazz;
+
+    private final boolean sequence;
+
+    private final boolean required;
+
+    private final Encodable defaultValue;
+
+    BACnetProperty(final BACnetObjectType objectType,
+            final BACnetPropertyIdentifier propertyIdentifier,
+            final Class&lt;? extends Encodable&gt; clazz, final boolean sequence,
+<span class="nc" id="L45">            final boolean required, final Encodable defaultValue) {</span>
+<span class="nc" id="L46">        this.objectType = objectType;</span>
+<span class="nc" id="L47">        this.propertyIdentifier = propertyIdentifier;</span>
+<span class="nc" id="L48">        this.clazz = clazz;</span>
+<span class="nc" id="L49">        this.sequence = sequence;</span>
+<span class="nc" id="L50">        this.required = required;</span>
+<span class="nc" id="L51">        this.defaultValue = defaultValue;</span>
+<span class="nc" id="L52">    }</span>
+
+    public BACnetObjectType getObjectType() {
+<span class="nc" id="L55">        return objectType;</span>
+    }
+
+    public BACnetPropertyIdentifier getPropertyIdentifier() {
+<span class="nc" id="L59">        return propertyIdentifier;</span>
+    }
+
+    public Class&lt;? extends Encodable&gt; getClazz() {
+<span class="nc" id="L63">        return clazz;</span>
+    }
+
+    public boolean isSequence() {
+<span class="nc" id="L67">        return sequence;</span>
+    }
+
+    public boolean isRequired() {
+<span class="nc" id="L71">        return required;</span>
+    }
+
+    public boolean isOptional() {
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        return !required;</span>
+    }
+
+    public Encodable getDefaultValue() {
+<span class="nc" id="L79">        return defaultValue;</span>
+    }
+
+    public Class&lt;? extends Encodable&gt; getInnerType() {
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (clazz == PriorityArray.class) {</span>
+<span class="nc" id="L84">            return PriorityValue.class;</span>
+        }
+<span class="nc" id="L86">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

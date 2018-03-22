@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WSSConnectionServer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.transportbinding.ws.incoming.tls</a> &gt; <span class="el_source">WSSConnectionServer.java</span></div><h1>WSSConnectionServer.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.transportbinding.ws.incoming.tls;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManager;
+
+import ch.fhnw.bacnetit.ase.application.auth.X509AccessControl;
+import ch.fhnw.bacnetit.ase.application.configuration.api.HttpAuthConfig;
+import ch.fhnw.bacnetit.ase.application.configuration.api.KeystoreConfig;
+import ch.fhnw.bacnetit.ase.application.configuration.api.TruststoreConfig;
+import ch.fhnw.bacnetit.transportbinding.auth.http.HttpBasicAuthHandler;
+import ch.fhnw.bacnetit.transportbinding.auth.http.HttpCorsHandler;
+import ch.fhnw.bacnetit.transportbinding.ws.ConnectionServer;
+import io.netty.channel.ChannelHandler;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.cors.CorsConfig;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.ssl.SslHandler;
+
+public class WSSConnectionServer implements ConnectionServer {
+<span class="nc" id="L37">    private CorsConfig corsConfig = null;</span>
+<span class="nc" id="L38">    private HttpAuthConfig httpAuthConfig = null;</span>
+<span class="nc" id="L39">    private String secProtocol = null;</span>
+    protected final KeystoreConfig keystoreConfig;
+    protected final TruststoreConfig truststoreConfig;
+
+    public WSSConnectionServer(final KeystoreConfig keystoreConfig,
+<span class="nc" id="L44">            final TruststoreConfig truststoreConfig) {</span>
+<span class="nc" id="L45">        this.keystoreConfig = keystoreConfig;</span>
+<span class="nc" id="L46">        this.truststoreConfig = truststoreConfig;</span>
+
+<span class="nc" id="L48">    }</span>
+
+    public void setCorsConfig(final CorsConfig config) {
+<span class="nc" id="L51">        this.corsConfig = config;</span>
+<span class="nc" id="L52">    }</span>
+
+    public void setHttpAuthConfig(final HttpAuthConfig config) {
+<span class="nc" id="L55">        this.httpAuthConfig = config;</span>
+<span class="nc" id="L56">    }</span>
+
+    public void setSecprotocol(final String secProtocol) {
+<span class="nc" id="L59">        this.secProtocol = secProtocol;</span>
+<span class="nc" id="L60">    }</span>
+
+    // Initial Pipeline
+    @Override
+    public ChannelHandler[] getChannelHandlers() {
+
+<span class="nc" id="L66">        final List&lt;ChannelHandler&gt; handlers = new LinkedList&lt;ChannelHandler&gt;();</span>
+<span class="nc" id="L67">        SSLContext sslCtxServer = null;</span>
+        KeyStore ks;
+
+<span class="nc" id="L70">        try (final InputStream readStream = new FileInputStream(</span>
+                keystoreConfig.path)) {
+            // Keystore Server
+<span class="nc" id="L73">            ks = KeyStore.getInstance(&quot;JKS&quot;);</span>
+<span class="nc" id="L74">            ks.load(readStream, keystoreConfig.pass.toCharArray());</span>
+
+            final KeyManagerFactory kmf = KeyManagerFactory
+<span class="nc" id="L77">                    .getInstance(KeyManagerFactory.getDefaultAlgorithm());</span>
+<span class="nc" id="L78">            kmf.init(ks, keystoreConfig.pass.toCharArray());</span>
+
+<span class="nc" id="L80">            sslCtxServer = SSLContext.getInstance(&quot;TLS&quot;);</span>
+<span class="nc" id="L81">            sslCtxServer.init(kmf.getKeyManagers(), new TrustManager[] {</span>
+                    new X509AccessControl(keystoreConfig, truststoreConfig) },
+                    null);
+
+<span class="nc" id="L85">            final SSLEngine engine = sslCtxServer.createSSLEngine();</span>
+<span class="nc" id="L86">            engine.setUseClientMode(false);</span>
+<span class="nc" id="L87">            engine.setNeedClientAuth(true);</span>
+<span class="nc" id="L88">            handlers.add(new SslHandler(engine));</span>
+
+<span class="nc" id="L90">            handlers.add(new HttpServerCodec());</span>
+<span class="nc" id="L91">            handlers.add(new HttpObjectAggregator(8192));</span>
+            // Allowing CORS
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            if (corsConfig != null) {</span>
+                // Building CORS Config
+                // CorsConfig corsConfig =
+                // CorsConfigBuilder.forAnyOrigin().allowCredentials()
+                // .allowedRequestHeaders(&quot;Authorization&quot;, &quot;Vary&quot;, &quot;Cookie&quot;,
+                // &quot;Content-Type&quot;, &quot;Accept&quot;, &quot;X-Requested-With&quot;)
+                // .allowedRequestMethods(HttpMethod.GET,
+                // HttpMethod.OPTIONS).build();
+<span class="nc" id="L101">                handlers.add(new HttpCorsHandler(corsConfig));</span>
+            }
+            // Allow Http Authx
+<span class="nc bnc" id="L104" title="All 2 branches missed.">            if (httpAuthConfig != null) {</span>
+<span class="nc" id="L105">                handlers.add(new HttpBasicAuthHandler(httpAuthConfig));</span>
+            }
+
+            // TODO must be easier to construct a connection -&gt; through factory
+            // keystore configs are passed all the way from WSConnectionFactory
+            // pass a factory or initiate one here
+<span class="nc" id="L111">            final WSSConnectionServerHandler serverHandler = new WSSConnectionServerHandler(</span>
+                    keystoreConfig, truststoreConfig);
+<span class="nc" id="L113">            serverHandler.setSecProtocol(secProtocol);</span>
+<span class="nc" id="L114">            handlers.add(serverHandler);</span>
+<span class="nc" id="L115">            handlers.add(new LoggingHandler(LogLevel.DEBUG));</span>
+
+<span class="nc bnc" id="L117" title="All 8 branches missed.">        } catch (final FileNotFoundException e) {</span>
+            // TODO Auto-generated catch block
+<span class="nc" id="L119">            e.printStackTrace();</span>
+<span class="nc" id="L120">        } catch (final IOException e) {</span>
+            // TODO Auto-generated catch block
+<span class="nc" id="L122">            e.printStackTrace();</span>
+<span class="nc" id="L123">        } catch (final NoSuchAlgorithmException e) {</span>
+            // TODO Auto-generated catch block
+<span class="nc" id="L125">            e.printStackTrace();</span>
+<span class="nc" id="L126">        } catch (final CertificateException e) {</span>
+            // TODO Auto-generated catch block
+<span class="nc" id="L128">            e.printStackTrace();</span>
+<span class="nc" id="L129">        } catch (final KeyStoreException e) {</span>
+            // TODO Auto-generated catch block
+<span class="nc" id="L131">            e.printStackTrace();</span>
+<span class="nc" id="L132">        } catch (final UnrecoverableKeyException e) {</span>
+            // TODO Auto-generated catch block
+<span class="nc" id="L134">            e.printStackTrace();</span>
+<span class="nc" id="L135">        } catch (final KeyManagementException e) {</span>
+            // TODO Auto-generated catch block
+<span class="nc" id="L137">            e.printStackTrace();</span>
+<span class="nc" id="L138">        }</span>
+<span class="nc" id="L139">        return handlers.toArray(new ChannelHandler[handlers.size()]);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

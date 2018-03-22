@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NetworkAddress.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.ase.encoding</a> &gt; <span class="el_source">NetworkAddress.java</span></div><h1>NetworkAddress.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.ase.encoding;
+
+public class NetworkAddress extends ITBBase {
+
+    private _CharacterString url;
+    private _Address bacnetaddress;
+    private NetworkAddressChoice choice;
+
+    private static final long serialVersionUID = -337635817234441753L;
+
+    public NetworkAddress(final _CharacterString url,
+<span class="nc" id="L12">            final NetworkAddressChoice c) {</span>
+<span class="nc" id="L13">        this.choice = c;</span>
+<span class="nc" id="L14">        this.url = url;</span>
+<span class="nc" id="L15">    }</span>
+
+    public NetworkAddress(final _Address bacnetaddress,
+<span class="nc" id="L18">            final NetworkAddressChoice c) {</span>
+<span class="nc" id="L19">        this.choice = c;</span>
+<span class="nc" id="L20">        this.bacnetaddress = bacnetaddress;</span>
+<span class="nc" id="L21">    }</span>
+
+<span class="nc" id="L23">    public NetworkAddress(final _ByteQueue queue) throws Exception {</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if ((byte) 1 == (byte) (queue.peek(0) &gt;&gt; 4)) {</span>
+<span class="nc" id="L25">            url = read(queue, _CharacterString.class, 1);</span>
+<span class="nc" id="L26">            choice = NetworkAddressChoice.URL;</span>
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        } else if ((byte) 2 == (byte) (queue.peek(0) &gt;&gt; 4)) {</span>
+<span class="nc" id="L28">            bacnetaddress = read(queue, _Address.class, 2);</span>
+<span class="nc" id="L29">            choice = NetworkAddressChoice.BACNETADDRESS;</span>
+
+        }
+<span class="nc" id="L32">    }</span>
+
+    public _CharacterString getUrl() {
+<span class="nc" id="L35">        return this.url;</span>
+    }
+
+    public NetworkAddressChoice getChoice() {
+<span class="nc" id="L39">        return this.choice;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L44">        String s = &quot;NetworkAddres\n&quot;;</span>
+<span class="nc" id="L45">        s += &quot;Choice: &quot; + this.choice + &quot;\n&quot;;</span>
+<span class="nc" id="L46">        s += &quot;BacnetAddress: &quot; + this.bacnetaddress + &quot;\n&quot;;</span>
+<span class="nc" id="L47">        s += &quot;URL: &quot; + this.url;</span>
+<span class="nc" id="L48">        return s;</span>
+    }
+
+    @Override
+    public void write(final _ByteQueue queue) {
+<span class="nc" id="L53">        queue.push(bytes());</span>
+<span class="nc" id="L54">    }</span>
+
+    public byte[] bytes() {
+<span class="nc" id="L57">        final _ByteQueue queue = new _ByteQueue();</span>
+
+<span class="nc" id="L59">        final _CharacterString cs = this.url;</span>
+<span class="nc" id="L60">        cs.write(queue, this.choice.getId());</span>
+
+<span class="nc" id="L62">        return queue.peekAll();</span>
+
+    }
+
+<span class="nc" id="L66">    public NetworkAddress(final byte[] stream) throws Exception {</span>
+<span class="nc" id="L67">        final _ByteQueue q = new _ByteQueue(stream);</span>
+<span class="nc" id="L68">        this.choice = NetworkAddressChoice.getNetworkAddressChoice(q.pop());</span>
+<span class="nc" id="L69">        this.url = new _CharacterString(q);</span>
+
+<span class="nc" id="L71">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

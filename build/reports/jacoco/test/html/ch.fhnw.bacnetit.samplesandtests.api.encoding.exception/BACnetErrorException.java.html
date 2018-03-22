@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BACnetErrorException.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.exception</a> &gt; <span class="el_source">BACnetErrorException.java</span></div><h1>BACnetErrorException.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.exception;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.BACnetError;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ErrorClass;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ErrorCode;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.error.BaseError;
+
+public class BACnetErrorException extends BACnetException {
+    private static final long serialVersionUID = -1;
+
+    private final BaseError error;
+
+    public BACnetErrorException(final byte choice, final ErrorClass errorClass,
+            final ErrorCode errorCode) {
+<span class="nc" id="L37">        super(getBaseMessage(errorClass, errorCode, null));</span>
+<span class="nc" id="L38">        error = new BaseError(choice, new BACnetError(errorClass, errorCode));</span>
+<span class="nc" id="L39">    }</span>
+
+    public BACnetErrorException(final byte choice,
+            final BACnetServiceException e) {
+<span class="nc" id="L43">        super(e);</span>
+<span class="nc" id="L44">        error = new BaseError(choice,</span>
+<span class="nc" id="L45">                new BACnetError(e.getErrorClass(), e.getErrorCode()));</span>
+<span class="nc" id="L46">    }</span>
+
+    public BACnetErrorException(final ErrorClass errorClass,
+            final ErrorCode errorCode) {
+<span class="nc" id="L50">        super(getBaseMessage(errorClass, errorCode, null));</span>
+<span class="nc" id="L51">        error = new BaseError((byte) 127,</span>
+                new BACnetError(errorClass, errorCode));
+<span class="nc" id="L53">    }</span>
+
+    public BACnetErrorException(final BACnetServiceException e) {
+<span class="nc" id="L56">        super(e.getMessage());</span>
+<span class="nc" id="L57">        error = new BaseError((byte) 127,</span>
+<span class="nc" id="L58">                new BACnetError(e.getErrorClass(), e.getErrorCode()));</span>
+<span class="nc" id="L59">    }</span>
+
+    public BACnetErrorException(final ErrorClass errorClass,
+            final ErrorCode errorCode, final String message) {
+<span class="nc" id="L63">        super(getBaseMessage(errorClass, errorCode, message));</span>
+<span class="nc" id="L64">        error = new BaseError((byte) 127,</span>
+                new BACnetError(errorClass, errorCode));
+<span class="nc" id="L66">    }</span>
+
+<span class="nc" id="L68">    public BACnetErrorException(final BaseError error) {</span>
+<span class="nc" id="L69">        this.error = error;</span>
+<span class="nc" id="L70">    }</span>
+
+    public BaseError getError() {
+<span class="nc" id="L73">        return error;</span>
+    }
+
+    private static String getBaseMessage(final ErrorClass errorClass,
+            final ErrorCode errorCode, final String message) {
+<span class="nc" id="L78">        final StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L79">        sb.append(errorClass.toString());</span>
+<span class="nc" id="L80">        sb.append(&quot;: &quot;);</span>
+<span class="nc" id="L81">        sb.append(errorCode.toString());</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (message != null) {</span>
+<span class="nc" id="L83">            sb.append(&quot; '&quot;).append(message).append(&quot;'&quot;);</span>
+        }
+<span class="nc" id="L85">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

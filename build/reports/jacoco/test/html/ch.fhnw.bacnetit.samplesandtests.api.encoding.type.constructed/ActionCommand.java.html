@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ActionCommand.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">ActionCommand.java</span></div><h1>ActionCommand.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetPropertyIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Boolean;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class ActionCommand extends BaseType {
+    private static final long serialVersionUID = 6627972998457216719L;
+
+    private final BACnetObjectIdentifier deviceIdentifier;
+
+    private final BACnetObjectIdentifier objectIdentifier;
+
+    private final BACnetPropertyIdentifier propertyIdentifier;
+
+    private final UnsignedInteger propertyArrayIndex;
+
+    private final Encodable propertyValue;
+
+    private final UnsignedInteger priority;
+
+    private final UnsignedInteger postDelay;
+
+    private final Boolean quitOnFailure;
+
+    private final Boolean writeSuccessful;
+
+    public ActionCommand(final BACnetObjectIdentifier deviceIdentifier,
+            final BACnetObjectIdentifier objectIdentifier,
+            final BACnetPropertyIdentifier propertyIdentifier,
+            final UnsignedInteger propertyArrayIndex,
+            final Encodable propertyValue, final UnsignedInteger priority,
+            final UnsignedInteger postDelay, final Boolean quitOnFailure,
+<span class="nc" id="L60">            final Boolean writeSuccessful) {</span>
+<span class="nc" id="L61">        this.deviceIdentifier = deviceIdentifier;</span>
+<span class="nc" id="L62">        this.objectIdentifier = objectIdentifier;</span>
+<span class="nc" id="L63">        this.propertyIdentifier = propertyIdentifier;</span>
+<span class="nc" id="L64">        this.propertyArrayIndex = propertyArrayIndex;</span>
+<span class="nc" id="L65">        this.propertyValue = propertyValue;</span>
+<span class="nc" id="L66">        this.priority = priority;</span>
+<span class="nc" id="L67">        this.postDelay = postDelay;</span>
+<span class="nc" id="L68">        this.quitOnFailure = quitOnFailure;</span>
+<span class="nc" id="L69">        this.writeSuccessful = writeSuccessful;</span>
+<span class="nc" id="L70">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L74">        writeOptional(queue, deviceIdentifier, 0);</span>
+<span class="nc" id="L75">        write(queue, objectIdentifier, 1);</span>
+<span class="nc" id="L76">        write(queue, propertyIdentifier, 2);</span>
+<span class="nc" id="L77">        writeOptional(queue, propertyArrayIndex, 3);</span>
+<span class="nc" id="L78">        write(queue, propertyValue, 4);</span>
+<span class="nc" id="L79">        writeOptional(queue, priority, 5);</span>
+<span class="nc" id="L80">        writeOptional(queue, postDelay, 6);</span>
+<span class="nc" id="L81">        write(queue, quitOnFailure, 7);</span>
+<span class="nc" id="L82">        write(queue, writeSuccessful, 8);</span>
+<span class="nc" id="L83">    }</span>
+
+<span class="nc" id="L85">    public ActionCommand(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L86">        deviceIdentifier = readOptional(queue, BACnetObjectIdentifier.class, 0);</span>
+<span class="nc" id="L87">        objectIdentifier = read(queue, BACnetObjectIdentifier.class, 1);</span>
+<span class="nc" id="L88">        propertyIdentifier = read(queue, BACnetPropertyIdentifier.class, 2);</span>
+<span class="nc" id="L89">        propertyArrayIndex = readOptional(queue, UnsignedInteger.class, 3);</span>
+<span class="nc" id="L90">        propertyValue = readEncodable(queue, objectIdentifier.getObjectType(),</span>
+                propertyIdentifier, propertyArrayIndex, 4);
+<span class="nc" id="L92">        priority = readOptional(queue, UnsignedInteger.class, 5);</span>
+<span class="nc" id="L93">        postDelay = readOptional(queue, UnsignedInteger.class, 6);</span>
+<span class="nc" id="L94">        quitOnFailure = read(queue, Boolean.class, 7);</span>
+<span class="nc" id="L95">        writeSuccessful = read(queue, Boolean.class, 8);</span>
+<span class="nc" id="L96">    }</span>
+
+    public BACnetObjectIdentifier getDeviceIdentifier() {
+<span class="nc" id="L99">        return deviceIdentifier;</span>
+    }
+
+    public BACnetObjectIdentifier getObjectIdentifier() {
+<span class="nc" id="L103">        return objectIdentifier;</span>
+    }
+
+    public BACnetPropertyIdentifier getPropertyIdentifier() {
+<span class="nc" id="L107">        return propertyIdentifier;</span>
+    }
+
+    public UnsignedInteger getPropertyArrayIndex() {
+<span class="nc" id="L111">        return propertyArrayIndex;</span>
+    }
+
+    public Encodable getPropertyValue() {
+<span class="nc" id="L115">        return propertyValue;</span>
+    }
+
+    public UnsignedInteger getPriority() {
+<span class="nc" id="L119">        return priority;</span>
+    }
+
+    public UnsignedInteger getPostDelay() {
+<span class="nc" id="L123">        return postDelay;</span>
+    }
+
+    public Boolean getQuitOnFailure() {
+<span class="nc" id="L127">        return quitOnFailure;</span>
+    }
+
+    public Boolean getWriteSuccessful() {
+<span class="nc" id="L131">        return writeSuccessful;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L136">        final int PRIME = 31;</span>
+<span class="nc" id="L137">        int result = 1;</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        result = PRIME * result + ((deviceIdentifier == null) ? 0</span>
+<span class="nc" id="L139">                : deviceIdentifier.hashCode());</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        result = PRIME * result + ((objectIdentifier == null) ? 0</span>
+<span class="nc" id="L141">                : objectIdentifier.hashCode());</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L143">                + ((postDelay == null) ? 0 : postDelay.hashCode());</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L145">                + ((priority == null) ? 0 : priority.hashCode());</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        result = PRIME * result + ((propertyArrayIndex == null) ? 0</span>
+<span class="nc" id="L147">                : propertyArrayIndex.hashCode());</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        result = PRIME * result + ((propertyIdentifier == null) ? 0</span>
+<span class="nc" id="L149">                : propertyIdentifier.hashCode());</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L151">                + ((propertyValue == null) ? 0 : propertyValue.hashCode());</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L153">                + ((quitOnFailure == null) ? 0 : quitOnFailure.hashCode());</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L155">                + ((writeSuccessful == null) ? 0 : writeSuccessful.hashCode());</span>
+<span class="nc" id="L156">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L162">            return true;</span>
+        }
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L165">            return false;</span>
+        }
+<span class="nc bnc" id="L167" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L168">            return false;</span>
+        }
+<span class="nc" id="L170">        final ActionCommand other = (ActionCommand) obj;</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (deviceIdentifier == null) {</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            if (other.deviceIdentifier != null) {</span>
+<span class="nc" id="L173">                return false;</span>
+            }
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        } else if (!deviceIdentifier.equals(other.deviceIdentifier)) {</span>
+<span class="nc" id="L176">            return false;</span>
+        }
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (objectIdentifier == null) {</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">            if (other.objectIdentifier != null) {</span>
+<span class="nc" id="L180">                return false;</span>
+            }
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        } else if (!objectIdentifier.equals(other.objectIdentifier)) {</span>
+<span class="nc" id="L183">            return false;</span>
+        }
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (postDelay == null) {</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">            if (other.postDelay != null) {</span>
+<span class="nc" id="L187">                return false;</span>
+            }
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        } else if (!postDelay.equals(other.postDelay)) {</span>
+<span class="nc" id="L190">            return false;</span>
+        }
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        if (priority == null) {</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">            if (other.priority != null) {</span>
+<span class="nc" id="L194">                return false;</span>
+            }
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        } else if (!priority.equals(other.priority)) {</span>
+<span class="nc" id="L197">            return false;</span>
+        }
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (propertyArrayIndex == null) {</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">            if (other.propertyArrayIndex != null) {</span>
+<span class="nc" id="L201">                return false;</span>
+            }
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        } else if (!propertyArrayIndex.equals(other.propertyArrayIndex)) {</span>
+<span class="nc" id="L204">            return false;</span>
+        }
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        if (propertyIdentifier == null) {</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">            if (other.propertyIdentifier != null) {</span>
+<span class="nc" id="L208">                return false;</span>
+            }
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        } else if (!propertyIdentifier.equals(other.propertyIdentifier)) {</span>
+<span class="nc" id="L211">            return false;</span>
+        }
+<span class="nc bnc" id="L213" title="All 2 branches missed.">        if (propertyValue == null) {</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">            if (other.propertyValue != null) {</span>
+<span class="nc" id="L215">                return false;</span>
+            }
+<span class="nc bnc" id="L217" title="All 2 branches missed.">        } else if (!propertyValue.equals(other.propertyValue)) {</span>
+<span class="nc" id="L218">            return false;</span>
+        }
+<span class="nc bnc" id="L220" title="All 2 branches missed.">        if (quitOnFailure == null) {</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">            if (other.quitOnFailure != null) {</span>
+<span class="nc" id="L222">                return false;</span>
+            }
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        } else if (!quitOnFailure.equals(other.quitOnFailure)) {</span>
+<span class="nc" id="L225">            return false;</span>
+        }
+<span class="nc bnc" id="L227" title="All 2 branches missed.">        if (writeSuccessful == null) {</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">            if (other.writeSuccessful != null) {</span>
+<span class="nc" id="L229">                return false;</span>
+            }
+<span class="nc bnc" id="L231" title="All 2 branches missed.">        } else if (!writeSuccessful.equals(other.writeSuccessful)) {</span>
+<span class="nc" id="L232">            return false;</span>
+        }
+<span class="nc" id="L234">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

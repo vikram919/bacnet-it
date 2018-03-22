@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WSConnection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.transportbinding.ws.outgoing</a> &gt; <span class="el_source">WSConnection.java</span></div><h1>WSConnection.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.transportbinding.ws.outgoing;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import ch.fhnw.bacnetit.ase.application.exception.StackInitializationException;
+import ch.fhnw.bacnetit.transportbinding.ws.ConnectionClient;
+import ch.fhnw.bacnetit.transportbinding.ws.WSConnectionHandler;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.handler.codec.http.DefaultHttpHeaders;
+import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
+import io.netty.handler.codec.http.websocketx.WebSocketVersion;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+
+public class WSConnection implements ConnectionClient {
+<span class="fc" id="L31">    private static final InternalLogger LOG = InternalLoggerFactory</span>
+<span class="fc" id="L32">            .getInstance(WSConnection.class);</span>
+<span class="fc" id="L33">    private final EventLoopGroup workerGroup = new NioEventLoopGroup();</span>
+    protected WSConnectionHandler webSocketClientHandler;
+    protected Channel channel;
+    private final InetSocketAddress remoteAddress;
+
+    public WSConnection(final InetSocketAddress remoteAddress,
+<span class="fc" id="L39">            final String subprotocol) {</span>
+<span class="fc" id="L40">        this.remoteAddress = remoteAddress;</span>
+        try {
+<span class="fc" id="L42">            final HttpHeaders httpHeaders = new DefaultHttpHeaders();</span>
+<span class="fc" id="L43">            final WebSocketClientHandshaker webSocketClientHandshaker = WebSocketClientHandshakerFactory</span>
+<span class="fc" id="L44">                    .newHandshaker(</span>
+<span class="fc" id="L45">                            new URI(&quot;ws://&quot; + remoteAddress.getHostString()</span>
+<span class="fc" id="L46">                                    + &quot;:&quot; + remoteAddress.getPort()</span>
+                                    + &quot;/websocket&quot;),
+                            WebSocketVersion.V13, subprotocol, false,
+                            httpHeaders);
+<span class="fc" id="L50">            webSocketClientHandler = new WSConnectionHandler(</span>
+                    webSocketClientHandshaker);
+<span class="nc" id="L52">        } catch (final URISyntaxException e) {</span>
+<span class="nc" id="L53">            e.printStackTrace();</span>
+<span class="fc" id="L54">        }</span>
+<span class="fc" id="L55">    }</span>
+
+    @Override
+    public void close() {
+<span class="fc" id="L59">        workerGroup.shutdownGracefully();</span>
+<span class="fc" id="L60">    }</span>
+
+    @Override
+    public SocketAddress getAddress() {
+<span class="fc" id="L64">        return remoteAddress;</span>
+    }
+
+    @Override
+    public URI getURI() {
+        // TODO check correctness and need of method -&gt; getURI is actually never
+        // used
+        try {
+<span class="nc" id="L72">            return new URI(&quot;ws://&quot; + remoteAddress.getHostName() + &quot;:&quot;</span>
+<span class="nc" id="L73">                    + remoteAddress.getPort());</span>
+<span class="nc" id="L74">        } catch (final URISyntaxException e) {</span>
+<span class="nc" id="L75">            e.printStackTrace();</span>
+        }
+<span class="nc" id="L77">        return null;</span>
+    }
+
+    @Override
+    public void setChannel(final Channel channel) {
+<span class="fc" id="L82">        this.channel = channel;</span>
+<span class="fc" id="L83">    }</span>
+
+    @Override
+    public Channel getChannel() {
+<span class="fc" id="L87">        return channel;</span>
+    }
+
+    @Override
+    public ChannelHandler[] getChannelHandlers() {
+<span class="fc" id="L92">        final List&lt;ChannelHandler&gt; handlers = new ArrayList&lt;ChannelHandler&gt;();</span>
+<span class="fc" id="L93">        handlers.add(new HttpClientCodec());</span>
+<span class="fc" id="L94">        handlers.add(new HttpObjectAggregator(8192));</span>
+<span class="fc" id="L95">        handlers.add(webSocketClientHandler);</span>
+<span class="fc" id="L96">        return handlers.toArray(new ChannelHandler[handlers.size()]);</span>
+    }
+
+    @Override
+    public void initialize() {
+        try {
+<span class="fc" id="L102">            final ChannelFuture cf = webSocketClientHandler.handshakeFuture();</span>
+<span class="fc" id="L103">            cf.addListener(new ChannelFutureListener() {</span>
+
+                @Override
+                public void operationComplete(final ChannelFuture future)
+                        throws Exception {
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">                    if (!future.isSuccess()) {</span>
+<span class="nc" id="L109">                        LOG.error(</span>
+                                &quot;Error during initialization of the websocket connection&quot;);
+
+                    } else {
+<span class="fc" id="L113">                        LOG.debug(&quot;Websocket connection initialized&quot;);</span>
+
+                    }
+<span class="fc" id="L116">                }</span>
+            });
+<span class="fc" id="L118">            cf.await(1000, TimeUnit.MILLISECONDS);</span>
+<span class="nc" id="L119">        } catch (final InterruptedException e) {</span>
+<span class="nc" id="L120">            throw new StackInitializationException(e.getMessage(), null);</span>
+<span class="fc" id="L121">        }</span>
+<span class="fc" id="L122">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

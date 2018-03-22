@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Choice.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">Choice.java</span></div><h1>Choice.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import java.util.List;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class Choice extends BaseType {
+    private static final long serialVersionUID = 7942157718147383894L;
+
+    private final int contextId;
+
+    private final Encodable datum;
+
+<span class="fc" id="L38">    public Choice(final int contextId, final Encodable datum) {</span>
+<span class="fc" id="L39">        this.contextId = contextId;</span>
+<span class="fc" id="L40">        this.datum = datum;</span>
+<span class="fc" id="L41">    }</span>
+
+    public int getContextId() {
+<span class="nc" id="L44">        return contextId;</span>
+    }
+
+    public Encodable getDatum() {
+<span class="nc" id="L48">        return datum;</span>
+    }
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="fc" id="L53">        write(queue, datum, contextId);</span>
+<span class="fc" id="L54">    }</span>
+
+    public Choice(final ByteQueue queue,
+            final List&lt;Class&lt;? extends Encodable&gt;&gt; classes)
+<span class="nc" id="L58">            throws BACnetException {</span>
+<span class="nc" id="L59">        final Choice c = read(queue, classes);</span>
+<span class="nc" id="L60">        this.contextId = c.contextId;</span>
+<span class="nc" id="L61">        this.datum = c.datum;</span>
+<span class="nc" id="L62">    }</span>
+
+    public Choice(final ByteQueue queue,
+            final List&lt;Class&lt;? extends Encodable&gt;&gt; classes, final int contextId)
+<span class="nc" id="L66">            throws BACnetException {</span>
+<span class="nc" id="L67">        popStart(queue, contextId);</span>
+<span class="nc" id="L68">        final Choice c = read(queue, classes);</span>
+<span class="nc" id="L69">        popEnd(queue, contextId);</span>
+<span class="nc" id="L70">        this.contextId = c.contextId;</span>
+<span class="nc" id="L71">        this.datum = c.datum;</span>
+<span class="nc" id="L72">    }</span>
+
+    private Choice read(final ByteQueue queue,
+            final List&lt;Class&lt;? extends Encodable&gt;&gt; classes)
+            throws BACnetException {
+<span class="nc" id="L77">        final int tContextId = peekTagNumber(queue);</span>
+<span class="nc" id="L78">        final Encodable tDatum = read(queue, classes.get(tContextId),</span>
+                tContextId);
+<span class="nc" id="L80">        return new Choice(tContextId, tDatum);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L85">        return datum.toString();</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L90">        final int PRIME = 31;</span>
+<span class="nc" id="L91">        int result = 1;</span>
+<span class="nc" id="L92">        result = PRIME * result + contextId;</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        result = PRIME * result + ((datum == null) ? 0 : datum.hashCode());</span>
+<span class="nc" id="L94">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L100">            return true;</span>
+        }
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L103">            return false;</span>
+        }
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L106">            return false;</span>
+        }
+<span class="nc" id="L108">        final Choice other = (Choice) obj;</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (contextId != other.contextId) {</span>
+<span class="nc" id="L110">            return false;</span>
+        }
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (datum == null) {</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (other.datum != null) {</span>
+<span class="nc" id="L114">                return false;</span>
+            }
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        } else if (!datum.equals(other.datum)) {</span>
+<span class="nc" id="L117">            return false;</span>
+        }
+<span class="nc" id="L119">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

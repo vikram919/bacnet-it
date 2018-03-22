@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReadPropertyConditionalRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.service.confirmed</a> &gt; <span class="el_source">ReadPropertyConditionalRequest.java</span></div><h1>ReadPropertyConditionalRequest.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.service.confirmed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetPropertyIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.AmbiguousValue;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.BaseType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.PropertyReference;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Enumerated;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class ReadPropertyConditionalRequest extends ConfirmedRequestService {
+    private static final long serialVersionUID = 5502083051063390548L;
+
+    public static final byte TYPE_ID = 13;
+
+    private final ObjectSelectionCriteria objectSelectionCriteria;
+
+    private final SequenceOf&lt;PropertyReference&gt; listOfPropertyReferences;
+
+    public ReadPropertyConditionalRequest(
+            final ObjectSelectionCriteria objectSelectionCriteria,
+<span class="nc" id="L47">            final SequenceOf&lt;PropertyReference&gt; listOfPropertyReferences) {</span>
+<span class="nc" id="L48">        this.objectSelectionCriteria = objectSelectionCriteria;</span>
+<span class="nc" id="L49">        this.listOfPropertyReferences = listOfPropertyReferences;</span>
+<span class="nc" id="L50">    }</span>
+
+    @Override
+    public byte getChoiceId() {
+<span class="nc" id="L54">        return TYPE_ID;</span>
+    }
+
+    // @Override
+    // public AcknowledgementService handle(LocalDevice localDevice, Address
+    // from, OctetString linkService)
+    // throws BACnetException {
+    // throw new NotImplementedException();
+    // }
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L66">        write(queue, objectSelectionCriteria, 0);</span>
+<span class="nc" id="L67">        writeOptional(queue, listOfPropertyReferences, 1);</span>
+<span class="nc" id="L68">    }</span>
+
+    ReadPropertyConditionalRequest(final ByteQueue queue)
+<span class="nc" id="L71">            throws BACnetException {</span>
+<span class="nc" id="L72">        objectSelectionCriteria = read(queue, ObjectSelectionCriteria.class, 0);</span>
+<span class="nc" id="L73">        listOfPropertyReferences = readOptionalSequenceOf(queue,</span>
+                PropertyReference.class, 1);
+<span class="nc" id="L75">    }</span>
+
+    public static class ObjectSelectionCriteria extends BaseType {
+        private static final long serialVersionUID = 7736612332488174653L;
+
+        private final SelectionLogic selectionLogic;
+
+        private final SequenceOf&lt;SelectionCriteria&gt; listOfSelectionCriteria;
+
+        public ObjectSelectionCriteria(final SelectionLogic selectionLogic,
+<span class="nc" id="L85">                final SequenceOf&lt;SelectionCriteria&gt; listOfSelectionCriteria) {</span>
+<span class="nc" id="L86">            this.selectionLogic = selectionLogic;</span>
+<span class="nc" id="L87">            this.listOfSelectionCriteria = listOfSelectionCriteria;</span>
+<span class="nc" id="L88">        }</span>
+
+        @Override
+        public void write(final ByteQueue queue) {
+<span class="nc" id="L92">            write(queue, selectionLogic, 0);</span>
+<span class="nc" id="L93">            writeOptional(queue, listOfSelectionCriteria, 1);</span>
+<span class="nc" id="L94">        }</span>
+
+        public ObjectSelectionCriteria(final ByteQueue queue)
+<span class="nc" id="L97">                throws BACnetException {</span>
+<span class="nc" id="L98">            selectionLogic = read(queue, SelectionLogic.class, 0);</span>
+<span class="nc" id="L99">            listOfSelectionCriteria = readOptionalSequenceOf(queue,</span>
+                    SelectionCriteria.class, 1);
+<span class="nc" id="L101">        }</span>
+
+        public static class SelectionLogic extends Enumerated {
+            private static final long serialVersionUID = -2364163447254123848L;
+
+<span class="nc" id="L106">            public static final SelectionLogic and = new SelectionLogic(0);</span>
+
+<span class="nc" id="L108">            public static final SelectionLogic or = new SelectionLogic(1);</span>
+
+<span class="nc" id="L110">            public static final SelectionLogic all = new SelectionLogic(2);</span>
+
+            private SelectionLogic(final int value) {
+<span class="nc" id="L113">                super(value);</span>
+<span class="nc" id="L114">            }</span>
+
+            public SelectionLogic(final ByteQueue queue) {
+<span class="nc" id="L117">                super(queue);</span>
+<span class="nc" id="L118">            }</span>
+        }
+
+        public static class SelectionCriteria extends BaseType {
+            private static final long serialVersionUID = 5715604510097038002L;
+
+            private final BACnetPropertyIdentifier propertyIdentifier;
+
+            private final UnsignedInteger propertyArrayIndex;
+
+            private final RelationSpecifier relationSpecifier;
+
+            private final Encodable comparisonValue;
+
+            public SelectionCriteria(
+                    final BACnetPropertyIdentifier propertyIdentifier,
+                    final UnsignedInteger propertyArrayIndex,
+                    final RelationSpecifier relationSpecifier,
+<span class="nc" id="L136">                    final Encodable comparisonValue) {</span>
+<span class="nc" id="L137">                this.propertyIdentifier = propertyIdentifier;</span>
+<span class="nc" id="L138">                this.propertyArrayIndex = propertyArrayIndex;</span>
+<span class="nc" id="L139">                this.relationSpecifier = relationSpecifier;</span>
+<span class="nc" id="L140">                this.comparisonValue = comparisonValue;</span>
+<span class="nc" id="L141">            }</span>
+
+            @Override
+            public void write(final ByteQueue queue) {
+<span class="nc" id="L145">                write(queue, propertyIdentifier, 0);</span>
+<span class="nc" id="L146">                writeOptional(queue, propertyArrayIndex, 1);</span>
+<span class="nc" id="L147">                write(queue, relationSpecifier, 2);</span>
+<span class="nc" id="L148">                writeEncodable(queue, comparisonValue, 3);</span>
+<span class="nc" id="L149">            }</span>
+
+            public SelectionCriteria(final ByteQueue queue)
+<span class="nc" id="L152">                    throws BACnetException {</span>
+<span class="nc" id="L153">                propertyIdentifier = read(queue, BACnetPropertyIdentifier.class,</span>
+                        0);
+<span class="nc" id="L155">                propertyArrayIndex = readOptional(queue, UnsignedInteger.class,</span>
+                        1);
+<span class="nc" id="L157">                relationSpecifier = read(queue, RelationSpecifier.class, 2);</span>
+<span class="nc" id="L158">                comparisonValue = new AmbiguousValue(queue, 3);</span>
+<span class="nc" id="L159">            }</span>
+
+            public static class RelationSpecifier extends Enumerated {
+                private static final long serialVersionUID = -1;
+
+<span class="nc" id="L164">                public static final RelationSpecifier equal = new RelationSpecifier(</span>
+                        0);
+
+<span class="nc" id="L167">                public static final RelationSpecifier notEqual = new RelationSpecifier(</span>
+                        1);
+
+<span class="nc" id="L170">                public static final RelationSpecifier lessThan = new RelationSpecifier(</span>
+                        2);
+
+<span class="nc" id="L173">                public static final RelationSpecifier greaterThan = new RelationSpecifier(</span>
+                        3);
+
+<span class="nc" id="L176">                public static final RelationSpecifier lessThanOrEqual = new RelationSpecifier(</span>
+                        4);
+
+<span class="nc" id="L179">                public static final RelationSpecifier greaterThanOrEqual = new RelationSpecifier(</span>
+                        5);
+
+                private RelationSpecifier(final int value) {
+<span class="nc" id="L183">                    super(value);</span>
+<span class="nc" id="L184">                }</span>
+
+                public RelationSpecifier(final ByteQueue queue) {
+<span class="nc" id="L187">                    super(queue);</span>
+<span class="nc" id="L188">                }</span>
+            }
+
+            @Override
+            public int hashCode() {
+<span class="nc" id="L193">                final int PRIME = 31;</span>
+<span class="nc" id="L194">                int result = 1;</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">                result = PRIME * result + ((comparisonValue == null) ? 0</span>
+<span class="nc" id="L196">                        : comparisonValue.hashCode());</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">                result = PRIME * result + ((propertyArrayIndex == null) ? 0</span>
+<span class="nc" id="L198">                        : propertyArrayIndex.hashCode());</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">                result = PRIME * result + ((propertyIdentifier == null) ? 0</span>
+<span class="nc" id="L200">                        : propertyIdentifier.hashCode());</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">                result = PRIME * result + ((relationSpecifier == null) ? 0</span>
+<span class="nc" id="L202">                        : relationSpecifier.hashCode());</span>
+<span class="nc" id="L203">                return result;</span>
+            }
+
+            @Override
+            public boolean equals(final Object obj) {
+<span class="nc bnc" id="L208" title="All 2 branches missed.">                if (this == obj) {</span>
+<span class="nc" id="L209">                    return true;</span>
+                }
+<span class="nc bnc" id="L211" title="All 2 branches missed.">                if (obj == null) {</span>
+<span class="nc" id="L212">                    return false;</span>
+                }
+<span class="nc bnc" id="L214" title="All 2 branches missed.">                if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L215">                    return false;</span>
+                }
+<span class="nc" id="L217">                final SelectionCriteria other = (SelectionCriteria) obj;</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">                if (comparisonValue == null) {</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">                    if (other.comparisonValue != null) {</span>
+<span class="nc" id="L220">                        return false;</span>
+                    }
+<span class="nc bnc" id="L222" title="All 2 branches missed.">                } else if (!comparisonValue.equals(other.comparisonValue)) {</span>
+<span class="nc" id="L223">                    return false;</span>
+                }
+<span class="nc bnc" id="L225" title="All 2 branches missed.">                if (propertyArrayIndex == null) {</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">                    if (other.propertyArrayIndex != null) {</span>
+<span class="nc" id="L227">                        return false;</span>
+                    }
+<span class="nc" id="L229">                } else if (!propertyArrayIndex</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">                        .equals(other.propertyArrayIndex)) {</span>
+<span class="nc" id="L231">                    return false;</span>
+                }
+<span class="nc bnc" id="L233" title="All 2 branches missed.">                if (propertyIdentifier == null) {</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">                    if (other.propertyIdentifier != null) {</span>
+<span class="nc" id="L235">                        return false;</span>
+                    }
+<span class="nc" id="L237">                } else if (!propertyIdentifier</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">                        .equals(other.propertyIdentifier)) {</span>
+<span class="nc" id="L239">                    return false;</span>
+                }
+<span class="nc bnc" id="L241" title="All 2 branches missed.">                if (relationSpecifier == null) {</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">                    if (other.relationSpecifier != null) {</span>
+<span class="nc" id="L243">                        return false;</span>
+                    }
+<span class="nc bnc" id="L245" title="All 2 branches missed.">                } else if (!relationSpecifier.equals(other.relationSpecifier)) {</span>
+<span class="nc" id="L246">                    return false;</span>
+                }
+<span class="nc" id="L248">                return true;</span>
+            }
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L254">            final int PRIME = 31;</span>
+<span class="nc" id="L255">            int result = 1;</span>
+<span class="nc bnc" id="L256" title="All 2 branches missed.">            result = PRIME * result + ((listOfSelectionCriteria == null) ? 0</span>
+<span class="nc" id="L257">                    : listOfSelectionCriteria.hashCode());</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">            result = PRIME * result + ((selectionLogic == null) ? 0</span>
+<span class="nc" id="L259">                    : selectionLogic.hashCode());</span>
+<span class="nc" id="L260">            return result;</span>
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+<span class="nc bnc" id="L265" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L266">                return true;</span>
+            }
+<span class="nc bnc" id="L268" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L269">                return false;</span>
+            }
+<span class="nc bnc" id="L271" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L272">                return false;</span>
+            }
+<span class="nc" id="L274">            final ObjectSelectionCriteria other = (ObjectSelectionCriteria) obj;</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">            if (listOfSelectionCriteria == null) {</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">                if (other.listOfSelectionCriteria != null) {</span>
+<span class="nc" id="L277">                    return false;</span>
+                }
+<span class="nc" id="L279">            } else if (!listOfSelectionCriteria</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">                    .equals(other.listOfSelectionCriteria)) {</span>
+<span class="nc" id="L281">                return false;</span>
+            }
+<span class="nc bnc" id="L283" title="All 2 branches missed.">            if (selectionLogic == null) {</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">                if (other.selectionLogic != null) {</span>
+<span class="nc" id="L285">                    return false;</span>
+                }
+<span class="nc bnc" id="L287" title="All 2 branches missed.">            } else if (!selectionLogic.equals(other.selectionLogic)) {</span>
+<span class="nc" id="L288">                return false;</span>
+            }
+<span class="nc" id="L290">            return true;</span>
+        }
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L296">        final int PRIME = 31;</span>
+<span class="nc" id="L297">        int result = 1;</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">        result = PRIME * result + ((listOfPropertyReferences == null) ? 0</span>
+<span class="nc" id="L299">                : listOfPropertyReferences.hashCode());</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">        result = PRIME * result + ((objectSelectionCriteria == null) ? 0</span>
+<span class="nc" id="L301">                : objectSelectionCriteria.hashCode());</span>
+<span class="nc" id="L302">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L307" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L308">            return true;</span>
+        }
+<span class="nc bnc" id="L310" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L311">            return false;</span>
+        }
+<span class="nc bnc" id="L313" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L314">            return false;</span>
+        }
+<span class="nc" id="L316">        final ReadPropertyConditionalRequest other = (ReadPropertyConditionalRequest) obj;</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        if (listOfPropertyReferences == null) {</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">            if (other.listOfPropertyReferences != null) {</span>
+<span class="nc" id="L319">                return false;</span>
+            }
+<span class="nc" id="L321">        } else if (!listOfPropertyReferences</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">                .equals(other.listOfPropertyReferences)) {</span>
+<span class="nc" id="L323">            return false;</span>
+        }
+<span class="nc bnc" id="L325" title="All 2 branches missed.">        if (objectSelectionCriteria == null) {</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">            if (other.objectSelectionCriteria != null) {</span>
+<span class="nc" id="L327">                return false;</span>
+            }
+<span class="nc" id="L329">        } else if (!objectSelectionCriteria</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">                .equals(other.objectSelectionCriteria)) {</span>
+<span class="nc" id="L331">            return false;</span>
+        }
+<span class="nc" id="L333">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

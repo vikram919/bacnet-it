@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ASDU.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu</a> &gt; <span class="el_source">ASDU.java</span></div><h1>ASDU.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu;
+
+import java.io.Serializable;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.enums.Tag;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+
+<span class="fc" id="L34">abstract public class ASDU implements Serializable {</span>
+    private static final long serialVersionUID = -5844093063653180470L;
+<span class="fc" id="L36">    private static final InternalLogger LOG = InternalLoggerFactory</span>
+<span class="fc" id="L37">            .getInstance(ASDU.class);</span>
+
+    public static ASDU createASDU(final ServicesSupported services,
+            final ByteQueue queue) throws BACnetException {
+<span class="fc" id="L41">        byte type = queue.peek(0);</span>
+<span class="fc" id="L42">        final Tag tag = Tag.valueOf((byte) (type &amp; 0x0f));</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (tag == Tag.OPENING_TAG) {</span>
+            // Message is encoded as &quot;constructed data&quot; (see spec 20.2.1.3.2)
+<span class="fc" id="L45">            type = (byte) ((type &amp; 0xff) &gt;&gt; 4);</span>
+<span class="fc" id="L46">            ASDU asdu = null;</span>
+<span class="pc bpc" id="L47" title="7 of 9 branches missed.">            switch (type) {</span>
+            case ConfirmedRequest.TYPE_ID:
+<span class="nc" id="L49">                asdu = new ConfirmedRequest(services, queue);</span>
+<span class="nc" id="L50">                break;</span>
+            case UnconfirmedRequest.TYPE_ID:
+<span class="fc" id="L52">                asdu = new UnconfirmedRequest(services, queue);</span>
+<span class="fc" id="L53">                break;</span>
+            case SimpleACK.TYPE_ID:
+<span class="nc" id="L55">                asdu = new SimpleACK(queue);</span>
+<span class="nc" id="L56">                break;</span>
+            case ComplexACK.TYPE_ID:
+<span class="nc" id="L58">                asdu = new ComplexACK(queue);</span>
+<span class="nc" id="L59">                break;</span>
+            case BACnetErrorAckASDU.TYPE_ID:
+<span class="fc" id="L61">                asdu = new BACnetErrorAckASDU(queue);</span>
+<span class="fc" id="L62">                break;</span>
+            case BACnetMsgErrorAckASDU.TYPE_ID:
+<span class="nc" id="L64">                asdu = new BACnetMsgErrorAckASDU(queue);</span>
+<span class="nc" id="L65">                break;</span>
+            case Reject.TYPE_ID:
+<span class="nc" id="L67">                asdu = new Reject(queue);</span>
+<span class="nc" id="L68">                break;</span>
+            case Abort.TYPE_ID:
+<span class="nc" id="L70">                asdu = new Abort(queue);</span>
+<span class="nc" id="L71">                break;</span>
+            default:
+<span class="nc" id="L73">                throw new BACnetException(Byte.toString(type));</span>
+            }
+            // Check if request is closed
+<span class="fc" id="L76">            final Tag closingTag = Tag.valueOf((byte) (queue.pop() &amp; 0x0f));</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">            if (closingTag == Tag.CLOSING_TAG) {</span>
+<span class="fc" id="L78">                return asdu;</span>
+            } else {
+<span class="nc" id="L80">                throw new BACnetException(&quot;Missing Closing Tag!&quot;);</span>
+            }
+        } else {
+            // Message is encoded as &quot;primitive data&quot; (see spec 20.2.1.3.1)
+<span class="fc" id="L84">            type = (byte) ((type &amp; 0xff) &gt;&gt; 4);</span>
+<span class="fc" id="L85">            ASDU asdu = null;</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">            switch (type) {</span>
+            case SimpleACK.TYPE_ID:
+<span class="nc" id="L88">                asdu = new SimpleACK(queue);</span>
+<span class="nc" id="L89">                break;</span>
+            default:
+<span class="fc" id="L91">                throw new BACnetException(Byte.toString(type));</span>
+            }
+<span class="nc" id="L93">            return asdu;</span>
+        }
+    }
+
+    abstract public byte getPduType();
+
+    abstract public void write(ByteQueue queue);
+
+    protected int getShiftedTypeId(final byte typeId) {
+<span class="nc" id="L102">        return typeId &lt;&lt; 4;</span>
+    }
+
+    abstract public boolean expectsReply();
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

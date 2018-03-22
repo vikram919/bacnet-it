@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Month.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.enums</a> &gt; <span class="el_source">Month.java</span></div><h1>Month.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.enums;
+
+/**
+ * Per ASHRAE Standard 135-2012 p.713
+ *
+ */
+<span class="pc" id="L29">public enum Month {</span>
+<span class="fc" id="L30">    JANUARY(1), FEBRUARY(2), MARCH(3), APRIL(4), MAY(5), JUNE(6), JULY(</span>
+<span class="fc" id="L31">            7), AUGUST(8), SEPTEMBER(9), OCTOBER(10), NOVEMBER(11), DECEMBER(</span>
+<span class="fc" id="L32">                    12), ODD_MONTHS(13), EVEN_MONTHS(14), UNSPECIFIED(255);// X'FF'</span>
+                                                                           // =
+                                                                           // any
+                                                                           // month
+
+    private byte id;
+
+<span class="fc" id="L39">    Month(final int id) {</span>
+<span class="fc" id="L40">        this.id = (byte) id;</span>
+<span class="fc" id="L41">    }</span>
+
+    public byte getId() {
+<span class="fc" id="L44">        return id;</span>
+    }
+
+    public static Month valueOf(final byte id) {
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        if (id == JANUARY.id) {</span>
+<span class="nc" id="L49">            return JANUARY;</span>
+        }
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (id == FEBRUARY.id) {</span>
+<span class="nc" id="L52">            return FEBRUARY;</span>
+        }
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (id == MARCH.id) {</span>
+<span class="fc" id="L55">            return MARCH;</span>
+        }
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (id == APRIL.id) {</span>
+<span class="nc" id="L58">            return APRIL;</span>
+        }
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (id == MAY.id) {</span>
+<span class="nc" id="L61">            return MAY;</span>
+        }
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (id == JUNE.id) {</span>
+<span class="nc" id="L64">            return JUNE;</span>
+        }
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (id == JULY.id) {</span>
+<span class="nc" id="L67">            return JULY;</span>
+        }
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (id == AUGUST.id) {</span>
+<span class="nc" id="L70">            return AUGUST;</span>
+        }
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (id == SEPTEMBER.id) {</span>
+<span class="nc" id="L73">            return SEPTEMBER;</span>
+        }
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (id == OCTOBER.id) {</span>
+<span class="nc" id="L76">            return OCTOBER;</span>
+        }
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (id == NOVEMBER.id) {</span>
+<span class="nc" id="L79">            return NOVEMBER;</span>
+        }
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (id == DECEMBER.id) {</span>
+<span class="nc" id="L82">            return DECEMBER;</span>
+        }
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (id == ODD_MONTHS.id) {</span>
+<span class="nc" id="L85">            return ODD_MONTHS;</span>
+        }
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (id == EVEN_MONTHS.id) {</span>
+<span class="nc" id="L88">            return EVEN_MONTHS;</span>
+        }
+<span class="nc" id="L90">        return UNSPECIFIED;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

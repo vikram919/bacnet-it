@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LifeSafetyMode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated</a> &gt; <span class="el_source">LifeSafetyMode.java</span></div><h1>LifeSafetyMode.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Enumerated;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class LifeSafetyMode extends Enumerated {
+    private static final long serialVersionUID = -4939675355903263402L;
+
+<span class="nc" id="L31">    public static final LifeSafetyMode off = new LifeSafetyMode(0);</span>
+
+<span class="nc" id="L33">    public static final LifeSafetyMode on = new LifeSafetyMode(1);</span>
+
+<span class="nc" id="L35">    public static final LifeSafetyMode test = new LifeSafetyMode(2);</span>
+
+<span class="nc" id="L37">    public static final LifeSafetyMode manned = new LifeSafetyMode(3);</span>
+
+<span class="nc" id="L39">    public static final LifeSafetyMode unmanned = new LifeSafetyMode(4);</span>
+
+<span class="nc" id="L41">    public static final LifeSafetyMode armed = new LifeSafetyMode(5);</span>
+
+<span class="nc" id="L43">    public static final LifeSafetyMode disarmed = new LifeSafetyMode(6);</span>
+
+<span class="nc" id="L45">    public static final LifeSafetyMode prearmed = new LifeSafetyMode(7);</span>
+
+<span class="nc" id="L47">    public static final LifeSafetyMode slow = new LifeSafetyMode(8);</span>
+
+<span class="nc" id="L49">    public static final LifeSafetyMode fast = new LifeSafetyMode(9);</span>
+
+<span class="nc" id="L51">    public static final LifeSafetyMode disconnected = new LifeSafetyMode(10);</span>
+
+<span class="nc" id="L53">    public static final LifeSafetyMode enabled = new LifeSafetyMode(11);</span>
+
+<span class="nc" id="L55">    public static final LifeSafetyMode disabled = new LifeSafetyMode(12);</span>
+
+<span class="nc" id="L57">    public static final LifeSafetyMode automaticReleaseDisabled = new LifeSafetyMode(</span>
+            13);
+
+<span class="nc" id="L60">    public static final LifeSafetyMode defaultMode = new LifeSafetyMode(14);</span>
+
+<span class="nc" id="L62">    public static final LifeSafetyMode[] ALL = { off, on, test, manned,</span>
+            unmanned, armed, disarmed, prearmed, slow, fast, disconnected,
+            enabled, disabled, automaticReleaseDisabled, defaultMode, };
+
+    public LifeSafetyMode(final int value) {
+<span class="nc" id="L67">        super(value);</span>
+<span class="nc" id="L68">    }</span>
+
+    public LifeSafetyMode(final ByteQueue queue) {
+<span class="nc" id="L71">        super(queue);</span>
+<span class="nc" id="L72">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

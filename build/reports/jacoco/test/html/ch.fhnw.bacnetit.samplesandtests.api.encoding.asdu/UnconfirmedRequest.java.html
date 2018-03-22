@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UnconfirmedRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu</a> &gt; <span class="el_source">UnconfirmedRequest.java</span></div><h1>UnconfirmedRequest.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+import ch.fhnw.bacnetit.samplesandtests.api.service.unconfirmed.UnconfirmedRequestService;
+
+public class UnconfirmedRequest extends ASDU {
+    private static final long serialVersionUID = 1606568334137370062L;
+
+    public static final byte TYPE_ID = 1;
+
+    /**
+     * This parameter shall contain the parameters of the specific service that
+     * is being requested, encoded according to the rules of 20.2. These
+     * parameters are defined in the individual service descriptions in this
+     * standard and are represented in Clause 21 in accordance with the rules of
+     * ASN.1.
+     */
+    private final UnconfirmedRequestService service;
+
+<span class="nc" id="L44">    public UnconfirmedRequest(final UnconfirmedRequestService service) {</span>
+<span class="nc" id="L45">        this.service = service;</span>
+<span class="nc" id="L46">    }</span>
+
+    @Override
+    public byte getPduType() {
+<span class="nc" id="L50">        return TYPE_ID;</span>
+    }
+
+    public UnconfirmedRequestService getService() {
+<span class="fc" id="L54">        return service;</span>
+    }
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L59">        queue.push(getShiftedTypeId(TYPE_ID));</span>
+<span class="nc" id="L60">        queue.push(service.getChoiceId());</span>
+<span class="nc" id="L61">        service.write(queue);</span>
+<span class="nc" id="L62">    }</span>
+
+    public UnconfirmedRequest(final ServicesSupported services,
+<span class="fc" id="L65">            final ByteQueue queue) throws BACnetException {</span>
+<span class="fc" id="L66">        queue.pop();</span>
+<span class="fc" id="L67">        byte openTagChoiceId = queue.pop();</span>
+<span class="fc" id="L68">        openTagChoiceId = (byte) ((openTagChoiceId &amp; 0xff) &gt;&gt; 4);</span>
+<span class="fc" id="L69">        service = UnconfirmedRequestService.createUnconfirmedRequestService(</span>
+                services, openTagChoiceId, queue);
+        // byte closeTagChoiceId = queue.pop();
+<span class="fc" id="L72">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L76">        final int PRIME = 31;</span>
+<span class="nc" id="L77">        int result = 1;</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        result = PRIME * result + ((service == null) ? 0 : service.hashCode());</span>
+<span class="nc" id="L79">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L85">            return true;</span>
+        }
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L88">            return false;</span>
+        }
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L91">            return false;</span>
+        }
+<span class="nc" id="L93">        final UnconfirmedRequest other = (UnconfirmedRequest) obj;</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (service == null) {</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            if (other.service != null) {</span>
+<span class="nc" id="L96">                return false;</span>
+            }
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        } else if (!service.equals(other.service)) {</span>
+<span class="nc" id="L99">            return false;</span>
+        }
+<span class="nc" id="L101">        return true;</span>
+    }
+
+    @Override
+    public boolean expectsReply() {
+<span class="nc" id="L106">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

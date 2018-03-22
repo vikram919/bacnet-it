@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WSBinaryFrameHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.transportbinding.ws</a> &gt; <span class="el_source">WSBinaryFrameHandler.java</span></div><h1>WSBinaryFrameHandler.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.transportbinding.ws;
+
+import java.util.Arrays;
+
+import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+
+/**
+ * Decodes a binary WebSocket frame and outputs a valid TBPDU. Sends a Reject if
+ * the frame could not be decoded.
+ */
+<span class="fc" id="L17">public class WSBinaryFrameHandler</span>
+        extends SimpleChannelInboundHandler&lt;BinaryWebSocketFrame&gt; {
+<span class="fc" id="L19">    private static final InternalLogger LOG = InternalLoggerFactory</span>
+<span class="fc" id="L20">            .getInstance(WSBinaryFrameHandler.class);</span>
+
+    @Override
+    protected void channelRead0(final ChannelHandlerContext ctx,
+            final BinaryWebSocketFrame msg) throws Exception {
+<span class="fc" id="L25">        final ByteBuf buffer = msg.content();</span>
+
+        // Remove version and control byte
+<span class="fc" id="L28">        buffer.skipBytes(2);</span>
+
+<span class="fc" id="L30">        final byte[] bytes = new byte[buffer.readableBytes()];</span>
+<span class="fc" id="L31">        buffer.readBytes(bytes);</span>
+
+        // Translate here to BACnetMessage
+        try {
+<span class="fc" id="L35">            final TPDU bmsg = new TPDU(bytes);</span>
+<span class="fc" id="L36">            LOG.debug(&quot;Successfully decoded new BACnetMessage: &quot; + bmsg);</span>
+<span class="fc" id="L37">            ctx.fireChannelRead(bmsg);</span>
+<span class="nc" id="L38">        } catch (final Exception e) { // TODO decide on exception to throw on</span>
+                                      // invalid
+            // TBPDU
+<span class="nc" id="L41">            LOG.debug(&quot;Failed to decode BACnetMessage: &quot;</span>
+<span class="nc" id="L42">                    + Arrays.toString(bytes));</span>
+            // TODO decide on error message to throw to client
+            // ctx.writeAndFlush(new BACnetTransactionManagerException(
+            // BACnetErrorType.TOO_MANY_TRANSACTIONS_ERROR));
+<span class="fc" id="L46">        }</span>
+<span class="fc" id="L47">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

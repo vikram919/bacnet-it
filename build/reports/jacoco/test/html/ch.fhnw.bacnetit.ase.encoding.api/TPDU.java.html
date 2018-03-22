@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TPDU.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.ase.encoding.api</a> &gt; <span class="el_source">TPDU.java</span></div><h1>TPDU.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.ase.encoding.api;
+
+import java.util.Arrays;
+
+import ch.fhnw.bacnetit.ase.encoding.ITBBase;
+import ch.fhnw.bacnetit.ase.encoding.NetworkPriority;
+import ch.fhnw.bacnetit.ase.encoding.SecurityParameters;
+import ch.fhnw.bacnetit.ase.encoding.UnsignedInteger16;
+import ch.fhnw.bacnetit.ase.encoding.UnsignedInteger31;
+import ch.fhnw.bacnetit.ase.encoding.UnsignedInteger8;
+import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
+
+public class TPDU extends ITBBase {
+<span class="fc" id="L14">    private final int REVISION = 2;</span>
+
+    private static final long serialVersionUID = -4011173466131041450L;
+
+    // Revision 0
+<span class="fc" id="L19">    private UnsignedInteger16 version = new UnsignedInteger16(REVISION);</span>
+
+    // Priority 1
+    private UnsignedInteger31 priority;
+
+    // Source BACnetEID 2
+    private BACnetEID sourceEID;
+
+    // Destination BACnetEID 3
+    private BACnetEID destinationEID;
+
+    // TODO Original Destination EID
+
+    // Invoke ID 4
+    private UnsignedInteger8 invokeId;
+
+    // Forwards 5
+    private UnsignedInteger8 forwards;
+
+    // BACnet Security Parameters 6
+    private SecurityParameters security;
+
+    private byte[] body;
+
+    // private Service bacnetService = null;
+
+    // Slim constructors
+    public TPDU(final BACnetEID sourceEID, final BACnetEID destinationEID,
+            final byte[] b) {
+<span class="fc" id="L48">        this(new UnsignedInteger31(NetworkPriority.NORMAL), sourceEID,</span>
+                destinationEID, null, null, null, b);
+<span class="fc" id="L50">    }</span>
+
+    /*
+     * // Slim constructors public TPDU(final BACnetEID sourceEID, final
+     * BACnetEID destinationEID, final Service b) { this(new
+     * UnsignedInteger(NetworkPriority.NORMAL), sourceEID, destinationEID, null,
+     * null, null, b); }
+     */
+
+    // Main Constructor
+    public TPDU(final UnsignedInteger31 priority, final BACnetEID sourceEID,
+            final BACnetEID destinationEID, final UnsignedInteger8 invokeId,
+            final UnsignedInteger8 forwards, final SecurityParameters sp,
+<span class="fc" id="L63">            final byte[] body) {</span>
+<span class="fc" id="L64">        this.priority = priority;</span>
+<span class="fc" id="L65">        this.sourceEID = sourceEID;</span>
+<span class="fc" id="L66">        this.destinationEID = destinationEID;</span>
+<span class="fc" id="L67">        this.invokeId = invokeId;</span>
+<span class="fc" id="L68">        this.forwards = forwards;</span>
+<span class="fc" id="L69">        this.security = sp;</span>
+<span class="fc" id="L70">        this.body = body;</span>
+<span class="fc" id="L71">    }</span>
+
+    /*
+     * // Main Constructor public TPDU(final UnsignedInteger priority, final
+     * BACnetEID sourceEID, final BACnetEID destinationEID, final Unsigned8
+     * invokeId, final Unsigned8 forwards, final SecurityParameters sp, final
+     * Service body) { // this.bacnetTransportBindingAPDUType = typ;
+     * this.priority = priority; this.sourceEID = sourceEID; this.destinationEID
+     * = destinationEID; this.invokeId = invokeId; this.forwards = forwards;
+     * this.security = sp; this.bacnetService = body; final ByteQueue queue =
+     * new ByteQueue(); body.write(queue); this.body = queue.popAll(); }
+     */
+
+    public TPDU(final byte[] queue) throws Exception {
+<span class="fc" id="L85">        this(new _ByteQueue(queue));</span>
+<span class="fc" id="L86">    }</span>
+
+<span class="fc" id="L88">    public TPDU(final _ByteQueue queue) throws Exception {</span>
+        // Popping two websocket bytes occurs further down in the stack
+        // websocket-revision + websocket-version
+<span class="fc" id="L91">        queue.pop();</span>
+<span class="fc" id="L92">        version = read(queue, UnsignedInteger16.class, 0);</span>
+<span class="fc" id="L93">        priority = readOptional(queue, UnsignedInteger31.class, 1);</span>
+<span class="fc" id="L94">        sourceEID = read(queue, BACnetEID.class, 2);</span>
+<span class="fc" id="L95">        destinationEID = read(queue, BACnetEID.class, 3);</span>
+<span class="fc" id="L96">        invokeId = readOptional(queue, UnsignedInteger8.class, 4);</span>
+<span class="fc" id="L97">        forwards = readOptional(queue, UnsignedInteger8.class, 5);</span>
+<span class="fc" id="L98">        security = readOptional(queue, SecurityParameters.class, 6);</span>
+<span class="fc" id="L99">        queue.pop();</span>
+<span class="fc" id="L100">        queue.pop();</span>
+<span class="fc" id="L101">        final byte[] tmp = queue.popAll();</span>
+<span class="fc" id="L102">        body = Arrays.copyOfRange(tmp, 0, tmp.length - 1);</span>
+
+<span class="fc" id="L104">    }</span>
+
+    @Override
+    public void write(final _ByteQueue queue) {
+<span class="fc" id="L108">        writeContextTag(queue, 0, true);</span>
+<span class="fc" id="L109">        write(queue, version, 0);</span>
+<span class="fc" id="L110">        writeOptional(queue, priority, 1);</span>
+<span class="fc" id="L111">        writeContextTag(queue, 2, true);</span>
+<span class="fc" id="L112">        write(queue, sourceEID, 1);</span>
+<span class="fc" id="L113">        writeContextTag(queue, 2, false);</span>
+<span class="fc" id="L114">        writeContextTag(queue, 3, true);</span>
+<span class="fc" id="L115">        write(queue, destinationEID, 1);</span>
+<span class="fc" id="L116">        writeContextTag(queue, 3, false);</span>
+<span class="fc" id="L117">        writeOptional(queue, invokeId, 4);</span>
+<span class="fc" id="L118">        writeOptional(queue, forwards, 5);</span>
+<span class="fc" id="L119">        writeOptional(queue, security, 6);</span>
+<span class="fc" id="L120">        writeContextTag(queue, 0, false);</span>
+<span class="fc" id="L121">        writeContextTag(queue, 1, true);</span>
+<span class="fc" id="L122">        queue.push(body);</span>
+<span class="fc" id="L123">        writeContextTag(queue, 1, false);</span>
+
+<span class="fc" id="L125">    }</span>
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L130">            return true;</span>
+        }
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L133">            return false;</span>
+        }
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L136">            return false;</span>
+        }
+<span class="nc" id="L138">        final TPDU other = (TPDU) obj;</span>
+
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (version == null) {</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">            if (other.version != null) {</span>
+<span class="nc" id="L142">                return false;</span>
+            }
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        } else if (!version.equals(other.version)) {</span>
+<span class="nc" id="L145">            return false;</span>
+        }
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (priority == null) {</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">            if (other.priority != null) {</span>
+<span class="nc" id="L149">                return false;</span>
+            }
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        } else if (!priority.equals(other.priority)) {</span>
+<span class="nc" id="L152">            return false;</span>
+        }
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (sourceEID == null) {</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">            if (other.sourceEID != null) {</span>
+<span class="nc" id="L156">                return false;</span>
+            }
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        } else if (!sourceEID.equals(other.sourceEID)) {</span>
+<span class="nc" id="L159">            return false;</span>
+        }
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        if (destinationEID == null) {</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">            if (other.destinationEID != null) {</span>
+<span class="nc" id="L163">                return false;</span>
+            }
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        } else if (!destinationEID.equals(other.destinationEID)) {</span>
+<span class="nc" id="L166">            return false;</span>
+        }
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (invokeId == null) {</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">            if (other.invokeId != null) {</span>
+<span class="nc" id="L170">                return false;</span>
+            }
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        } else if (!invokeId.equals(other.invokeId)) {</span>
+<span class="nc" id="L173">            return false;</span>
+        }
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (forwards == null) {</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">            if (other.forwards != null) {</span>
+<span class="nc" id="L177">                return false;</span>
+            }
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        } else if (!forwards.equals(other.forwards)) {</span>
+<span class="nc" id="L180">            return false;</span>
+        }
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (security == null) {</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">            if (other.security != null) {</span>
+<span class="nc" id="L184">                return false;</span>
+            }
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        } else if (!security.equals(other.security)) {</span>
+<span class="nc" id="L187">            return false;</span>
+        }
+
+<span class="nc" id="L190">        return true;</span>
+
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L196">        final int PRIME = 31;</span>
+<span class="nc" id="L197">        int result = 1;</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        result = PRIME * result + ((version == null) ? 0 : version.hashCode());</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L200">                + ((priority == null) ? 0 : priority.hashCode());</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L202">                + ((sourceEID == null) ? 0 : sourceEID.hashCode());</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L204">                + ((destinationEID == null) ? 0 : destinationEID.hashCode());</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L206">                + ((invokeId == null) ? 0 : invokeId.hashCode());</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L208">                + ((forwards == null) ? 0 : forwards.hashCode());</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L210">                + ((security == null) ? 0 : security.hashCode());</span>
+<span class="nc" id="L211">        return result;</span>
+    }
+
+    /*
+     * Getter and Setter
+     */
+
+    public UnsignedInteger31 getPriority() {
+<span class="fc" id="L219">        return this.priority;</span>
+    }
+
+    public BACnetEID getSourceEID() {
+<span class="fc" id="L223">        return this.sourceEID;</span>
+    }
+
+    public BACnetEID getDestinationEID() {
+<span class="fc" id="L227">        return destinationEID;</span>
+    }
+
+    public byte[] getBody() {
+<span class="fc" id="L231">        return this.body;</span>
+    }
+
+    public void setForwards(final UnsignedInteger8 f) {
+<span class="nc" id="L235">        this.forwards = f;</span>
+<span class="nc" id="L236">    }</span>
+
+    /*
+     * public void setBody(final Service s) { final ByteQueue serviceData = new
+     * ByteQueue(); s.write(serviceData); this.body = serviceData.peekAll(); }
+     */
+
+    public UnsignedInteger31 getRevision() {
+<span class="fc" id="L244">        return this.version;</span>
+    }
+
+    public void setInvokeId(final UnsignedInteger8 tid) {
+<span class="fc" id="L248">        this.invokeId = tid;</span>
+<span class="fc" id="L249">    }</span>
+
+    public UnsignedInteger8 getInvokeId() {
+<span class="fc" id="L252">        return this.invokeId;</span>
+    }
+
+    public UnsignedInteger31 getForwards() {
+<span class="fc" id="L256">        return this.forwards;</span>
+    }
+
+    /*
+     * public Service getService() { return this.bacnetService; }
+     */
+
+    /*
+     * public TPDUType getType() { return this.bacnetTransportBindingAPDUType; }
+     *
+     * public void setType(TPDUType type) { this.bacnetTransportBindingAPDUType
+     * = type; }
+     */
+
+    public void setPriority(final UnsignedInteger31 prio) {
+<span class="nc" id="L271">        this.priority = prio;</span>
+<span class="nc" id="L272">    }</span>
+
+    public void setSourceEID(final BACnetEID uid) {
+<span class="fc" id="L275">        this.sourceEID = uid;</span>
+<span class="fc" id="L276">    }</span>
+
+    public void setDestinationEID(final BACnetEID uid) {
+<span class="fc" id="L279">        this.destinationEID = uid;</span>
+<span class="fc" id="L280">    }</span>
+
+    public void setBACnetSecurityParameter(final SecurityParameters security) {
+<span class="nc" id="L283">        this.security = security;</span>
+<span class="nc" id="L284">    }</span>
+
+    public void setBody(final byte[] b) {
+<span class="nc" id="L287">        this.body = b;</span>
+<span class="nc" id="L288">    }</span>
+
+    // If the body contains a CONFIRMEDREQUEST the method returns true otherwise
+    // false
+    public boolean isConfirmedRequest() {
+<span class="fc" id="L293">        final byte type = this.body[0];</span>
+<span class="pc bpc" id="L294" title="1 of 4 branches missed.">        return ((byte) (type &amp; 0x0f)) == ((byte) 0xe)</span>
+                &amp;&amp; ((byte) ((type &amp; 0xff) &gt;&gt; 4)) == (byte) 0;
+
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L301">        String s = this.getClass().getSimpleName() + &quot; = &quot;;</span>
+<span class="fc" id="L302">        s += &quot;Revision &quot; + this.version + &quot;; &quot;;</span>
+<span class="fc" id="L303">        s += &quot;Priority &quot; + this.priority + &quot;; &quot;;</span>
+<span class="fc" id="L304">        s += &quot;SourceEID &quot; + this.sourceEID.getIdentifierAsString() + &quot;; &quot;;</span>
+<span class="fc" id="L305">        s += &quot;DestinationEID &quot; + this.destinationEID.getIdentifierAsString()</span>
+                + &quot;; &quot;;
+<span class="fc" id="L307">        s += &quot;InvokeID &quot; + this.invokeId + &quot;; &quot;;</span>
+<span class="fc" id="L308">        s += &quot;Forwards &quot; + this.forwards;</span>
+<span class="fc" id="L309">        return s;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

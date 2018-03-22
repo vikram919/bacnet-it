@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BaseError.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.error</a> &gt; <span class="el_source">BaseError.java</span></div><h1>BaseError.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.error;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.BACnetError;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.BaseType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class BaseError extends BaseType {
+    private static final long serialVersionUID = 8363160647986011176L;
+
+    public static BaseError createBaseError(final ByteQueue queue)
+            throws BACnetException {
+<span class="nc" id="L35">        final byte choice = queue.pop();</span>
+
+<span class="nc bnc" id="L37" title="All 6 branches missed.">        switch (choice) {</span>
+        case 8:
+        case 9:
+<span class="nc" id="L40">            return new ChangeListError(choice, queue);</span>
+        case 10:
+<span class="nc" id="L42">            return new CreateObjectError(choice, queue);</span>
+        case 16:
+<span class="nc" id="L44">            return new WritePropertyMultipleError(choice, queue);</span>
+        case 18:
+<span class="nc" id="L46">            return new ConfirmedPrivateTransferError(choice, queue);</span>
+        case 22:
+<span class="nc" id="L48">            return new VTCloseError(choice, queue);</span>
+        }
+<span class="nc" id="L50">        return new BaseError(choice, queue);</span>
+    }
+
+    protected byte choice;
+
+    protected BACnetError error;
+
+<span class="nc" id="L57">    public BaseError(final byte choice, final BACnetError error) {</span>
+<span class="nc" id="L58">        this.choice = choice;</span>
+<span class="nc" id="L59">        this.error = error;</span>
+<span class="nc" id="L60">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L64">        queue.push(choice);</span>
+<span class="nc" id="L65">        write(queue, error);</span>
+<span class="nc" id="L66">    }</span>
+
+    public BaseError(final byte choice, final ByteQueue queue)
+<span class="fc" id="L69">            throws BACnetException {</span>
+<span class="fc" id="L70">        this.choice = choice;</span>
+<span class="fc" id="L71">        error = read(queue, BACnetError.class);</span>
+<span class="fc" id="L72">    }</span>
+
+    public BaseError(final byte choice, final ByteQueue queue,
+<span class="nc" id="L75">            final int contextId) throws BACnetException {</span>
+<span class="nc" id="L76">        this.choice = choice;</span>
+<span class="nc" id="L77">        error = read(queue, BACnetError.class, contextId);</span>
+<span class="nc" id="L78">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L82">        return &quot;choice=&quot; + (choice &amp; 0xff) + &quot;, &quot; + error;</span>
+    }
+
+    public BACnetError getError() {
+<span class="fc" id="L86">        return error;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L91">        final int PRIME = 31;</span>
+<span class="nc" id="L92">        int result = 1;</span>
+<span class="nc" id="L93">        result = PRIME * result + choice;</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        result = PRIME * result + ((error == null) ? 0 : error.hashCode());</span>
+<span class="nc" id="L95">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L101">            return true;</span>
+        }
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L104">            return false;</span>
+        }
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L107">            return false;</span>
+        }
+<span class="nc" id="L109">        final BaseError other = (BaseError) obj;</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (choice != other.choice) {</span>
+<span class="nc" id="L111">            return false;</span>
+        }
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (error == null) {</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">            if (other.error != null) {</span>
+<span class="nc" id="L115">                return false;</span>
+            }
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        } else if (!error.equals(other.error)) {</span>
+<span class="nc" id="L118">            return false;</span>
+        }
+<span class="nc" id="L120">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

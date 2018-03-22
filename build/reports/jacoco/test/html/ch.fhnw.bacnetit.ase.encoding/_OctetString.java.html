@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>_OctetString.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.ase.encoding</a> &gt; <span class="el_source">_OctetString.java</span></div><h1>_OctetString.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.ase.encoding;
+
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+
+public class _OctetString extends PrimitiveSerializer {
+    private static final long serialVersionUID = -3557657941142811228L;
+
+    public static final byte TYPE_ID = 6;
+
+    private final byte[] value;
+
+<span class="nc" id="L15">    public _OctetString(final byte[] value) {</span>
+<span class="nc" id="L16">        this.value = value;</span>
+<span class="nc" id="L17">    }</span>
+
+    public _OctetString(final String dottedString) {
+        // this(dottedString, UDPIpNetwork.DEFAULT_PORT);
+<span class="nc" id="L21">        this(dottedString, 8007);</span>
+<span class="nc" id="L22">    }</span>
+
+<span class="nc" id="L24">    public _OctetString(String dottedString, final int defaultPort) {</span>
+<span class="nc" id="L25">        dottedString = dottedString.trim();</span>
+<span class="nc" id="L26">        final int colon = dottedString.indexOf(&quot;:&quot;);</span>
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        if (colon == -1) {</span>
+<span class="nc" id="L28">            final byte[] b = _BACnetUtils.dottedStringToBytes(dottedString);</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">            if (b.length == 4) {</span>
+<span class="nc" id="L30">                value = toBytes(b, defaultPort);</span>
+            } else {
+<span class="nc" id="L32">                value = b;</span>
+            }
+<span class="nc" id="L34">        } else {</span>
+<span class="nc" id="L35">            final byte[] ip = _BACnetUtils</span>
+<span class="nc" id="L36">                    .dottedStringToBytes(dottedString.substring(0, colon));</span>
+<span class="nc" id="L37">            final int port = Integer</span>
+<span class="nc" id="L38">                    .parseInt(dottedString.substring(colon + 1));</span>
+<span class="nc" id="L39">            value = toBytes(ip, port);</span>
+        }
+<span class="nc" id="L41">    }</span>
+
+    /**
+     * Convenience constructor for MS/TP addresses local to this network.
+     *
+     * @param station
+     *            the station id
+     */
+<span class="nc" id="L49">    public _OctetString(final byte station) {</span>
+<span class="nc" id="L50">        value = new byte[] { station };</span>
+<span class="nc" id="L51">    }</span>
+
+    /**
+     * Convenience constructor for IP addresses local to this network.
+     *
+     * @param ipAddress
+     * @param port
+     */
+<span class="nc" id="L59">    public _OctetString(final byte[] ipAddress, final int port) {</span>
+<span class="nc" id="L60">        value = toBytes(ipAddress, port);</span>
+<span class="nc" id="L61">    }</span>
+
+    public _OctetString(final InetSocketAddress addr) {
+<span class="nc" id="L64">        this(addr.getAddress().getAddress(), addr.getPort());</span>
+<span class="nc" id="L65">    }</span>
+
+    public byte[] getBytes() {
+<span class="nc" id="L68">        return value;</span>
+    }
+
+    private static byte[] toBytes(final byte[] ipAddress, final int port) {
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (ipAddress.length != 4) {</span>
+<span class="nc" id="L73">            throw new IllegalArgumentException(</span>
+                    &quot;IP address must have 4 parts, not &quot; + ipAddress.length);
+        }
+
+<span class="nc" id="L77">        final byte[] b = new byte[6];</span>
+<span class="nc" id="L78">        System.arraycopy(ipAddress, 0, b, 0, ipAddress.length);</span>
+<span class="nc" id="L79">        b[ipAddress.length] = (byte) (port &gt;&gt; 8);</span>
+<span class="nc" id="L80">        b[ipAddress.length + 1] = (byte) port;</span>
+<span class="nc" id="L81">        return b;</span>
+    }
+
+    //
+    //
+    // I/P convenience
+    //
+    public String getMacAddressDottedString() {
+<span class="nc" id="L89">        return _BACnetUtils.bytesToDottedString(value);</span>
+    }
+
+    public InetAddress getInetAddress() {
+        try {
+<span class="nc" id="L94">            return InetAddress.getByAddress(getIpBytes());</span>
+<span class="nc" id="L95">        } catch (final UnknownHostException e) {</span>
+<span class="nc" id="L96">            throw new RuntimeException(e);</span>
+        }
+    }
+
+    // public InetSocketAddress getInetSocketAddress() {
+    // return InetAddrCache.get(getInetAddress(), getPort());
+    // }
+
+    public int getPort() {
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (value.length == 6) {</span>
+<span class="nc" id="L106">            return ((value[4] &amp; 0xff) &lt;&lt; 8) | (value[5] &amp; 0xff);</span>
+        }
+<span class="nc" id="L108">        return -1;</span>
+    }
+
+    // public String toIpString() {
+    // return IpAddressUtils.toIpString(getIpBytes());
+    // }
+
+    // public String toIpPortString() {
+    // return toIpString() + &quot;:&quot; + getPort();
+    // }
+
+    public byte[] getIpBytes() {
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (value.length == 4) {</span>
+<span class="nc" id="L121">            return value;</span>
+        }
+
+<span class="nc" id="L124">        final byte[] b = new byte[4];</span>
+<span class="nc" id="L125">        System.arraycopy(value, 0, b, 0, 4);</span>
+<span class="nc" id="L126">        return b;</span>
+    }
+
+    //
+    //
+    // MS/TP convenience
+    //
+    public byte getMstpAddress() {
+<span class="nc" id="L134">        return value[0];</span>
+    }
+
+    //
+    // Reading and writing
+    //
+<span class="nc" id="L140">    public _OctetString(final _ByteQueue queue) {</span>
+<span class="nc" id="L141">        final int length = (int) readTag(queue);</span>
+<span class="nc" id="L142">        value = new byte[length];</span>
+<span class="nc" id="L143">        queue.pop(value);</span>
+<span class="nc" id="L144">    }</span>
+
+    @Override
+    public void writeImpl(final _ByteQueue queue) {
+<span class="nc" id="L148">        queue.push(value);</span>
+<span class="nc" id="L149">    }</span>
+
+    @Override
+    public long getLength() {
+<span class="nc" id="L153">        return value.length;</span>
+    }
+
+    @Override
+    protected byte getTypeId() {
+<span class="nc" id="L158">        return TYPE_ID;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L163">        final int PRIME = 31;</span>
+<span class="nc" id="L164">        int result = 1;</span>
+<span class="nc" id="L165">        result = PRIME * result + Arrays.hashCode(value);</span>
+<span class="nc" id="L166">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L172">            return true;</span>
+        }
+<span class="nc bnc" id="L174" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L175">            return false;</span>
+        }
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L178">            return false;</span>
+        }
+<span class="nc" id="L180">        final _OctetString other = (_OctetString) obj;</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (!Arrays.equals(value, other.value)) {</span>
+<span class="nc" id="L182">            return false;</span>
+        }
+<span class="nc" id="L184">        return true;</span>
+    }
+
+    // @Override
+    // public String toString() {
+    // return ArrayUtils.toHexString(value);
+    // }
+
+    public String getDescription() {
+<span class="nc" id="L193">        final StringBuilder sb = new StringBuilder();</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (value.length == 1) {</span>
+            // Assume an MS/TP address
+<span class="nc" id="L196">            sb.append(getMstpAddress() &amp; 0xff);</span>
+            // else if (value.length == 6)
+            // // Assume an I/P address
+            // sb.append(toIpPortString());
+        } else {
+<span class="nc" id="L201">            sb.append(toString());</span>
+        }
+<span class="nc" id="L203">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

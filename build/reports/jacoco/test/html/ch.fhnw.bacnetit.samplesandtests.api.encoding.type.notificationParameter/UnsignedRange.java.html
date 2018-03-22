@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UnsignedRange.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.notificationParameter</a> &gt; <span class="el_source">UnsignedRange.java</span></div><h1>UnsignedRange.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.notificationParameter;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.StatusFlags;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class UnsignedRange extends NotificationParameters {
+    private static final long serialVersionUID = 3208335506254265781L;
+
+    public static final byte TYPE_ID = 11;
+
+    private final UnsignedInteger exceedingValue;
+
+    private final StatusFlags statusFlags;
+
+    private final UnsignedInteger exceedingLimit;
+
+    public UnsignedRange(final UnsignedInteger exceedingValue,
+            final StatusFlags statusFlags,
+<span class="nc" id="L43">            final UnsignedInteger exceedingLimit) {</span>
+<span class="nc" id="L44">        this.exceedingValue = exceedingValue;</span>
+<span class="nc" id="L45">        this.statusFlags = statusFlags;</span>
+<span class="nc" id="L46">        this.exceedingLimit = exceedingLimit;</span>
+<span class="nc" id="L47">    }</span>
+
+    @Override
+    protected void writeImpl(final ByteQueue queue) {
+<span class="nc" id="L51">        write(queue, exceedingValue, 0);</span>
+<span class="nc" id="L52">        write(queue, statusFlags, 1);</span>
+<span class="nc" id="L53">        write(queue, exceedingLimit, 2);</span>
+<span class="nc" id="L54">    }</span>
+
+<span class="nc" id="L56">    public UnsignedRange(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L57">        exceedingValue = read(queue, UnsignedInteger.class, 0);</span>
+<span class="nc" id="L58">        statusFlags = read(queue, StatusFlags.class, 1);</span>
+<span class="nc" id="L59">        exceedingLimit = read(queue, UnsignedInteger.class, 2);</span>
+<span class="nc" id="L60">    }</span>
+
+    @Override
+    protected int getTypeId() {
+<span class="nc" id="L64">        return TYPE_ID;</span>
+    }
+
+    public UnsignedInteger getExceedingValue() {
+<span class="nc" id="L68">        return exceedingValue;</span>
+    }
+
+    public StatusFlags getStatusFlags() {
+<span class="nc" id="L72">        return statusFlags;</span>
+    }
+
+    public UnsignedInteger getExceedingLimit() {
+<span class="nc" id="L76">        return exceedingLimit;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L81">        final int PRIME = 31;</span>
+<span class="nc" id="L82">        int result = 1;</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L84">                + ((exceedingLimit == null) ? 0 : exceedingLimit.hashCode());</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L86">                + ((exceedingValue == null) ? 0 : exceedingValue.hashCode());</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L88">                + ((statusFlags == null) ? 0 : statusFlags.hashCode());</span>
+<span class="nc" id="L89">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L95">            return true;</span>
+        }
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L98">            return false;</span>
+        }
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L101">            return false;</span>
+        }
+<span class="nc" id="L103">        final UnsignedRange other = (UnsignedRange) obj;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (exceedingLimit == null) {</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">            if (other.exceedingLimit != null) {</span>
+<span class="nc" id="L106">                return false;</span>
+            }
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        } else if (!exceedingLimit.equals(other.exceedingLimit)) {</span>
+<span class="nc" id="L109">            return false;</span>
+        }
+<span class="nc bnc" id="L111" title="All 2 branches missed.">        if (exceedingValue == null) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (other.exceedingValue != null) {</span>
+<span class="nc" id="L113">                return false;</span>
+            }
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        } else if (!exceedingValue.equals(other.exceedingValue)) {</span>
+<span class="nc" id="L116">            return false;</span>
+        }
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (statusFlags == null) {</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (other.statusFlags != null) {</span>
+<span class="nc" id="L120">                return false;</span>
+            }
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        } else if (!statusFlags.equals(other.statusFlags)) {</span>
+<span class="nc" id="L123">            return false;</span>
+        }
+<span class="nc" id="L125">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

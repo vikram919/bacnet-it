@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TagData.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type</a> &gt; <span class="el_source">TagData.java</span></div><h1>TagData.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type;
+
+<span class="nc" id="L25">public class TagData {</span>
+    public int tagNumber;
+
+    public boolean contextSpecific;
+
+    public long length;
+
+    public int tagLength;
+
+    public int getTotalLength() {
+<span class="nc" id="L35">        return (int) (length + tagLength);</span>
+    }
+
+    public boolean isStartTag() {
+<span class="nc bnc" id="L39" title="All 4 branches missed.">        return contextSpecific &amp;&amp; ((length &amp; 6) == 6);</span>
+    }
+
+    public boolean isStartTag(final int contextId) {
+<span class="nc bnc" id="L43" title="All 4 branches missed.">        return isStartTag() &amp;&amp; tagNumber == contextId;</span>
+    }
+
+    public boolean isEndTag() {
+<span class="nc bnc" id="L47" title="All 4 branches missed.">        return contextSpecific &amp;&amp; ((length &amp; 7) == 7);</span>
+    }
+
+    public boolean isEndTag(final int contextId) {
+<span class="nc bnc" id="L51" title="All 4 branches missed.">        return isEndTag() &amp;&amp; tagNumber == contextId;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

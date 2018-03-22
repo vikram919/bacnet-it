@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ch.fhnw.bacnetit.samplesandtests.encoding.WebSocketBinaryFrameHandlerTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-03-21T20:19:20" hostname="DESKTOP-QBU1TN7" time="0.013">
+  <properties/>
+  <testcase name="testValidDecoding" classname="ch.fhnw.bacnetit.samplesandtests.encoding.WebSocketBinaryFrameHandlerTest" time="0.013"/>
+  <system-out><![CDATA[21:19:20.837 [Test worker] DEBUG c.f.b.t.ws.WSBinaryFrameHandler - Successfully decoded new BACnetMessage: TPDU = Revision 20; Priority 0; SourceEID 1001; DestinationEID 1003; InvokeID 2; Forwards 1
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WriteAccessSpecification.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">WriteAccessSpecification.java</span></div><h1>WriteAccessSpecification.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.ThreadLocalObjectTypeStack;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class WriteAccessSpecification extends BaseType {
+    private static final long serialVersionUID = -676251352183146270L;
+
+    private final BACnetObjectIdentifier objectIdentifier;
+
+    private final SequenceOf&lt;PropertyValue&gt; listOfProperties;
+
+    public WriteAccessSpecification(
+            final BACnetObjectIdentifier objectIdentifier,
+<span class="nc" id="L39">            final SequenceOf&lt;PropertyValue&gt; listOfProperties) {</span>
+<span class="nc" id="L40">        this.objectIdentifier = objectIdentifier;</span>
+<span class="nc" id="L41">        this.listOfProperties = listOfProperties;</span>
+<span class="nc" id="L42">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L46">        write(queue, objectIdentifier, 0);</span>
+<span class="nc" id="L47">        write(queue, listOfProperties, 1);</span>
+<span class="nc" id="L48">    }</span>
+
+    public WriteAccessSpecification(final ByteQueue queue)
+<span class="nc" id="L51">            throws BACnetException {</span>
+<span class="nc" id="L52">        objectIdentifier = read(queue, BACnetObjectIdentifier.class, 0);</span>
+        try {
+<span class="nc" id="L54">            ThreadLocalObjectTypeStack.set(objectIdentifier.getObjectType());</span>
+<span class="nc" id="L55">            listOfProperties = readSequenceOf(queue, PropertyValue.class, 1);</span>
+        } finally {
+<span class="nc" id="L57">            ThreadLocalObjectTypeStack.remove();</span>
+<span class="nc" id="L58">        }</span>
+<span class="nc" id="L59">    }</span>
+
+    public SequenceOf&lt;PropertyValue&gt; getListOfProperties() {
+<span class="nc" id="L62">        return listOfProperties;</span>
+    }
+
+    public BACnetObjectIdentifier getObjectIdentifier() {
+<span class="nc" id="L66">        return objectIdentifier;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L71">        final int PRIME = 31;</span>
+<span class="nc" id="L72">        int result = 1;</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        result = PRIME * result + ((listOfProperties == null) ? 0</span>
+<span class="nc" id="L74">                : listOfProperties.hashCode());</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        result = PRIME * result + ((objectIdentifier == null) ? 0</span>
+<span class="nc" id="L76">                : objectIdentifier.hashCode());</span>
+<span class="nc" id="L77">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L83">            return true;</span>
+        }
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L86">            return false;</span>
+        }
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L89">            return false;</span>
+        }
+<span class="nc" id="L91">        final WriteAccessSpecification other = (WriteAccessSpecification) obj;</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (listOfProperties == null) {</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            if (other.listOfProperties != null) {</span>
+<span class="nc" id="L94">                return false;</span>
+            }
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        } else if (!listOfProperties.equals(other.listOfProperties)) {</span>
+<span class="nc" id="L97">            return false;</span>
+        }
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (objectIdentifier == null) {</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">            if (other.objectIdentifier != null) {</span>
+<span class="nc" id="L101">                return false;</span>
+            }
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        } else if (!objectIdentifier.equals(other.objectIdentifier)) {</span>
+<span class="nc" id="L104">            return false;</span>
+        }
+<span class="nc" id="L106">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

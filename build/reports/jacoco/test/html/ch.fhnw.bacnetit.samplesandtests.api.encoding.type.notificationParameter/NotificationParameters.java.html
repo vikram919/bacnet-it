@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificationParameters.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.notificationParameter</a> &gt; <span class="el_source">NotificationParameters.java</span></div><h1>NotificationParameters.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.notificationParameter;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetErrorException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.BaseType;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ErrorClass;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.ErrorCode;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+<span class="nc" id="L32">abstract public class NotificationParameters extends BaseType {</span>
+    private static final long serialVersionUID = 7902337844295486044L;
+
+    public static NotificationParameters createNotificationParameters(
+            final ByteQueue queue, final int contextId) throws BACnetException {
+<span class="nc" id="L37">        popStart(queue, contextId);</span>
+<span class="nc" id="L38">        final NotificationParameters result = createNotificationParameters(</span>
+                queue);
+<span class="nc" id="L40">        popEnd(queue, contextId);</span>
+<span class="nc" id="L41">        return result;</span>
+    }
+
+    public static NotificationParameters createNotificationParametersOptional(
+            final ByteQueue queue, final int contextId) throws BACnetException {
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (readStart(queue) != contextId) {</span>
+<span class="nc" id="L47">            return null;</span>
+        }
+<span class="nc" id="L49">        return createNotificationParameters(queue, contextId);</span>
+    }
+
+    public static NotificationParameters createNotificationParameters(
+            final ByteQueue queue) throws BACnetException {
+        // Get the first byte. It will tell us what the service type is.
+<span class="nc" id="L55">        final int type = popStart(queue);</span>
+
+        NotificationParameters result;
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (type == ChangeOfBitString.TYPE_ID) {</span>
+<span class="nc" id="L59">            result = new ChangeOfBitString(queue);</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        } else if (type == ChangeOfState.TYPE_ID) {</span>
+<span class="nc" id="L61">            result = new ChangeOfState(queue);</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        } else if (type == ChangeOfValue.TYPE_ID) {</span>
+<span class="nc" id="L63">            result = new ChangeOfValue(queue);</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        } else if (type == CommandFailure.TYPE_ID) {</span>
+<span class="nc" id="L65">            result = new CommandFailure(queue);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        } else if (type == FloatingLimit.TYPE_ID) {</span>
+<span class="nc" id="L67">            result = new FloatingLimit(queue);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        } else if (type == OutOfRange.TYPE_ID) {</span>
+<span class="nc" id="L69">            result = new OutOfRange(queue);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        } else if (type == ComplexEventType.TYPE_ID) {</span>
+<span class="nc" id="L71">            result = new ComplexEventType(queue);</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        } else if (type == ChangeOfLifeSafety.TYPE_ID) {</span>
+<span class="nc" id="L73">            result = new ChangeOfLifeSafety(queue);</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        } else if (type == Extended.TYPE_ID) {</span>
+<span class="nc" id="L75">            result = new Extended(queue);</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        } else if (type == BufferReady.TYPE_ID) {</span>
+<span class="nc" id="L77">            result = new BufferReady(queue);</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        } else if (type == UnsignedRange.TYPE_ID) {</span>
+<span class="nc" id="L79">            result = new UnsignedRange(queue);</span>
+        } else {
+<span class="nc" id="L81">            throw new BACnetErrorException(ErrorClass.property,</span>
+                    ErrorCode.invalidParameterDataType);
+        }
+
+<span class="nc" id="L85">        popEnd(queue, type);</span>
+<span class="nc" id="L86">        return result;</span>
+    }
+
+    @Override
+    final public void write(final ByteQueue queue) {
+<span class="nc" id="L91">        writeContextTag(queue, getTypeId(), true);</span>
+<span class="nc" id="L92">        writeImpl(queue);</span>
+<span class="nc" id="L93">        writeContextTag(queue, getTypeId(), false);</span>
+<span class="nc" id="L94">    }</span>
+
+    abstract protected int getTypeId();
+
+    abstract protected void writeImpl(ByteQueue queue);
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

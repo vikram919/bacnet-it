@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EventTransitionBits.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">EventTransitionBits.java</span></div><h1>EventTransitionBits.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.enumerated.EventState;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.BitString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class EventTransitionBits extends BitString {
+    private static final long serialVersionUID = 7904969709288399573L;
+
+    public EventTransitionBits(final boolean toOffnormal, final boolean toFault,
+            final boolean toNormal) {
+<span class="nc" id="L34">        super(new boolean[] { toOffnormal, toFault, toNormal });</span>
+<span class="nc" id="L35">    }</span>
+
+    public EventTransitionBits(final ByteQueue queue) {
+<span class="nc" id="L38">        super(queue);</span>
+<span class="nc" id="L39">    }</span>
+
+    public boolean isToOffnormal() {
+<span class="nc" id="L42">        return getValue()[0];</span>
+    }
+
+    public boolean isToFault() {
+<span class="nc" id="L46">        return getValue()[1];</span>
+    }
+
+    public boolean isToNormal() {
+<span class="nc" id="L50">        return getValue()[2];</span>
+    }
+
+    public boolean contains(final EventState toState) {
+<span class="nc bnc" id="L54" title="All 4 branches missed.">        if (toState.equals(EventState.normal) &amp;&amp; isToNormal()) {</span>
+<span class="nc" id="L55">            return true;</span>
+        }
+
+<span class="nc bnc" id="L58" title="All 4 branches missed.">        if (toState.equals(EventState.fault) &amp;&amp; isToFault()) {</span>
+<span class="nc" id="L59">            return true;</span>
+        }
+
+        // All other event states are considered off-normal
+<span class="nc" id="L63">        return isToOffnormal();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

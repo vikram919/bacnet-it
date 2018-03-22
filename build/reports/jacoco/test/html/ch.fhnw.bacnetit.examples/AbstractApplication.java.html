@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractApplication.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.examples</a> &gt; <span class="el_source">AbstractApplication.java</span></div><h1>AbstractApplication.java</h1><pre class="source lang-java linenums">package ch.fhnw.bacnetit.examples;
+
+//Make sure to import the following classes
+//Import Java components
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.LinkedList;
+import java.util.List;
+
+import ch.fhnw.bacnetit.ase.application.service.api.ApplicationService;
+//Import packages from the BACnet/IT opensource projects
+//By convention just classes within an api package should be used
+import ch.fhnw.bacnetit.ase.application.transaction.api.ChannelListener;
+import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
+import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
+import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataRequest;
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectType;
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetPropertyIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ASDU;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.IncomingRequestParser;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.ReadPropertyRequest;
+
+/**
+ * AbstractApplication provides base functionality
+ * 
+ * @author IMVS, FHNW
+ *
+ */
+public abstract class AbstractApplication {
+
+	// applicationService is the application's view of the stack.
+	// applicationService is used to send BACnet messages to other devices.
+	// The configurator class will pass the applicationService, as shown later
+	final private ApplicationService applicationService;
+
+	// devices is a list of simulated BACnet devices.
+<span class="nc" id="L40">	final public List&lt;ChannelListener&gt; devices = new LinkedList&lt;ChannelListener&gt;();</span>
+
+<span class="nc" id="L42">	public AbstractApplication(ApplicationService applicationService) {</span>
+<span class="nc" id="L43">		this.applicationService = applicationService;</span>
+<span class="nc" id="L44">	}</span>
+
+	/**
+	 * sendReadPropertyRequestUsingBACnet4j() sends a ReadRequestProperty to a given
+	 * destination. To represent such a ReadPropertyRequest BACnet4J is used. Note
+	 * that the TPDU constructor demands a byte array that represents the BACnet
+	 * service. Feel free to provide the byte array without the usage of BACnet4J by
+	 * using the sendBACnetMessage(byte[]) method.
+	 * 
+	 * @throws URISyntaxException
+	 */
+	public void sendReadPropertyRequestUsingBACnet4j(URI destination, BACnetEID from, BACnetEID to)
+			throws URISyntaxException {
+<span class="nc" id="L57">		final ReadPropertyRequest readRequest = new ReadPropertyRequest(</span>
+				new BACnetObjectIdentifier(BACnetObjectType.analogValue, 1), BACnetPropertyIdentifier.presentValue);
+<span class="nc" id="L59">		final ByteQueue byteQueue = new ByteQueue();</span>
+<span class="nc" id="L60">		readRequest.write(byteQueue);</span>
+<span class="nc" id="L61">		final TPDU tpdu = new TPDU(from, to, byteQueue.popAll());</span>
+
+<span class="nc" id="L63">		final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(destination, tpdu, 1, null);</span>
+
+<span class="nc" id="L65">		applicationService.doRequest(unitDataRequest);</span>
+
+<span class="nc" id="L67">	}</span>
+
+	/**
+	 * sendBACnetMessage() sends a BACnet message represented as byte array to the
+	 * given destination. Ensure the byte array represents a valid BACnet message.
+	 * 
+	 * @param bacnetMessage
+	 * @throws URISyntaxException
+	 */
+	public void sendBACnetMessage(URI destination, BACnetEID from, BACnetEID to, byte[] confirmedBacnetMessage)
+			throws URISyntaxException {
+
+<span class="nc" id="L79">		final TPDU tpdu = new TPDU(from, to, confirmedBacnetMessage);</span>
+
+<span class="nc" id="L81">		final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(destination, tpdu, 1, null);</span>
+
+<span class="nc" id="L83">		applicationService.doRequest(unitDataRequest);</span>
+<span class="nc" id="L84">	}</span>
+
+	/**
+	 * getServiceFromBody() is a helper method to interpret received BACnet
+	 * messages.
+	 * 
+	 * @param body
+	 * @return
+	 */
+	protected ASDU getServiceFromBody(final byte[] body) {
+<span class="nc" id="L94">		final ByteQueue queue = new ByteQueue(body);</span>
+<span class="nc" id="L95">		final ServicesSupported servicesSupported = new ServicesSupported();</span>
+<span class="nc" id="L96">		servicesSupported.setAll(true);</span>
+<span class="nc" id="L97">		final IncomingRequestParser parser = new IncomingRequestParser(servicesSupported, queue);</span>
+<span class="nc" id="L98">		ASDU request = null;</span>
+
+		try {
+<span class="nc" id="L101">			request = parser.parse();</span>
+<span class="nc" id="L102">		} catch (final Exception e) {</span>
+<span class="nc" id="L103">			System.out.println(e);</span>
+<span class="nc" id="L104">		}</span>
+<span class="nc" id="L105">		return request;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

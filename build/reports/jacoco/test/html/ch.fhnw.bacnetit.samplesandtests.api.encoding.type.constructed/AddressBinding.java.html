@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AddressBinding.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bacnet-it</a> &gt; <a href="index.source.html" class="el_package">ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed</a> &gt; <span class="el_source">AddressBinding.java</span></div><h1>AddressBinding.java</h1><pre class="source lang-java linenums">/*******************************************************************************
+ * ============================================================================
+ * GNU General Public License
+ * ============================================================================
+ *
+ * Copyright (C) 2017 University of Applied Sciences and Arts,
+ * Northwestern Switzerland FHNW,
+ * Institute of Mobile and Distributed Systems.
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.orglicenses.
+ *******************************************************************************/
+package ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed;
+
+import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectIdentifier;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+
+public class AddressBinding extends BaseType {
+    private static final long serialVersionUID = -3619507415957976531L;
+
+    private final BACnetObjectIdentifier deviceObjectIdentifier;
+
+    private final Address deviceAddress;
+
+    public AddressBinding(final BACnetObjectIdentifier deviceObjectIdentifier,
+<span class="nc" id="L37">            final Address deviceAddress) {</span>
+<span class="nc" id="L38">        this.deviceObjectIdentifier = deviceObjectIdentifier;</span>
+<span class="nc" id="L39">        this.deviceAddress = deviceAddress;</span>
+<span class="nc" id="L40">    }</span>
+
+    @Override
+    public void write(final ByteQueue queue) {
+<span class="nc" id="L44">        write(queue, deviceObjectIdentifier);</span>
+<span class="nc" id="L45">        write(queue, deviceAddress);</span>
+<span class="nc" id="L46">    }</span>
+
+<span class="nc" id="L48">    public AddressBinding(final ByteQueue queue) throws BACnetException {</span>
+<span class="nc" id="L49">        deviceObjectIdentifier = read(queue, BACnetObjectIdentifier.class);</span>
+<span class="nc" id="L50">        deviceAddress = read(queue, Address.class);</span>
+<span class="nc" id="L51">    }</span>
+
+    public BACnetObjectIdentifier getDeviceObjectIdentifier() {
+<span class="nc" id="L54">        return deviceObjectIdentifier;</span>
+    }
+
+    public Address getDeviceAddress() {
+<span class="nc" id="L58">        return deviceAddress;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L63">        final int PRIME = 31;</span>
+<span class="nc" id="L64">        int result = 1;</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        result = PRIME * result</span>
+<span class="nc" id="L66">                + ((deviceAddress == null) ? 0 : deviceAddress.hashCode());</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        result = PRIME * result + ((deviceObjectIdentifier == null) ? 0</span>
+<span class="nc" id="L68">                : deviceObjectIdentifier.hashCode());</span>
+<span class="nc" id="L69">        return result;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L75">            return true;</span>
+        }
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L78">            return false;</span>
+        }
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L81">            return false;</span>
+        }
+<span class="nc" id="L83">        final AddressBinding other = (AddressBinding) obj;</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (deviceAddress == null) {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (other.deviceAddress != null) {</span>
+<span class="nc" id="L86">                return false;</span>
+            }
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        } else if (!deviceAddress.equals(other.deviceAddress)) {</span>
+<span class="nc" id="L89">            return false;</span>
+        }
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (deviceObjectIdentifier == null) {</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">            if (other.deviceObjectIdentifier != null) {</span>
+<span class="nc" id="L93">                return false;</span>
+            }
+<span class="nc" id="L95">        } else if (!deviceObjectIdentifier</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">                .equals(other.deviceObjectIdentifier)) {</span>
+<span class="nc" id="L97">            return false;</span>
+        }
+<span class="nc" id="L99">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
