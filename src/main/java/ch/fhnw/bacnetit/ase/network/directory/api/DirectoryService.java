@@ -167,8 +167,10 @@ public class DirectoryService {
                     bds = bdss.get(0);
                     // LOG.debug(
                     // "BDS found at EID " + bds.getIdentifierAsString());
+                    System.out.println("BDS found at EID " + bds.getIdentifierAsString());
                 } else {
                     // LOG.error("No BDS has been found in DNS.");
+                	System.out.println("No BDS has been found in DNS.");
                 }
             }
         }

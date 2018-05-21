@@ -53,7 +53,6 @@ public class DirectoryServiceTest {
             final DirectoryService service = DirectoryService.getInstance();
             service.register(new BACnetEID(1234), new URI(DUMMY_DEVICE_URL),
                     false, false);
-
             assertEquals(DUMMY_DEVICE_URL,
                     service.resolve(new BACnetEID(1234)).toString()); // find
                                                                       // created

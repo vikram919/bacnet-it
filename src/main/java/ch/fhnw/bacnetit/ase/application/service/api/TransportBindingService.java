@@ -10,6 +10,7 @@ import java.util.List;
 import ch.fhnw.bacnetit.ase.encoding.UnsignedInteger31;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
+import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
 
 /**
  * @author IMVS, FHNW
@@ -22,4 +23,6 @@ public interface TransportBindingService {
     public List<UnsignedInteger31> getChannelListeners();
 
     public void onRemoteAdded(BACnetEID eid, URI uri);
+    
+    public void reportIndication(String cause, BACnetEID sourceEID, T_ReportIndication tReportIndication);
 }

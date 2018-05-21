@@ -1,4 +1,4 @@
-package uni.rostock.bacnetit.transportbinding.coap.api;
+package uni.rostock.de.bacnet.it.coap.transportbinding;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,14 +10,13 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 
 import org.eclipse.californium.core.CoapClient;
-import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResource;
-import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
+import org.eclipse.californium.core.network.CoapEndpoint;
+import org.eclipse.californium.core.network.EndpointManager;
 import org.eclipse.californium.core.server.resources.CoapExchange;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.californium.elements.UDPConnector;
 
 import ch.fhnw.bacnetit.ase.application.service.api.TransportBindingService;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
@@ -28,10 +27,9 @@ import ch.fhnw.bacnetit.ase.transportbinding.service.api.ASEService;
 public class TransportCoapBinding implements ASEService {
 
 	private TransportBindingService transportBindingService;
-	private static Logger LOG = LoggerFactory.getLogger(TransportCoapBinding.class);
 
-	private CoapClient client;
 	private CoapServer server;
+	private String resource = "/transport";
 
 	public void init() {
 		this.server.start();
@@ -41,10 +39,6 @@ public class TransportCoapBinding implements ASEService {
 		this.server.stop();
 	}
 
-	public void destroyCoapClient() {
-		this.client.shutdown();
-	}
-
 	@Override
 	public void doCancel(BACnetEID destination, BACnetEID source) {
 
@@ -52,8 +46,24 @@ public class TransportCoapBinding implements ASEService {
 
 	@Override
 	public void doRequest(T_UnitDataRequest t_unitDataRequest) {
-		client.setURI(t_unitDataRequest.getDestinationAddress().toString());
-		sendRequest(t_unitDataRequest.getData());
+
+		CoapClient client = new CoapClient(t_unitDataRequest.getDestinationAddress().toString() + resource);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutput out = null;
+		try {
+			out = new ObjectOutputStream(bos);
+			out.writeObject(t_unitDataRequest.getData());
+			out.flush();
+			byte[] payloadBytes = bos.toByteArray();
+			client.post(payloadBytes, 0);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				bos.close();
+			} catch (IOException ex) {
+			}
+		}
 	}
 
 	@Override
@@ -90,39 +100,9 @@ public class TransportCoapBinding implements ASEService {
 		});
 	}
 
-	public void sendRequest(TPDU payload) {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutput out = null;
-		try {
-			out = new ObjectOutputStream(bos);
-			out.writeObject(payload);
-			out.flush();
-			byte[] payloadBytes = bos.toByteArray();
-			client.post(new CoapHandler() {
-				@Override
-				public void onLoad(CoapResponse response) {
-					if(response.getCode()!=ResponseCode.CHANGED) {
-						System.out.println("ERROR RESPONSE!");
-					}
-				}
-
-				@Override
-				public void onError() {
-					System.err.println("FAILED");
-				}
-			}, payloadBytes, 0);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				bos.close();
-			} catch (IOException ex) {
-			}
-		}
+	public void initCoapClientEndpoint() {
+		CoapEndpoint.CoapEndpointBuilder endpointBuilder = new CoapEndpoint.CoapEndpointBuilder();
+		endpointBuilder.setConnector(new UDPConnector());
+		EndpointManager.getEndpointManager().setDefaultEndpoint(endpointBuilder.build());
 	}
-
-	public void createCoapClient() {
-		this.client = new CoapClient();
-	}
-
 }

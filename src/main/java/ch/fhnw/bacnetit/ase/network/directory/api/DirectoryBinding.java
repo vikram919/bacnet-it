@@ -10,7 +10,6 @@ import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
  * This interface DirectoryBinding implements the BACnet directory
  * functionality.
  * 
- * @author vik
  *
  */
 public interface DirectoryBinding {
