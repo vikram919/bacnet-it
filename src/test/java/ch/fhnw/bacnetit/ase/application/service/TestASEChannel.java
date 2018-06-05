@@ -4,6 +4,7 @@
 package ch.fhnw.bacnetit.ase.application.service;
 
 import java.net.InetSocketAddress;
+import java.net.URI;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -128,6 +129,12 @@ public class TestASEChannel {
 				// TODO Auto-generated method stub
 
 			}
+
+			@Override
+			public void connect(URI uri) {
+				// TODO Auto-generated method stub
+
+			}
 		};
 	}
 
@@ -138,7 +145,7 @@ public class TestASEChannel {
 
 		final TPDU testTPDU = new TPDU(new BACnetEID(1000), new BACnetEID(1010), new byte[] { 0x0e, 2, 3 });
 		testTPDU.setInvokeId(new UnsignedInteger8(12));
-		((TransportBindingService) ases).onIndication(testTPDU, new InetSocketAddress("http://localhost", 80));
+		((TransportBindingService) ases).onIndication(testTPDU, new InetSocketAddress("http://localhost", 80), null);
 		// No channel listener registered at this point
 
 		final T_UnitDataIndication received;
@@ -158,7 +165,7 @@ public class TestASEChannel {
 		};
 
 		((ChannelConfiguration) ases).registerChannelListener(cl);
-		((TransportBindingService) ases).onIndication(testTPDU, new InetSocketAddress("http://localhost", 80));
+		((TransportBindingService) ases).onIndication(testTPDU, new InetSocketAddress("http://localhost", 80), null);
 
 	}
 

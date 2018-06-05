@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.fhnw.bacnetit.ase.application.configuration.api.DiscoveryConfig;
 import ch.fhnw.bacnetit.ase.application.service.api.ASEServices;
+import ch.fhnw.bacnetit.ase.application.service.api.ApplicationService;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelConfiguration;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelFactory;
 import ch.fhnw.bacnetit.ase.application.transaction.api.ChannelListener;
@@ -42,7 +43,6 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
-import uni.rostock.de.bacnet.it.coap.messageType.ConfirmAddDeviceRequest;
 import uni.rostock.de.bacnet.it.coap.messageType.Dh1Message;
 import uni.rostock.de.bacnet.it.coap.messageType.Dh2Message;
 import uni.rostock.de.bacnet.it.coap.messageType.OOBProtocol;
@@ -55,12 +55,14 @@ public class Authorizer {
 	private static final int MOBILE_ID = 2;
 	private static final int DEVICE_ID = 120;
 	private static final String AUTH_IP = "139.30.202.56:";
-	private ASEServices aseServiceChannel;
+	private ASEServices aseServices;
+	private ApplicationService aseService;
 	private static final String SECURE_SCHEME = "coaps://";
 	private static final int DTLS_SOCKET = 5684;
 	private static final int COAP_PORT = 5683;
 	private SecureRandom random = new SecureRandom();
-	private TransportDTLSCoapBinding bindingConfiguration;
+	private TransportDTLSCoapBinding coapDtlsbindingConfig;
+	private static final int GROUP1_ID = 445;
 	private String oobKeyPswd = "";
 	EcdhHelper ecdhHelper;
 
@@ -85,17 +87,20 @@ public class Authorizer {
 
 	public void start() {
 
-		aseServiceChannel = ChannelFactory.getInstance();
-		ChannelConfiguration channelConfigure = aseServiceChannel;
+		aseServices = ChannelFactory.getInstance();
+		aseService = aseServices;
+		/* Add transport binding to ASEService by using ChannelConfiguration */
+		ChannelConfiguration channelConfigure = (ChannelConfiguration) aseService;
 		// configure transport binding to coap dtls
-		bindingConfiguration = new TransportDTLSCoapBinding();
-		bindingConfiguration.setAllModes();
-		bindingConfiguration.createSecureCoapClient();
-		bindingConfiguration.createSecureCoapServer(DTLS_SOCKET);
+		coapDtlsbindingConfig = new TransportDTLSCoapBinding();
+		coapDtlsbindingConfig.setAllModes();
+		coapDtlsbindingConfig.createSecureCoapClient();
+		coapDtlsbindingConfig.createSecureCoapServer(DTLS_SOCKET);
 
-		bindingConfiguration.init();
+		coapDtlsbindingConfig.init();
 
-		channelConfigure.setASEService((ASEService) bindingConfiguration);
+		channelConfigure.setASEService((ASEService) coapDtlsbindingConfig);
+
 		channelConfigure.registerChannelListener(new ChannelListener(new BACnetEID(AUTH_ID)) {
 
 			@Override
@@ -115,12 +120,6 @@ public class Authorizer {
 							oobKeyPswd += random.nextInt(2);
 						}
 						setOobPswdKeyString(oobKeyPswd);
-						ecdhHelper = new EcdhHelper(OOBProtocol.X25519.getValue(), getOobPswdKeyString());
-						ConfirmAddDeviceRequest confirmAddDeviceRequest = new ConfirmAddDeviceRequest(
-								new BACnetEID(AUTH_ID), new BACnetEID(MOBILE_ID), oobKeyPswd.getBytes());
-						sendWritePropertyRequest(confirmAddDeviceRequest.getBA(), MOBILE_ID,
-								"confirming add device request");
-						LOG.info("Auth sent password to Mobile: " + oobKeyPswd);
 					}
 				} else if (receivedRequest instanceof ConfirmedRequest
 						&& ((ConfirmedRequest) receivedRequest).getServiceRequest() instanceof AddListElementRequest) {
@@ -190,7 +189,7 @@ public class Authorizer {
 					LOG.info("received final Message from device");
 					LOG.info("handshake successful on authorizer side");
 					/* adding the master secret to InMemoryPreSharedKeyStore */
-					bindingConfiguration.addPSK(new String(ecdhHelper.getOObPswdKeyIdentifier()),
+					coapDtlsbindingConfig.addPSK(new String(ecdhHelper.getOObPswdKeyIdentifier()),
 							ecdhHelper.getSharedSecret(),
 							new InetSocketAddress(exchange.getSourceAddress(), DTLS_SOCKET));
 				}
@@ -217,7 +216,7 @@ public class Authorizer {
 			e.printStackTrace();
 		}
 
-		aseServiceChannel.doRequest(unitDataRequest);
+		aseService.doRequest(unitDataRequest);
 	}
 
 	public void setOobPswdKeyString(String key) {

@@ -2,77 +2,70 @@ package uni.rostock.de.bacnet.it.coap.messageType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
-import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
-import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConfirmAddDeviceRequest {
-    private static int MESSAGE_ID = OOBProtocol.CONFIRM_ADD_DEVICE_REQUEST.getValue();
-    private BACnetEID sourceEID;
-    private BACnetEID destinationEID;
-    private byte[] secretPswdBA;
-    private byte[] finalMessage;
 
-    public ConfirmAddDeviceRequest(BACnetEID sourceEID, BACnetEID destinationEID, byte[] secretPswdBA) {
-        this.sourceEID = sourceEID;
-        this.destinationEID = destinationEID;
-        this.secretPswdBA = secretPswdBA;
-        generateBA();
-    }
+	private static final Logger LOG = LoggerFactory.getLogger(ConfirmAddDeviceRequest.class);
+	private static final int MESSAGE_ID = OOBProtocol.CONFIRM_ADD_DEVICE_REQUEST.getValue();
+	private final int sequenceId;
+	private final byte[] pswdId;
+	private int status;
+	private byte[] finalMessage;
 
-    private void generateBA() {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bos.write(MESSAGE_ID);
-        bos.write(sourceEID.bytes().length);
-        try {
-            bos.write(sourceEID.bytes());
-            bos.write(destinationEID.bytes().length);
-            bos.write(destinationEID.bytes());
-            bos.write(secretPswdBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.finalMessage = bos.toByteArray();
+	public ConfirmAddDeviceRequest(int sequenceId, byte[] pswdId, int status) {
+		this.sequenceId = sequenceId;
+		this.pswdId = pswdId;
+		this.status = status;
+		generateBA();
+	}
 
-    }
+	private void generateBA() {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			bos.write(MESSAGE_ID);
+			bos.write(status);
+			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(sequenceId).array());
+			bos.write(pswdId);
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+		}
 
-    public byte[] getBA() {
-        return this.finalMessage;
-    }
+		this.finalMessage = bos.toByteArray();
 
-    public ConfirmAddDeviceRequest(byte[] finalMessage) {
-        this.finalMessage = finalMessage;
-        int count = 1;
-        byte[] sourceEIDBA = new byte[finalMessage[count]];
-        count += 1;
-        System.arraycopy(finalMessage, count, sourceEIDBA, 0, sourceEIDBA.length);
-        count += sourceEIDBA.length;
-        byte[] destinationEIDBA = new byte[finalMessage[count]];
-        count += 1;
-        System.arraycopy(finalMessage, count, destinationEIDBA, 0, destinationEIDBA.length);
-        count += destinationEIDBA.length;
-        try {
-            _ByteQueue queue = new _ByteQueue(sourceEIDBA);
-            _ByteQueue queue2 = new _ByteQueue(destinationEIDBA);
-            this.destinationEID = new BACnetEID(queue2);
-            this.sourceEID = new BACnetEID(queue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        secretPswdBA = new byte[finalMessage.length - count];
-        System.arraycopy(finalMessage, count, secretPswdBA, 0, secretPswdBA.length);
-    }
+	}
 
-    public BACnetEID getSourceEID() {
-        return this.sourceEID;
-    }
+	public byte[] getBA() {
+		return this.finalMessage;
+	}
 
-    public BACnetEID getDestinationEID() {
-        return this.destinationEID;
-    }
+	public ConfirmAddDeviceRequest(byte[] finalMessage) {
+		this.finalMessage = finalMessage;
+		int count = 1;
+		this.status = finalMessage[count];
+		count += 1;
+		byte[] sequenceIdBA = new byte[Integer.BYTES];
+		System.arraycopy(finalMessage, count, sequenceIdBA, 0, Integer.BYTES);
+		count += 4;
+		this.sequenceId = ByteBuffer.wrap(sequenceIdBA).getInt();
+		// 4 bytes are used to identify the OOB password
+		this.pswdId = new byte[Integer.BYTES];
+		System.arraycopy(finalMessage, count, pswdId, 0, Integer.BYTES);
+	}
 
-    public byte[] getSecretPswdBA() {
-        return this.secretPswdBA;
-    }
+	public int getStatus() {
+		return this.status;
+	}
+
+	public byte[] getPasswordId() {
+		return this.pswdId;
+	}
+
+	public int getSequenceId() {
+		return this.sequenceId;
+	}
 }
-

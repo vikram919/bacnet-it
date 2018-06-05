@@ -28,10 +28,15 @@ public enum OOBProtocol {
 	MAC_KEY_BYTES(32),
 
 	OOB_PSWD_KEY_LENGTH(16),
-	
+
 	OOB_PSWD_KEY_ID_LENGTH(4),
 
-	DERIVED_KEYS_LENGTH(48);
+	DERIVED_KEYS_LENGTH(48),
+
+	/* Authentication success (random value feel free to change) */
+	AUTHENTICATION_SUCCESS(201), // try to put the value < 256
+	/* Authentication failure (random value feel free to change) */
+	AUTHENTICATION_FAILURE(204);
 
 	private final int value;
 

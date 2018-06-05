@@ -20,6 +20,7 @@ import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
 import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataIndication;
 import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataRequest;
 import ch.fhnw.bacnetit.ase.transportbinding.service.api.ASEService;
+import uni.rostock.de.bacnet.it.coap.transportbinding.ResponseCallback;
 
 /**
  * @author IMVS, FHNW
@@ -51,11 +52,12 @@ public class ASEChannel implements ch.fhnw.bacnetit.ase.application.service.api.
 	 ***********************************************************************/
 
 	@Override
-	public void onIndication(final TPDU msg, final SocketAddress remoteSocketAddress) {
+	public void onIndication(final TPDU msg, final SocketAddress remoteSocketAddress,
+			ResponseCallback responseCallback) {
 		T_UnitDataIndication indicationUnit = null;
 		indicationUnit = new T_UnitDataIndication(null, msg, msg.getPriority());
 
-		transactionManager.createInboundTransaction(indicationUnit);
+		// transactionManager.createInboundTransaction(indicationUnit);
 
 		if (this.channelListeners.size() == 0) {
 			System.err.println("No channel listener is registered");
@@ -64,7 +66,7 @@ public class ASEChannel implements ch.fhnw.bacnetit.ase.application.service.api.
 
 		for (final ChannelListener l : this.channelListeners) {
 			if (l.getEID().equals(msg.getDestinationEID())) {
-				l.onIndication(indicationUnit, remoteSocketAddress);
+				l.onIndication(indicationUnit, responseCallback);
 			}
 		}
 
@@ -123,7 +125,8 @@ public class ASEChannel implements ch.fhnw.bacnetit.ase.application.service.api.
 	public void doRequest(final T_UnitDataRequest t_unitDataRequest) {
 		// Pass outgoing request to the Transaction Manager, receive an invokeId
 		// from transaction manager
-		t_unitDataRequest.getData().setInvokeId(transactionManager.createOutboundTransaction(t_unitDataRequest));
+		// t_unitDataRequest.getData().setInvokeId(transactionManager.createOutboundTransaction(t_unitDataRequest));
+		t_unitDataRequest.getDestinationAddress();
 		aseServices.get(0).doRequest(t_unitDataRequest);
 
 	}
@@ -137,9 +140,13 @@ public class ASEChannel implements ch.fhnw.bacnetit.ase.application.service.api.
 	public void reportIndication(String cause, final BACnetEID eid, T_ReportIndication tReportIndication) {
 		for (final ChannelListener l : this.channelListeners) {
 			if (l.getEID().equals(eid)) {
-				l.onError(tReportIndication,cause);
+				l.onError(tReportIndication, cause);
 			}
 		}
 	}
 
+	@Override
+	public void connect(URI uri) {
+		aseServices.get(0).connect(uri);
+	}
 }

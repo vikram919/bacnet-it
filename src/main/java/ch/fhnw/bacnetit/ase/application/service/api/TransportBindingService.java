@@ -11,18 +11,19 @@ import ch.fhnw.bacnetit.ase.encoding.UnsignedInteger31;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
 import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
+import uni.rostock.de.bacnet.it.coap.transportbinding.ResponseCallback;
 
 /**
  * @author IMVS, FHNW
  *
  */
 public interface TransportBindingService {
-    public void onIndication(final TPDU msg,
-            final SocketAddress remoteSocketAddress);
+	public void onIndication(final TPDU msg, final SocketAddress remoteSocketAddress,
+			ResponseCallback responseCallback);
 
-    public List<UnsignedInteger31> getChannelListeners();
+	public List<UnsignedInteger31> getChannelListeners();
 
-    public void onRemoteAdded(BACnetEID eid, URI uri);
-    
-    public void reportIndication(String cause, BACnetEID sourceEID, T_ReportIndication tReportIndication);
+	public void onRemoteAdded(BACnetEID eid, URI uri);
+
+	public void reportIndication(String cause, BACnetEID sourceEID, T_ReportIndication tReportIndication);
 }

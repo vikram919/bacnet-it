@@ -3,29 +3,34 @@ package uni.rostock.de.bacnet.it.coap.transportbinding;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResource;
+import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
-import org.eclipse.californium.core.network.CoapEndpoint;
-import org.eclipse.californium.core.network.EndpointManager;
 import org.eclipse.californium.core.server.resources.CoapExchange;
-import org.eclipse.californium.elements.UDPConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.fhnw.bacnetit.ase.application.service.api.TransportBindingService;
+import ch.fhnw.bacnetit.ase.encoding.TransportError;
+import ch.fhnw.bacnetit.ase.encoding.TransportError.TransportErrorType;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
+import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
 import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataRequest;
 import ch.fhnw.bacnetit.ase.transportbinding.service.api.ASEService;
 
 public class TransportCoapBinding implements ASEService {
 
+	private static Logger LOG = LoggerFactory.getLogger(TransportCoapBinding.class);
 	private TransportBindingService transportBindingService;
 
 	private CoapServer server;
@@ -46,24 +51,9 @@ public class TransportCoapBinding implements ASEService {
 
 	@Override
 	public void doRequest(T_UnitDataRequest t_unitDataRequest) {
-
-		CoapClient client = new CoapClient(t_unitDataRequest.getDestinationAddress().toString() + resource);
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutput out = null;
-		try {
-			out = new ObjectOutputStream(bos);
-			out.writeObject(t_unitDataRequest.getData());
-			out.flush();
-			byte[] payloadBytes = bos.toByteArray();
-			client.post(payloadBytes, 0);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				bos.close();
-			} catch (IOException ex) {
-			}
-		}
+		Object context = t_unitDataRequest.getContext();
+		sendRequest(t_unitDataRequest.getData(), t_unitDataRequest.getDestinationAddress().toString() + resource,
+				context);
 	}
 
 	@Override
@@ -77,32 +67,79 @@ public class TransportCoapBinding implements ASEService {
 			@Override
 			public void handlePOST(CoapExchange exchange) {
 				byte[] msg = exchange.getRequestPayload();
-				ByteArrayInputStream bis = new ByteArrayInputStream(msg);
-				ObjectInput in = null;
-				try {
-					in = new ObjectInputStream(bis);
-					TPDU tpdu = (TPDU) in.readObject();
-					transportBindingService.onIndication(tpdu,
-							new InetSocketAddress(exchange.getSourceAddress(), exchange.getSourcePort()));
-					exchange.respond(ResponseCode.CHANGED);
+				ResponseCallback responseCallback = new ResponseCallback() {
 
-				} catch (IOException | ClassNotFoundException e) {
-					e.printStackTrace();
-				} finally {
-					try {
-						if (in != null) {
-							in.close();
-						}
-					} catch (IOException ex) {
+					@Override
+					public void sendResponse(TPDU tpdu) {
+						byte[] payloadBytes = tpduToByteArray(tpdu);
+						exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE, payloadBytes);
 					}
+				};
+				TPDU tpdu = byteArrayToTPDU(msg);
+				transportBindingService.onIndication(tpdu, null, responseCallback);
+				if (!tpdu.isConfirmedRequest()) {
+					exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE);
 				}
 			}
 		});
 	}
 
-	public void initCoapClientEndpoint() {
-		CoapEndpoint.CoapEndpointBuilder endpointBuilder = new CoapEndpoint.CoapEndpointBuilder();
-		endpointBuilder.setConnector(new UDPConnector());
-		EndpointManager.getEndpointManager().setDefaultEndpoint(endpointBuilder.build());
+	private void sendRequest(TPDU payload, String uri, Object context) {
+		CoapClient client = new CoapClient(uri);
+		client.useCONs();
+		try {
+			byte[] payloadBytes = tpduToByteArray(payload);
+			client.post(new CoapHandler() {
+
+				@Override
+				public void onLoad(CoapResponse response) {
+					TPDU tpdu = byteArrayToTPDU(response.getPayload());
+					transportBindingService.onIndication(tpdu, null, null);
+				}
+
+				@Override
+				public void onError() {
+
+				}
+			}, payloadBytes, 0);
+		} catch (Exception e) {
+			try {
+				transportBindingService.reportIndication(e.getMessage(), payload.getSourceEID(), new T_ReportIndication(
+						new URI(uri), context, new TransportError(TransportErrorType.Undefined, 0)));
+			} catch (URISyntaxException e1) {
+				LOG.error(e1.getMessage());
+			}
+		}
+	}
+
+	@Override
+	public void connect(URI uri) {
+
+	}
+
+	public TPDU byteArrayToTPDU(byte[] msg) {
+		TPDU tpdu = null;
+		try {
+			ByteArrayInputStream bis = new ByteArrayInputStream(msg);
+			ObjectInputStream in = new ObjectInputStream(bis);
+			tpdu = (TPDU) in.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return tpdu;
+	}
+
+	public byte[] tpduToByteArray(TPDU tpdu) {
+		byte[] payloadBA = null;
+		try {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutput out = new ObjectOutputStream(bos);
+			out.writeObject(tpdu);
+			out.flush();
+			payloadBA = bos.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return payloadBA;
 	}
 }

@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.net.ResponseCache;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
@@ -19,6 +20,7 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
+import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.network.CoapEndpoint;
 import org.eclipse.californium.core.network.EndpointManager;
 import org.eclipse.californium.core.server.resources.CoapExchange;
@@ -26,6 +28,7 @@ import org.eclipse.californium.elements.util.SslContextUtil;
 import org.eclipse.californium.scandium.DTLSConnector;
 import org.eclipse.californium.scandium.config.DtlsConnectorConfig;
 import org.eclipse.californium.scandium.dtls.pskstore.InMemoryPskStore;
+import org.eclipse.californium.scandium.dtls.pskstore.StaticPskStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,8 +52,8 @@ public class TransportDTLSCoapBinding implements ASEService {
 	private boolean rpkMode = false;
 	// loads all the certificates
 	private static final String TRUST_NAME = null;
-	private static final String KEY_STORE_LOCATION = "certs/keyStore.jks";
-	private static final String TRUST_STORE_LOCATION = "certs/trustStore.jks";
+	private final String keyStoreLocation;
+	private final String trustStoreLocation;
 	private static final char[] TRUST_STORE_PASSWORD = "rootPass".toCharArray();
 	private static final char[] KEY_STORE_PASSWORD = "endPass".toCharArray();
 	private InMemoryPskStore serverPskStore = new InMemoryPskStore();
@@ -58,6 +61,17 @@ public class TransportDTLSCoapBinding implements ASEService {
 	private DTLSConnector clientDtlsConnector;
 
 	private TransportBindingService transportBindingService;
+
+	public TransportDTLSCoapBinding() {
+		if (System.getProperty("java.runtime.name").equals("Android Runtime")) {
+			LOG.debug("android runtime environment detected");
+			this.keyStoreLocation = "certs/keyStore.p12";
+			this.trustStoreLocation = "certs/trustStore.p12";
+		} else {
+			this.keyStoreLocation = "certs/keyStore.jks";
+			this.trustStoreLocation = "certs/trustStore.jks";
+		}
+	}
 
 	private CoapServer server;
 
@@ -92,25 +106,20 @@ public class TransportDTLSCoapBinding implements ASEService {
 			@Override
 			public void handlePOST(CoapExchange exchange) {
 				byte[] msg = exchange.getRequestPayload();
-				ByteArrayInputStream bis = new ByteArrayInputStream(msg);
-				ObjectInput in = null;
-				try {
-					in = new ObjectInputStream(bis);
-					TPDU tpdu = (TPDU) in.readObject();
-					transportBindingService.onIndication(tpdu,
-							new InetSocketAddress(exchange.getSourceAddress(), exchange.getSourcePort()));
-				} catch (IOException | ClassNotFoundException e) {
-					e.printStackTrace();
-				} finally {
-					try {
-						if (in != null) {
-							in.close();
-						}
-					} catch (IOException ex) {
+				ResponseCallback responseCallback = new ResponseCallback() {
+
+					@Override
+					public void sendResponse(TPDU tpdu) {
+						byte[] payloadBytes = tpduToByteArray(tpdu);
+						exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE, payloadBytes);
 					}
+				};
+				TPDU tpdu = byteArrayToTPDU(msg);
+				transportBindingService.onIndication(tpdu, null, responseCallback);
+				if (!tpdu.isConfirmedRequest()) {
+					exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE);
 				}
 			}
-
 		});
 		DtlsConnectorConfig.Builder config = new DtlsConnectorConfig.Builder();
 		config.setAddress(new InetSocketAddress(portNumber));
@@ -122,32 +131,22 @@ public class TransportDTLSCoapBinding implements ASEService {
 		server.start();
 	}
 
-	public void sendRequest(TPDU payload, String uri, Object context) {
+	private void sendRequest(TPDU payload, String uri, Object context) {
 		CoapClient client = new CoapClient(uri);
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutput out = null;
+		client.useCONs();
 		try {
-			out = new ObjectOutputStream(bos);
-			out.writeObject(payload);
-			out.flush();
-			byte[] payloadBytes = bos.toByteArray();
+			byte[] payloadBytes = tpduToByteArray(payload);
 			client.post(new CoapHandler() {
+
 				@Override
 				public void onLoad(CoapResponse response) {
-					if (response.getCode() != ResponseCode.CHANGED) {
-						System.out.println("ERROR RESPONSE!");
-					}
+					TPDU tpdu = byteArrayToTPDU(response.getPayload());
+					transportBindingService.onIndication(tpdu, null, null);
 				}
 
 				@Override
 				public void onError() {
-					try {
-						transportBindingService.reportIndication("Connection Timeout", payload.getSourceEID(),
-								new T_ReportIndication(new URI(uri), null,
-										new TransportError(TransportErrorType.ConnectionError, 1)));
-					} catch (URISyntaxException e) {
-						LOG.error(e.getMessage());
-					}
+
 				}
 			}, payloadBytes, 0);
 		} catch (Exception e) {
@@ -156,12 +155,6 @@ public class TransportDTLSCoapBinding implements ASEService {
 						new URI(uri), context, new TransportError(TransportErrorType.Undefined, 0)));
 			} catch (URISyntaxException e1) {
 				LOG.error(e1.getMessage());
-			}
-		} finally {
-			try {
-				bos.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
 			}
 		}
 	}
@@ -190,17 +183,17 @@ public class TransportDTLSCoapBinding implements ASEService {
 		try {
 
 			SslContextUtil.Credentials endpointCredentials = SslContextUtil.loadCredentials(
-					SslContextUtil.CLASSPATH_SCHEME + KEY_STORE_LOCATION, alias, KEY_STORE_PASSWORD,
-					KEY_STORE_PASSWORD);
+					SslContextUtil.CLASSPATH_SCHEME + keyStoreLocation, alias, KEY_STORE_PASSWORD, KEY_STORE_PASSWORD);
 			Certificate[] trustedCertificates = SslContextUtil.loadTrustedCertificates(
-					SslContextUtil.CLASSPATH_SCHEME + TRUST_STORE_LOCATION, TRUST_NAME, TRUST_STORE_PASSWORD);
+					SslContextUtil.CLASSPATH_SCHEME + trustStoreLocation, TRUST_NAME, TRUST_STORE_PASSWORD);
 
 			if (pskMode) {
-				if (alias == SERVER_NAME) {
-					dtlsConfig.setPskStore(serverPskStore);
-				} else {
-					dtlsConfig.setPskStore(clientPskStore);
-				}
+				// if (alias == SERVER_NAME) {
+				// dtlsConfig.setPskStore(serverPskStore);
+				// } else {
+				// dtlsConfig.setPskStore(clientPskStore);
+				// }
+				dtlsConfig.setPskStore(new StaticPskStore("password", "sesame".getBytes()));
 			}
 			if (certificateMode) {
 				dtlsConfig.setTrustStore(trustedCertificates);
@@ -234,5 +227,37 @@ public class TransportDTLSCoapBinding implements ASEService {
 		this.pskMode = true;
 		this.rpkMode = true;
 		this.certificateMode = true;
+	}
+
+	@Override
+	public void connect(URI uri) {
+		// this method not for CoAP
+
+	}
+
+	public TPDU byteArrayToTPDU(byte[] msg) {
+		TPDU tpdu = null;
+		try {
+			ByteArrayInputStream bis = new ByteArrayInputStream(msg);
+			ObjectInputStream in = new ObjectInputStream(bis);
+			tpdu = (TPDU) in.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return tpdu;
+	}
+
+	public byte[] tpduToByteArray(TPDU tpdu) {
+		byte[] payloadBA = null;
+		try {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutput out = new ObjectOutputStream(bos);
+			out.writeObject(tpdu);
+			out.flush();
+			payloadBA = bos.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return payloadBA;
 	}
 }

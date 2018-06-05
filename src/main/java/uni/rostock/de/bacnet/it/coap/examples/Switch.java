@@ -110,7 +110,7 @@ public class Switch {
 
 		aseServiceChannel = ChannelFactory.getInstance();
 		ChannelConfiguration channelConfigure = aseServiceChannel;
-
+		bindingConfiguration.setPskMode();
 		bindingConfiguration.createSecureCoapClient();
 		bindingConfiguration.createSecureCoapServer(DTLS_PORT);
 		bindingConfiguration.init();
@@ -171,9 +171,11 @@ public class Switch {
 		}
 	}
 
-	public byte[] performRegisterOverBds(BACnetEID who, URI location, BACnetEID bds) {
+	public byte[] performRegisterOverBds(URI location) {
 		final SequenceOf<CharacterString> uriChars = new SequenceOf<CharacterString>();
 		uriChars.add(new CharacterString(location.toString()));
+		// TODO: change BACnetObjectType to group and instance to 11
+		// TODO: change BACnetProperty to listOfGroupMembers
 		final AddListElementRequest request = new AddListElementRequest(
 				new BACnetObjectIdentifier(BACnetObjectType.multiStateInput, 1), BACnetPropertyIdentifier.stateText,
 				null, uriChars);
@@ -185,8 +187,7 @@ public class Switch {
 	public void sendBacnetRegisterMessage() {
 		try {
 			ByteQueue queue = new ByteQueue();
-			queue = new ByteQueue(performRegisterOverBds(new BACnetEID(getDeviceId()),
-					new URI(SECURE_SCHEME + getHostAddress() + DTLS_PORT), AUTH_EID));
+			queue = new ByteQueue(performRegisterOverBds(new URI(SECURE_SCHEME + getHostAddress() + DTLS_PORT)));
 			final TPDU tpdu = new TPDU(new BACnetEID(getDeviceId()), AUTH_EID, queue.popAll());
 			final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(new URI(SECURE_SCHEME + AUTH_IP + 5684),
 					tpdu, 1, null);

@@ -151,7 +151,7 @@ public class TransportBindingInitializer extends ChannelDuplexHandler
 			final TPDU tpdu = (TPDU) msg;
 
 			// TODO, next line is stop and fail
-			transportBindingService.onIndication(tpdu, ctx.channel().remoteAddress());
+			transportBindingService.onIndication(tpdu, ctx.channel().remoteAddress(),null);
 		}
 	}
 
@@ -221,7 +221,6 @@ public class TransportBindingInitializer extends ChannelDuplexHandler
 	public synchronized void doRequest(final T_UnitDataRequest t_unitDataRequest) {
 
 		LOG.debug("T_UnitData destination: " + t_unitDataRequest.getDestinationAddress());
-		outgoingConnectionHandler.connect(t_unitDataRequest.getDestinationAddress());
 		outgoingConnectionHandler.writeAndFlush(t_unitDataRequest.getData());
 	}
 
@@ -262,5 +261,11 @@ public class TransportBindingInitializer extends ChannelDuplexHandler
 	public void shutdown() {
 		this.incomingConnectionHandler.shutdown();
 
+	}
+
+	@Override
+	public void connect(URI uri) {
+		LOG.debug("web socket request to connect to remote: "+uri);
+		outgoingConnectionHandler.connect(uri);
 	}
 }
