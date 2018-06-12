@@ -49,13 +49,13 @@ public class EcdhHelper implements EcdhHelperTasks {
 		X25519.scalarMultBase(privateKeyBA, 0, publicKeyBA, 0);
 	}
 
-	public int getOOBPswd2Integer() {
+	public int getOOBPswdKeySt2Int() {
 		int value = Integer.valueOf(oobPswdKeyString, 2);
 		return value;
 	}
 
 	private void deriveKeyFromPswd() {
-		int oobPswdAsInt = getOOBPswd2Integer();
+		int oobPswdAsInt = getOOBPswdKeySt2Int();
 		/* idea adapted from sebastian unger oob protocol for DPWS */
 		byte[] oobPswdAsBA = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; /* ouch... */
 		oobPswdAsBA[15] = (byte) (oobPswdAsInt & 0xFF);

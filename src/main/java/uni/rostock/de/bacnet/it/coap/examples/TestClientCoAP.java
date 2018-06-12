@@ -168,7 +168,6 @@ public class TestClientCoAP {
 		final ByteQueue byteQueue = new ByteQueue();
 		readRequest.write(byteQueue);
 		final TPDU tpdu = new TPDU(from, to, byteQueue.popAll());
-
 		final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(destination, tpdu, 1, null);
 		if (aseService != null) {
 			aseService.doRequest(unitDataRequest);
@@ -194,7 +193,7 @@ public class TestClientCoAP {
 			try {
 				for (int j = 0; j < 5000; j++) {
 					setTimeStamp(System.nanoTime());
-					sendReadPropertyRequest(new URI("coap://139.30.33.199:5683"), new BACnetEID(DEVICE_ID),
+					sendReadPropertyRequest(new URI("coap://139.30.35.166:5683"), new BACnetEID(DEVICE_ID),
 							new BACnetEID(AUTH_ID), aseService);
 					waitForSignal();
 				}

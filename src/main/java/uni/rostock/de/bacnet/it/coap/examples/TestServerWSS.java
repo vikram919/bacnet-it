@@ -1,8 +1,8 @@
 package uni.rostock.de.bacnet.it.coap.examples;
 
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +15,7 @@ import ch.fhnw.bacnetit.ase.application.service.api.BACnetEntityListener;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelConfiguration;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelFactory;
 import ch.fhnw.bacnetit.ase.application.transaction.api.ChannelListener;
+import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
 import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
@@ -100,8 +101,6 @@ public class TestServerWSS {
 
 		channelConfigure.registerChannelListener(new ChannelListener(new BACnetEID(AUTH_ID)) {
 
-			private Scanner scanner;
-
 			@Override
 			public void onIndication(T_UnitDataIndication arg0, Object arg1) {
 
@@ -109,18 +108,21 @@ public class TestServerWSS {
 				ASDU receivedRequest = testServer.getServiceFromBody(arg0.getData().getBody());
 				if (receivedRequest instanceof ConfirmedRequest
 						&& ((ConfirmedRequest) receivedRequest).getServiceRequest() instanceof ReadPropertyRequest) {
-
 					// Prepare DUMMY answer
 					final ByteQueue byteQueue = new ByteQueue();
 					new ReadPropertyAck(new BACnetObjectIdentifier(BACnetObjectType.analogValue, 1),
 							BACnetPropertyIdentifier.presentValue, new UnsignedInteger(1), new Real(System.nanoTime()))
 									.write(byteQueue);
-
-					scanner = new Scanner(arg1.toString());
-					scanner.useDelimiter(":");
-					String hostAddress = scanner.next();
+					
+					String hostAddress = null;
+					if(arg0.getSourceAddress()!=null) {
+						hostAddress = ((InetSocketAddress)arg0.getSourceAddress()).getHostString(); 
+					}
+					else {
+						//TODO: throw exception
+					}
 					try {
-						testServer.sendBACnetMessage(new URI("wss:/" + hostAddress + ":8080"), new BACnetEID(AUTH_ID),
+						testServer.sendBACnetMessage(new URI("wss://" + hostAddress + ":8080"), new BACnetEID(AUTH_ID),
 								new BACnetEID(DEVICE_ID), byteQueue.popAll());
 					} catch (URISyntaxException e) {
 						e.printStackTrace();
@@ -155,7 +157,6 @@ public class TestServerWSS {
 			throws URISyntaxException {
 
 		final TPDU tpdu = new TPDU(from, to, confirmedBacnetMessage);
-
 		final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(destination, tpdu, 1, null);
 		aseService.connect(destination);
 		aseService.doRequest(unitDataRequest);

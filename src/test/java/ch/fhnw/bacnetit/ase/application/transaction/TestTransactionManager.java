@@ -3,6 +3,9 @@
  */
 package ch.fhnw.bacnetit.ase.application.transaction;
 
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
@@ -127,7 +130,7 @@ public class TestTransactionManager {
         // TM2 receives the thing from TM1
         final TransactionManager tm2 = new TransactionManager();
         final T_UnitDataIndication indication = new T_UnitDataIndication(
-                new URI("http://localhost"), request.getData(),
+                new InetSocketAddress("localhost", 8080), request.getData(),
                 new UnsignedInteger31(request.getNetworkPriority()));
 
         tm2.createInboundTransaction(indication);
@@ -164,7 +167,7 @@ public class TestTransactionManager {
         Assert.assertNull(tOutWrong);
 
         final T_UnitDataIndication indicationBack = new T_UnitDataIndication(
-                new URI("http://google.ch"), request.getData(),
+        		new InetSocketAddress("google.ch", 8080), request.getData(),
                 new UnsignedInteger31(request.getNetworkPriority()));
         tm1.createInboundTransaction(indicationBack);
         final Transaction tBack = tm1.findTransaction(

@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.fhnw.bacnetit.ase.application.service.api.TransportBindingService;
 import ch.fhnw.bacnetit.ase.encoding.TransportError;
+import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
 import ch.fhnw.bacnetit.ase.encoding.TransportError.TransportErrorType;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
@@ -238,10 +239,9 @@ public class TransportDTLSCoapBinding implements ASEService {
 	public TPDU byteArrayToTPDU(byte[] msg) {
 		TPDU tpdu = null;
 		try {
-			ByteArrayInputStream bis = new ByteArrayInputStream(msg);
-			ObjectInputStream in = new ObjectInputStream(bis);
-			tpdu = (TPDU) in.readObject();
-		} catch (IOException | ClassNotFoundException e) {
+			_ByteQueue byteQueue = new _ByteQueue(msg);
+			tpdu = new TPDU(byteQueue);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return tpdu;
@@ -249,15 +249,9 @@ public class TransportDTLSCoapBinding implements ASEService {
 
 	public byte[] tpduToByteArray(TPDU tpdu) {
 		byte[] payloadBA = null;
-		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutput out = new ObjectOutputStream(bos);
-			out.writeObject(tpdu);
-			out.flush();
-			payloadBA = bos.toByteArray();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		_ByteQueue queue = new _ByteQueue();
+		tpdu.write(queue);
+		payloadBA = queue.popAll();
 		return payloadBA;
 	}
 }

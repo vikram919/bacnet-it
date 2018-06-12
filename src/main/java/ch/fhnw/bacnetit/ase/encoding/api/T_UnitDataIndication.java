@@ -1,5 +1,6 @@
 package ch.fhnw.bacnetit.ase.encoding.api;
 
+import java.net.SocketAddress;
 import java.net.URI;
 
 import ch.fhnw.bacnetit.ase.encoding.UnsignedInteger31;
@@ -9,7 +10,7 @@ public class T_UnitDataIndication {
 
 	// The URI of the sending entity, if available and valid for the local
 	// application layer
-	private URI sourceAddress;
+	private SocketAddress sourceAddress;
 
 	// The data unit received. The data unit shall be an octet string containing
 	// an encoded BACnet Transport PDU.
@@ -25,7 +26,7 @@ public class T_UnitDataIndication {
 
 	private ResponseCallback responseCallback;
 
-	public T_UnitDataIndication(final URI _sourceAddress, final TPDU _data, final UnsignedInteger31 _networkPriority) {
+	public T_UnitDataIndication(final SocketAddress _sourceAddress, final TPDU _data, final UnsignedInteger31 _networkPriority) {
 		this.sourceAddress = _sourceAddress;
 		this.data = _data;
 		this.networkPriority = _networkPriority;
@@ -38,7 +39,7 @@ public class T_UnitDataIndication {
 		this.dataExpectingReply = _data.isConfirmedRequest();
 	}
 
-	public URI getSourceAddress() {
+	public SocketAddress getSourceAddress() {
 		return this.sourceAddress;
 	}
 

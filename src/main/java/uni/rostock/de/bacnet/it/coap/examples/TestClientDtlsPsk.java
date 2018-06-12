@@ -205,7 +205,7 @@ public class TestClientDtlsPsk {
 			try {
 				for (int j = 0; j < 5000; j++) {
 					setTimeStamp(System.nanoTime());
-					sendReadPropertyRequest(new URI("coaps://139.30.33.199:5684"), new BACnetEID(DEVICE_ID),
+					sendReadPropertyRequest(new URI("coaps://139.30.35.166:5684"), new BACnetEID(DEVICE_ID),
 							new BACnetEID(AUTH_ID), aseService);
 					waitForSignal();
 				}

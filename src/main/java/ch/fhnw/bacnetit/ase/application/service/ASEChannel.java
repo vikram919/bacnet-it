@@ -3,6 +3,7 @@
  */
 package ch.fhnw.bacnetit.ase.application.service;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class ASEChannel implements ch.fhnw.bacnetit.ase.application.service.api.
 	public void onIndication(final TPDU msg, final SocketAddress remoteSocketAddress,
 			ResponseCallback responseCallback) {
 		T_UnitDataIndication indicationUnit = null;
-		indicationUnit = new T_UnitDataIndication(null, msg, msg.getPriority());
+		indicationUnit = new T_UnitDataIndication(remoteSocketAddress, msg, msg.getPriority());
 
 		// transactionManager.createInboundTransaction(indicationUnit);
 

@@ -207,11 +207,11 @@ public class TestClientWSS {
 		public void run() {
 			
 			try {
-				aseService.connect(new URI("wss://139.30.33.199:8080"));
+				aseService.connect(new URI("wss://139.30.35.166:8080"));
 				Thread.sleep(3000);
 				for (int j = 0; j < 5000; j++) {
 					setTimeStamp(System.nanoTime());
-					sendReadPropertyRequest(new URI("wss://139.30.33.199:8080"), new BACnetEID(DEVICE_ID),
+					sendReadPropertyRequest(new URI("wss://139.30.35.166:8080"), new BACnetEID(DEVICE_ID),
 							new BACnetEID(AUTH_ID), aseService);
 					waitForSignal();
 				}
