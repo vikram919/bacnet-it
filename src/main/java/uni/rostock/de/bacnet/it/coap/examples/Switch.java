@@ -7,7 +7,10 @@ import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
+
+import javax.swing.plaf.synth.SynthSplitPaneUI;
 
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
@@ -18,16 +21,20 @@ import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.fhnw.bacnetit.ase.application.configuration.api.DiscoveryConfig;
 import ch.fhnw.bacnetit.ase.application.service.api.ASEServices;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelConfiguration;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelFactory;
 import ch.fhnw.bacnetit.ase.application.transaction.api.ChannelListener;
+import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
 import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
 import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataIndication;
 import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataRequest;
+import ch.fhnw.bacnetit.ase.network.directory.api.DirectoryService;
 import ch.fhnw.bacnetit.ase.transportbinding.service.api.ASEService;
+import ch.fhnw.bacnetit.directorybinding.dnssd.api.DNSSD;
 import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectIdentifier;
 import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectType;
 import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetPropertyIdentifier;
@@ -38,6 +45,8 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.CharacterString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.OctetString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Primitive;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Real;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
@@ -63,7 +72,7 @@ public class Switch {
 	private static final String PLAIN_SCHEME = "coap://";
 	private static final String SECURE_SCHEME = "coaps://";
 	private static final String AUTH_URL = PLAIN_SCHEME + AUTH_IP + "5683/auth";
-	private static final int DTLS_PORT = 5684;
+	private static final int DTLS_PORT = 5685;
 	private static final BACnetEID AUTH_EID = new BACnetEID(AUTH_ID);
 
 	/* we assume OOB password is known to both */
@@ -76,34 +85,48 @@ public class Switch {
 	public static void main(String[] args) {
 
 		Switch device = new Switch();
-		device.hostAddress();
-		PushButtonJob pushButtonJob = new PushButtonJob();
-		pushButtonJob.start();
-		device.ecdhHelper = new EcdhHelper(OOBProtocol.X25519.getValue(), pushButtonJob.getOOBKeyAsString());
-		/* creates a plain coap client for initial DH authenticaiton stage */
-		device.createCoapClient();
-		/* device sends Dh1Message to Authorizer */
-		Dh1Message dh1Message = new Dh1Message(device.ecdhHelper);
-		device.sendMessage(dh1Message.getBA(), AUTH_URL);
-		LOG.info("device sent Dh1Messag to authorizer with publickey: {}",
-				ByteArrayUtils.toHex(device.ecdhHelper.getPubKeyBytes()));
-		LOG.info("device is waiting for Dh2Message from authorizer");
-		device.waitForSignal();
-		LOG.info("Dh2Message message received, waiting finished");
-		LOG.info("derived shared secret on device side: {}", ByteArrayUtils.toHex(device.ecdhHelper.getSharedSecret()));
-		/* device sends final message to authorizer */
-		OobFinalMessage oobFinalMessage = new OobFinalMessage(device.getDeviceId(), AUTH_ID, device.ecdhHelper);
-		device.sendMessage(oobFinalMessage.getBA(), AUTH_URL);
-		LOG.info("final message sent from device");
-		LOG.info("handshake successfull on device side");
+		final DiscoveryConfig ds = new DiscoveryConfig("DNSSD", "1.1.1.1", "itb.bacnet.ch.", "bds._sub._bacnet._tcp.",
+				"dev._sub._bacnet._tcp.", "obj._sub._bacnet._tcp.", false);
+
 		try {
-			device.bindingConfiguration.addPSK(new String(device.ecdhHelper.getOObPswdKeyIdentifier()),
-					device.ecdhHelper.getSharedSecret(), new InetSocketAddress(InetAddress.getByName(AUTH_IP), 5684));
-		} catch (UnknownHostException e) {
+			DirectoryService.init();
+			DirectoryService.getInstance().setDNSBinding(new DNSSD(ds));
+
+		} catch (final Exception e1) {
+			e1.printStackTrace();
+		}
+		device.hostAddress();
+//		PushButtonJob pushButtonJob = new PushButtonJob();
+//		pushButtonJob.start();
+//		device.ecdhHelper = new EcdhHelper(OOBProtocol.X25519.getValue(), pushButtonJob.getOOBKeyAsString());
+		/* creates a plain coap client for initial DH authenticaiton stage */
+//		device.createCoapClient();
+		/* device sends Dh1Message to Authorizer */
+//		Dh1Message dh1Message = new Dh1Message(device.ecdhHelper);
+//		device.sendMessage(dh1Message.getBA(), AUTH_URL);
+//		LOG.info("device sent Dh1Messag to authorizer with publickey: {}",
+//				ByteArrayUtils.toHex(device.ecdhHelper.getPubKeyBytes()));
+//		LOG.info("device is waiting for Dh2Message from authorizer");
+//		device.waitForSignal();
+//		LOG.info("Dh2Message message received, waiting finished");
+//		LOG.info("derived shared secret on device side: {}", ByteArrayUtils.toHex(device.ecdhHelper.getSharedSecret()));
+		/* device sends final message to authorizer */
+//		OobFinalMessage oobFinalMessage = new OobFinalMessage(device.getDeviceId(), AUTH_ID, device.ecdhHelper);
+//		device.sendMessage(oobFinalMessage.getBA(), AUTH_URL);
+//		LOG.info("final message sent from device");
+//		LOG.info("handshake successfull on device side");
+//		try {
+//			device.bindingConfiguration.addPSK(new String(device.ecdhHelper.getOObPswdKeyIdentifier()),
+//					device.ecdhHelper.getSharedSecret(), new InetSocketAddress(InetAddress.getByName(AUTH_IP), 5684));
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		}
+		device.start();
+		try {
+			device.sendWritePropertRequest(new URI("coaps://localhost:5684"));
+		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		device.start();
-		device.sendBacnetRegisterMessage();
 	}
 
 	public void start() {
@@ -157,14 +180,17 @@ public class Switch {
 		try {
 			final WritePropertyRequest readRequest = new WritePropertyRequest(
 					new BACnetObjectIdentifier(BACnetObjectType.analogValue, 1), BACnetPropertyIdentifier.presentValue,
-					new UnsignedInteger(55), new Real(45), new UnsignedInteger(1));
+					new UnsignedInteger(55), new OctetString("hello server".getBytes(StandardCharsets.UTF_8)), new UnsignedInteger(1));
 			final ByteQueue byteQueue = new ByteQueue();
 			readRequest.write(byteQueue);
-			final TPDU tpdu = new TPDU(new BACnetEID(120), new BACnetEID(1), byteQueue.popAll());
-
+			byte[] body = byteQueue.popAll();
+			ByteQueue testQueue = new ByteQueue();
+			readRequest.getPropertyValue().write(testQueue);
+			System.out.println(ByteArrayUtils.toHex(testQueue.popAll()));
+			final TPDU tpdu = new TPDU(new BACnetEID(120), new BACnetEID(1), body);
 			final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(uri, tpdu, 1, null);
-
 			aseServiceChannel.doRequest(unitDataRequest);
+			LOG.debug("request sent");
 
 		} catch (Exception e) {
 			System.err.print(e);
@@ -210,7 +236,7 @@ public class Switch {
 			@Override
 			public void onLoad(CoapResponse response) {
 				byte[] msg = response.getPayload();
-				if (msg[0] == OOBProtocol.DH2.getValue()) {
+				if (msg[0] == OOBProtocol.DH2_MESSAGE.getValue()) {
 					Dh2Message dh2Message = new Dh2Message(msg);
 					LOG.info("Dh2Message message received from authorizer with publicKey: {}",
 							ByteArrayUtils.toHex(dh2Message.getPublicKeyBA()));

@@ -11,7 +11,7 @@ import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 public class Dh1Message {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Dh1Message.class);
-	private final int messageId = OOBProtocol.DH1.getValue();
+	private static final int MESSAGE_ID = OOBProtocol.DH1_MESSAGE.getValue();
 	private final byte[] oobPswdIdBA;
 	private final byte[] publicKeyBA;
 	private final byte[] macData;
@@ -23,7 +23,7 @@ public class Dh1Message {
 		this.publicKeyBA = ecdh_Helper.getPubKeyBytes();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			bos.write(messageId);
+			bos.write(MESSAGE_ID);
 			bos.write(oobPswdIdBA);
 			bos.write(publicKeyBA);
 		} catch (IOException e) {
@@ -52,7 +52,7 @@ public class Dh1Message {
 	private byte[] serilaizeToBA() {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			bos.write(messageId);
+			bos.write(MESSAGE_ID);
 			bos.write(oobPswdIdBA);
 			bos.write(publicKeyBA);
 			bos.write(macData);

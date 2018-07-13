@@ -73,12 +73,12 @@ abstract public class ASDU implements Serializable {
                 throw new BACnetException(Byte.toString(type));
             }
             // Check if request is closed
-            final Tag closingTag = Tag.valueOf((byte) (queue.pop() & 0x0f));
-            if (closingTag == Tag.CLOSING_TAG) {
+//            final Tag closingTag = Tag.valueOf((byte) (queue.pop() & 0x0f));
+//            if (closingTag == Tag.CLOSING_TAG) {
                 return asdu;
-            } else {
-                throw new BACnetException("Missing Closing Tag!");
-            }
+//            } else {
+//                throw new BACnetException("Missing Closing Tag!");
+//            }
         } else {
             // Message is encoded as "primitive data" (see spec 20.2.1.3.1)
             type = (byte) ((type & 0xff) >> 4);

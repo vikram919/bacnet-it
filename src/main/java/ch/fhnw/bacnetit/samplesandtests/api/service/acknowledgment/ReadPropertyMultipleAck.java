@@ -30,6 +30,8 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 public class ReadPropertyMultipleAck extends AcknowledgementService {
     private static final long serialVersionUID = 5389362813511389512L;
 
+    public static final byte SERVICE_ID = 2;
+    
     public static final byte TYPE_ID = 14;
 
     private final SequenceOf<ReadAccessResult> listOfReadAccessResults;
@@ -46,6 +48,8 @@ public class ReadPropertyMultipleAck extends AcknowledgementService {
 
     @Override
     public void write(final ByteQueue queue) {
+    	writeContextTag(queue, SERVICE_ID, true);
+        writeContextTag(queue, TYPE_ID, true);
         write(queue, listOfReadAccessResults);
     }
 

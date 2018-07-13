@@ -5,14 +5,12 @@ public enum OOBProtocol {
 	/* A byte is allocated to inform the type of Message id */
 
 	ADD_DEVICE_REQUEST(1),
+	
+	DH1_MESSAGE(2),
 
-	CONFIRM_ADD_DEVICE_REQUEST(2),
+	DH2_MESSAGE(3),
 
-	DH1(3),
-
-	DH2(4),
-
-	FINISH_MESSAGE(5),
+	FINISH_MESSAGE(4),
 
 	/* Default as spcecified in IEEE 802.15.6-2012 */
 	CURVE_secp256r1(1),

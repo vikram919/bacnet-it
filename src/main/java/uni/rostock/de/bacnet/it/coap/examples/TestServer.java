@@ -1,5 +1,6 @@
 package uni.rostock.de.bacnet.it.coap.examples;
 
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Scanner;
@@ -43,7 +44,7 @@ public class TestServer {
 
 	private static Logger LOG = (Logger) LoggerFactory.getLogger(TestServer.class);
 
-	private static final int WS_PORT = 8080;
+	private static final int WS_PORT = 1080;
 	private ASEServices aseService;
 	private static final int DEVICE_ID = 120;
 	private static final int AUTH_ID = 1;
@@ -100,26 +101,30 @@ public class TestServer {
 			public void onIndication(T_UnitDataIndication arg0, Object arg1) {
 
 				LOG.debug("message T_unitDataIndication");
+				System.out.println("request received!!");
 				ASDU receivedRequest = testServer.getServiceFromBody(arg0.getData().getBody());
 				if (receivedRequest instanceof ConfirmedRequest
 						&& ((ConfirmedRequest) receivedRequest).getServiceRequest() instanceof ReadPropertyRequest) {
-
+					System.out.println("confirmed request received!!");
 					// Prepare DUMMY answer
 					final ByteQueue byteQueue = new ByteQueue();
 					new ReadPropertyAck(new BACnetObjectIdentifier(BACnetObjectType.analogValue, 1),
 							BACnetPropertyIdentifier.presentValue, new UnsignedInteger(1), new Real(System.nanoTime()))
 									.write(byteQueue);
-
-					scanner = new Scanner(arg1.toString());
-					scanner.useDelimiter(":");
-					String hostAddress = scanner.next();
+					String hostAddress = null;
+					if (arg0.getSourceAddress() != null) {
+						hostAddress = ((InetSocketAddress) arg0.getSourceAddress()).getHostString();
+					} else {
+						throw new NullPointerException("host address of message cannot be null");
+					}
+					LOG.debug("TPDU defined");
 					try {
-						testServer.aseService.connect(new URI("ws:/" + hostAddress + ":8080"));
-						testServer.sendBACnetMessage(new URI("ws:/" + hostAddress + ":8080"), new BACnetEID(AUTH_ID),
-								new BACnetEID(DEVICE_ID), byteQueue.popAll());
+						testServer.sendBACnetMessage(new URI("ws://" + hostAddress + ":9090"), new BACnetEID(AUTH_ID),
+								new BACnetEID(DEVICE_ID), byteQueue.popAll(), testServer.aseService);
 					} catch (URISyntaxException e) {
 						e.printStackTrace();
 					}
+					System.out.println("respone sent!!");
 				}
 			}
 
@@ -146,7 +151,7 @@ public class TestServer {
 		return request;
 	}
 
-	public void sendBACnetMessage(URI destination, BACnetEID from, BACnetEID to, byte[] confirmedBacnetMessage)
+	public void sendBACnetMessage(URI destination, BACnetEID from, BACnetEID to, byte[] confirmedBacnetMessage, ASEServices aseService)
 			throws URISyntaxException {
 
 		final TPDU tpdu = new TPDU(from, to, confirmedBacnetMessage);

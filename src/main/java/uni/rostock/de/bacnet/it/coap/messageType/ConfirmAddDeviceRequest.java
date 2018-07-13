@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 public class ConfirmAddDeviceRequest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConfirmAddDeviceRequest.class);
-	private static final int MESSAGE_ID = OOBProtocol.CONFIRM_ADD_DEVICE_REQUEST.getValue();
+	private static final int MESSAGE_ID = 6;
 	private final int sequenceId;
 	private final byte[] pswdId;
 	private int status;

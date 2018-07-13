@@ -26,6 +26,7 @@ import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetPropertyIdentifi
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
+import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.ReadPropertyMultipleRequest;
 
 public class PropertyReference extends BaseType {
     private static final long serialVersionUID = 1375764258364665118L;

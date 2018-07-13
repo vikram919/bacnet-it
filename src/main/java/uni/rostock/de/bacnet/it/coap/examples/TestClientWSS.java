@@ -2,7 +2,11 @@ package uni.rostock.de.bacnet.it.coap.examples;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.californium.elements.util.DatagramWriter;
+import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.LoggerFactory;
 
 import ch.fhnw.bacnetit.ase.application.configuration.api.DiscoveryConfig;
@@ -27,9 +31,14 @@ import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetPropertyIdentifi
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ASDU;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ComplexACK;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.IncomingRequestParser;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.PropertyReference;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ReadAccessSpecification;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.acknowledgment.ReadPropertyAck;
+import ch.fhnw.bacnetit.samplesandtests.api.service.acknowledgment.ReadPropertyMultipleAck;
+import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.ReadPropertyMultipleRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.ReadPropertyRequest;
 import ch.fhnw.bacnetit.transportbinding.api.BindingConfiguration;
 import ch.fhnw.bacnetit.transportbinding.api.ConnectionFactory;
@@ -42,11 +51,12 @@ public class TestClientWSS {
 
 	private static Logger LOG = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
-	private static final int WSS_PORT = 8080;
+	private static final int WSS_PORT = 9090;
 	private static final int DEVICE_ID = 120;
 	private static final int AUTH_ID = 1;
 	private int interMessageId = 0;
 	private boolean signal = false;
+	int i = 0;
 	double requestSendingTime = 0;
 	private static final KeystoreConfig keystoreConfig = new KeystoreConfig("dummyKeystores/keyStoreDev1.jks", "123456",
 			"operationaldevcert");
@@ -114,6 +124,16 @@ public class TestClientWSS {
 						double currentTime = System.nanoTime();
 						String stringVal = String.valueOf(readPropertyAck.getValue());
 						float receivedTime = Float.parseFloat(stringVal);
+						int delay = (int) ((currentTime - testClient.getTimeStamp()) / 1000000);
+						testClient.setMessageId(testClient.getInternalMessageId() + 1);
+						System.out.println(delay);
+						System.out.println("message received: "+testClient.i);
+						testClient.signal();
+						testClient.i++;
+					} else if (((ComplexACK) receivedRequest).getService().getChoiceId() == 14) {
+						ReadPropertyMultipleAck readPropertyMultipleAck = (ReadPropertyMultipleAck) ((ComplexACK) receivedRequest)
+								.getService();
+						double currentTime = System.nanoTime();
 						int delay = (int) ((currentTime - testClient.getTimeStamp()) / 1000000);
 						testClient.setMessageId(testClient.getInternalMessageId() + 1);
 						System.out.println(delay);
@@ -187,7 +207,25 @@ public class TestClientWSS {
 		final ByteQueue byteQueue = new ByteQueue();
 		readRequest.write(byteQueue);
 		final TPDU tpdu = new TPDU(from, to, byteQueue.popAll());
+		LOG.debug("message body: " + ByteArrayUtils.toHex(tpdu.getBody()));
+		final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(destination, tpdu, 1, null);
+		if (aseService != null) {
+			aseService.doRequest(unitDataRequest);
+		} else {
+			System.out.println("null aseService");
+		}
+	}
 
+	public void sendReadPropertyMultipleRequest(URI destination, BACnetEID from, BACnetEID to, ASEServices aseService)
+			throws URISyntaxException {
+		final ByteQueue byteQueue = new ByteQueue();
+		SequenceOf<ReadAccessSpecification> specs = new SequenceOf<>();
+		SequenceOf<PropertyReference> listOfPropertyReferences = new SequenceOf<>();
+		listOfPropertyReferences.add(new PropertyReference(BACnetPropertyIdentifier.presentValue));
+		specs.add(new ReadAccessSpecification(new BACnetObjectIdentifier(BACnetObjectType.analogValue, 1),
+				listOfPropertyReferences));
+		new ReadPropertyMultipleRequest(specs).write(byteQueue);
+		final TPDU tpdu = new TPDU(from, to, byteQueue.peekAll());
 		final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(destination, tpdu, 1, null);
 		if (aseService != null) {
 			aseService.doRequest(unitDataRequest);
@@ -205,14 +243,15 @@ public class TestClientWSS {
 
 		@Override
 		public void run() {
-			
+
 			try {
-				aseService.connect(new URI("wss://139.30.35.166:8080"));
+				aseService.connect(new URI("wss://127.0.0.1:1080"));
 				Thread.sleep(3000);
 				for (int j = 0; j < 5000; j++) {
 					setTimeStamp(System.nanoTime());
-					sendReadPropertyRequest(new URI("wss://139.30.35.166:8080"), new BACnetEID(DEVICE_ID),
+					sendReadPropertyRequest(new URI("wss://127.0.0.1:1080"), new BACnetEID(DEVICE_ID),
 							new BACnetEID(AUTH_ID), aseService);
+					System.out.println("send message: "+j);
 					waitForSignal();
 				}
 			} catch (Exception e) {
@@ -221,5 +260,7 @@ public class TestClientWSS {
 		}
 
 	}
-
+	// 0EEE0C008000011E09551FEF0F
+	// 0C008000011E09551F
+	// 0ECE0C008000011955CF0F
 }

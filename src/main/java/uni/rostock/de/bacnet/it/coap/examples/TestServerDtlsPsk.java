@@ -2,7 +2,6 @@ package uni.rostock.de.bacnet.it.coap.examples;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import ch.fhnw.bacnetit.ase.application.service.api.BACnetEntityListener;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelConfiguration;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelFactory;
 import ch.fhnw.bacnetit.ase.application.transaction.api.ChannelListener;
-import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
 import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
@@ -97,8 +95,6 @@ public class TestServerDtlsPsk {
 
 		channelConfigure.registerChannelListener(new ChannelListener(new BACnetEID(AUTH_ID)) {
 
-			private Scanner scanner;
-
 			@Override
 			public void onIndication(T_UnitDataIndication arg0, Object arg1) {
 
@@ -118,15 +114,6 @@ public class TestServerDtlsPsk {
 						TPDU tpdu = new TPDU(new BACnetEID(AUTH_ID), new BACnetEID(DEVICE_ID), byteQueue.popAll());
 						responseCallback.sendResponse(tpdu);
 					}
-//					scanner = new Scanner(arg1.toString());
-//					scanner.useDelimiter(":");
-//					String hostAddress = scanner.next();
-//					try {
-//						sendBACnetMessage(new URI("coaps:/" + hostAddress + ":5684"), new BACnetEID(AUTH_ID),
-//								new BACnetEID(DEVICE_ID), byteQueue.popAll());
-//					} catch (URISyntaxException e) {
-//						e.printStackTrace();
-//					}
 				}
 			}
 

@@ -1,14 +1,7 @@
 package uni.rostock.de.bacnet.it.coap.transportbinding;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
-import java.net.ResponseCache;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
@@ -19,10 +12,14 @@ import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.CoapServer;
+import org.eclipse.californium.core.coap.CoAP.Code;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
+import org.eclipse.californium.core.coap.Request;
 import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.network.CoapEndpoint;
 import org.eclipse.californium.core.network.EndpointManager;
+import org.eclipse.californium.core.network.config.NetworkConfig;
+import org.eclipse.californium.core.network.config.NetworkConfigDefaults;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.elements.util.SslContextUtil;
 import org.eclipse.californium.scandium.DTLSConnector;
@@ -34,8 +31,8 @@ import org.slf4j.LoggerFactory;
 
 import ch.fhnw.bacnetit.ase.application.service.api.TransportBindingService;
 import ch.fhnw.bacnetit.ase.encoding.TransportError;
-import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
 import ch.fhnw.bacnetit.ase.encoding.TransportError.TransportErrorType;
+import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
 import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
@@ -112,7 +109,10 @@ public class TransportDTLSCoapBinding implements ASEService {
 					@Override
 					public void sendResponse(TPDU tpdu) {
 						byte[] payloadBytes = tpduToByteArray(tpdu);
-						exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE, payloadBytes);
+						Response response = new Response(ResponseCode._UNKNOWN_SUCCESS_CODE);
+						response.getOptions().setSize2(1024);
+						response.setPayload(payloadBytes);
+						exchange.respond(response);
 					}
 				};
 				TPDU tpdu = byteArrayToTPDU(msg);
@@ -122,11 +122,15 @@ public class TransportDTLSCoapBinding implements ASEService {
 				}
 			}
 		});
+		NetworkConfig networkConfig = NetworkConfig.getStandard();
+		networkConfig.setInt(NetworkConfig.Keys.PREFERRED_BLOCK_SIZE, 1024);
+		networkConfig.set(NetworkConfig.Keys.MAX_RESOURCE_BODY_SIZE, 12000);
 		DtlsConnectorConfig.Builder config = new DtlsConnectorConfig.Builder();
 		config.setAddress(new InetSocketAddress(portNumber));
 		loadCredentials(config, SERVER_NAME);
 		DTLSConnector connector = new DTLSConnector(config.build());
 		CoapEndpoint.CoapEndpointBuilder builder = new CoapEndpoint.CoapEndpointBuilder();
+		builder.setNetworkConfig(networkConfig);
 		builder.setConnector(connector);
 		server.addEndpoint(builder.build());
 		server.start();
@@ -135,9 +139,12 @@ public class TransportDTLSCoapBinding implements ASEService {
 	private void sendRequest(TPDU payload, String uri, Object context) {
 		CoapClient client = new CoapClient(uri);
 		client.useCONs();
+		Request request = new Request(Code.POST);
+		request.getOptions().setSize2(1024);
+		byte[] payloadBytes = tpduToByteArray(payload);
+		request.setPayload(payloadBytes);
 		try {
-			byte[] payloadBytes = tpduToByteArray(payload);
-			client.post(new CoapHandler() {
+			client.advanced(new CoapHandler() {
 
 				@Override
 				public void onLoad(CoapResponse response) {
@@ -149,7 +156,7 @@ public class TransportDTLSCoapBinding implements ASEService {
 				public void onError() {
 
 				}
-			}, payloadBytes, 0);
+			}, request);
 		} catch (Exception e) {
 			try {
 				transportBindingService.reportIndication(e.getMessage(), payload.getSourceEID(), new T_ReportIndication(
@@ -165,11 +172,15 @@ public class TransportDTLSCoapBinding implements ASEService {
 	}
 
 	private void initEndpointManager() {
+		NetworkConfig config = NetworkConfig.getStandard();
+		config.setInt(NetworkConfig.Keys.PREFERRED_BLOCK_SIZE, 1024);
+		config.set(NetworkConfig.Keys.MAX_RESOURCE_BODY_SIZE, 12000);
 		CoapEndpoint.CoapEndpointBuilder dtlsEndpointBuilder = new CoapEndpoint.CoapEndpointBuilder();
 		DtlsConnectorConfig.Builder dtlsConfig = new DtlsConnectorConfig.Builder();
 		dtlsConfig.setClientOnly();
 		loadCredentials(dtlsConfig, CLIENT_NAME);
 		clientDtlsConnector = new DTLSConnector(dtlsConfig.build());
+		dtlsEndpointBuilder.setNetworkConfig(config);
 		dtlsEndpointBuilder.setConnector(clientDtlsConnector);
 		EndpointManager.getEndpointManager().setDefaultEndpoint(dtlsEndpointBuilder.build());
 	}

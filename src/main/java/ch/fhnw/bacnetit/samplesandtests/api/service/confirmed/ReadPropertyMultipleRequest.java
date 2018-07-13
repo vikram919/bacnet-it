@@ -46,6 +46,8 @@ public class ReadPropertyMultipleRequest extends ConfirmedRequestService {
 
     @Override
     public void write(final ByteQueue queue) {
+    	writeContextTag(queue, SERVICE_ID, true);
+        writeContextTag(queue, TYPE_ID, true);
         write(queue, listOfReadAccessSpecs);
     }
 

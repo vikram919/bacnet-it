@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +16,6 @@ import ch.fhnw.bacnetit.ase.application.service.api.BACnetEntityListener;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelConfiguration;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelFactory;
 import ch.fhnw.bacnetit.ase.application.transaction.api.ChannelListener;
-import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
 import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
@@ -30,11 +30,16 @@ import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetPropertyIdentifi
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ASDU;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ConfirmedRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.IncomingRequestParser;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ReadAccessResult;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ReadAccessResult.Result;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Real;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.acknowledgment.ReadPropertyAck;
+import ch.fhnw.bacnetit.samplesandtests.api.service.acknowledgment.ReadPropertyMultipleAck;
+import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.ReadPropertyMultipleRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.ReadPropertyRequest;
 import ch.fhnw.bacnetit.transportbinding.api.BindingConfiguration;
 import ch.fhnw.bacnetit.transportbinding.api.ConnectionFactory;
@@ -46,7 +51,7 @@ public class TestServerWSS {
 
 	private static Logger LOG = (Logger) LoggerFactory.getLogger(TestServer.class);
 
-	private static final int WSS_PORT = 8080;
+	private static final int WSS_PORT = 1080;
 	private ASEServices aseService;
 	private static final int DEVICE_ID = 120;
 	private static final int AUTH_ID = 1;
@@ -103,8 +108,8 @@ public class TestServerWSS {
 
 			@Override
 			public void onIndication(T_UnitDataIndication arg0, Object arg1) {
-
 				LOG.debug("message T_unitDataIndication");
+				LOG.debug("message body: "+ByteArrayUtils.toHex(arg0.getData().getBody()));
 				ASDU receivedRequest = testServer.getServiceFromBody(arg0.getData().getBody());
 				if (receivedRequest instanceof ConfirmedRequest
 						&& ((ConfirmedRequest) receivedRequest).getServiceRequest() instanceof ReadPropertyRequest) {
@@ -113,13 +118,37 @@ public class TestServerWSS {
 					new ReadPropertyAck(new BACnetObjectIdentifier(BACnetObjectType.analogValue, 1),
 							BACnetPropertyIdentifier.presentValue, new UnsignedInteger(1), new Real(System.nanoTime()))
 									.write(byteQueue);
-					
+
 					String hostAddress = null;
-					if(arg0.getSourceAddress()!=null) {
-						hostAddress = ((InetSocketAddress)arg0.getSourceAddress()).getHostString(); 
+					if (arg0.getSourceAddress() != null) {
+						hostAddress = ((InetSocketAddress) arg0.getSourceAddress()).getHostString();
+					} else {
+						// TODO: throw exception
 					}
-					else {
-						//TODO: throw exception
+					try {
+						testServer.sendBACnetMessage(new URI("wss://" + hostAddress + ":9090"), new BACnetEID(AUTH_ID),
+								new BACnetEID(DEVICE_ID), byteQueue.popAll());
+					} catch (URISyntaxException e) {
+						e.printStackTrace();
+					}
+				} else if (receivedRequest instanceof ConfirmedRequest && ((ConfirmedRequest) receivedRequest)
+						.getServiceRequest() instanceof ReadPropertyMultipleRequest) {
+
+					// Prepare DUMMY answer
+					final ByteQueue byteQueue = new ByteQueue();
+					SequenceOf<ReadAccessResult> listOfReadAccessResults = new SequenceOf<>();
+					SequenceOf<Result> listOfResults = new SequenceOf<>();
+					listOfResults.add(new Result(BACnetPropertyIdentifier.presentValue, new UnsignedInteger(1),
+							new Real(System.nanoTime())));
+					listOfReadAccessResults.add(new ReadAccessResult(
+							new BACnetObjectIdentifier(BACnetObjectType.analogValue, 1), listOfResults));
+					new ReadPropertyMultipleAck(listOfReadAccessResults).write(byteQueue);
+
+					String hostAddress = null;
+					if (arg0.getSourceAddress() != null) {
+						hostAddress = ((InetSocketAddress) arg0.getSourceAddress()).getHostString();
+					} else {
+						// TODO: throw exception
 					}
 					try {
 						testServer.sendBACnetMessage(new URI("wss://" + hostAddress + ":8080"), new BACnetEID(AUTH_ID),
@@ -127,6 +156,7 @@ public class TestServerWSS {
 					} catch (URISyntaxException e) {
 						e.printStackTrace();
 					}
+
 				}
 			}
 
@@ -148,7 +178,7 @@ public class TestServerWSS {
 		try {
 			request = parser.parse();
 		} catch (final Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return request;
 	}

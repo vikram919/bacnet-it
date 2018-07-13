@@ -61,16 +61,22 @@ public class TransportCoapBinding implements ASEService {
 		server.add(new CoapResource("transport") {
 			@Override
 			public void handlePOST(CoapExchange exchange) {
-				byte[] msg = exchange.getRequestPayload();
+				byte[] tpduMessageBA = exchange.getRequestPayload();
+				/**
+				 * Callback function listening to ASE response to send the TPDU message for the
+				 * request received from remote BACnet-IT device
+				 */
 				ResponseCallback responseCallback = new ResponseCallback() {
 
 					@Override
 					public void sendResponse(TPDU tpdu) {
+						System.out.println("coap payload sent to client!!");
 						byte[] payloadBytes = tpduToByteArray(tpdu);
 						exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE, payloadBytes);
+						System.out.println("coap payload sent to client!!");
 					}
 				};
-				TPDU tpdu = byteArrayToTPDU(msg);
+				TPDU tpdu = byteArrayToTPDU(tpduMessageBA);
 				transportBindingService.onIndication(tpdu, null, responseCallback);
 				if (!tpdu.isConfirmedRequest()) {
 					exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE);
@@ -94,7 +100,13 @@ public class TransportCoapBinding implements ASEService {
 
 				@Override
 				public void onError() {
-
+					try {
+						transportBindingService.reportIndication("message not sent", payload.getSourceEID(),
+								new T_ReportIndication(new URI(uri), context,
+										new TransportError(TransportErrorType.Undefined, 0)));
+					} catch (URISyntaxException e) {
+						e.printStackTrace();
+					}
 				}
 			}, payloadBytes, 0);
 		} catch (Exception e) {

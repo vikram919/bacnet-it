@@ -12,7 +12,7 @@ import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 public class Dh2Message {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Dh2Message.class);
-	private final int messageId = OOBProtocol.DH2.getValue();
+	private static final int MESSAGE_ID = OOBProtocol.DH2_MESSAGE.getValue();
 	private final byte[] oobPswdIdBA;
 	private final int authId;
 	private final int deviceId;
@@ -27,7 +27,7 @@ public class Dh2Message {
 		this.deviceId = deviceId;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			bos.write(messageId);
+			bos.write(MESSAGE_ID);
 			bos.write(oobPswdIdBA);
 			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(authId).array());
 			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(deviceId).array());
@@ -65,7 +65,7 @@ public class Dh2Message {
 	private byte[] serilaizeToBA() {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			bos.write(messageId);
+			bos.write(MESSAGE_ID);
 			bos.write(oobPswdIdBA);
 			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(authId).array());
 			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(deviceId).array());

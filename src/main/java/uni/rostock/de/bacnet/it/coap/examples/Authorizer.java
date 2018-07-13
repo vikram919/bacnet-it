@@ -10,6 +10,7 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,10 +39,12 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.OctetString;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Primitive;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
+import io.netty.util.internal.SystemPropertyUtil;
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 import uni.rostock.de.bacnet.it.coap.messageType.Dh1Message;
 import uni.rostock.de.bacnet.it.coap.messageType.Dh2Message;
@@ -69,20 +72,31 @@ public class Authorizer {
 	public static void main(String[] args) {
 
 		Authorizer authdevice = new Authorizer();
-		authdevice.createCoapServer(COAP_PORT);
-		authdevice.start();
+//		authdevice.createCoapServer(COAP_PORT);
+		final DiscoveryConfig ds = new DiscoveryConfig("DNSSD", "1.1.1.1", "itb.bacnet.ch.", "bds._sub._bacnet._tcp.",
+				"dev._sub._bacnet._tcp.", "obj._sub._bacnet._tcp.", false);
 
 		try {
-			DiscoveryConfig ds = new DiscoveryConfig("DNSSD", "1.1.1.1", "itb.bacnet.ch.", "bds._sub._bacnet._udp.",
-					"auth._sub._bacnet._udp.", "authservice._sub._bacnet._udp.", false);
 			DirectoryService.init();
 			DirectoryService.getInstance().setDNSBinding(new DNSSD(ds));
-			DirectoryService.getInstance().register(new BACnetEID(AUTH_ID),
-					new URI(SECURE_SCHEME + AUTH_IP + +DTLS_SOCKET), true, false);
-			LOG.info("This device is registered as BDS !");
+
 		} catch (final Exception e1) {
 			e1.printStackTrace();
 		}
+		authdevice.start();
+		
+
+//		try {
+//			DiscoveryConfig ds = new DiscoveryConfig("DNSSD", "1.1.1.1", "itb.bacnet.ch.", "bds._sub._bacnet._udp.",
+//					"auth._sub._bacnet._udp.", "authservice._sub._bacnet._udp.", false);
+//			DirectoryService.init();
+//			DirectoryService.getInstance().setDNSBinding(new DNSSD(ds));
+//			DirectoryService.getInstance().register(new BACnetEID(AUTH_ID),
+//					new URI(SECURE_SCHEME + AUTH_IP + +DTLS_SOCKET), true, false);
+//			LOG.info("This device is registered as BDS !");
+//		} catch (final Exception e1) {
+//			e1.printStackTrace();
+//		}
 	}
 
 	public void start() {
@@ -111,9 +125,10 @@ public class Authorizer {
 				if (receivedRequest instanceof ConfirmedRequest
 						&& ((ConfirmedRequest) receivedRequest).getServiceRequest() instanceof WritePropertyRequest) {
 					LOG.debug("authorizer received a WritePropertyRequest!");
-					// FIXME: dirtyhack, get propertyvalue using wrightproperty
 					ByteQueue queue = new ByteQueue(arg0.getData().getBody());
-					byte[] msg = queue.peek(15, queue.size() - 21);
+					byte[] msg = queue.peek(15, queue.size()-21);
+					System.out.println(new String(msg));
+					
 					if (msg[0] == OOBProtocol.ADD_DEVICE_REQUEST.getValue()) {
 						LOG.info("Auth received add device request from mobile!!");
 						for (int i = 0; i < 20; i++) {
@@ -176,7 +191,7 @@ public class Authorizer {
 			@Override
 			public void handlePOST(CoapExchange exchange) {
 				byte[] msg = exchange.getRequestPayload();
-				if (msg[0] == OOBProtocol.DH1.getValue()) {
+				if (msg[0] == OOBProtocol.DH1_MESSAGE.getValue()) {
 					LOG.info("authorizer recevived Dh1Message from device");
 					Dh1Message oobDhMessage = new Dh1Message(msg);
 					byte[] devicePubKey = oobDhMessage.getPublicKeyBA();

@@ -40,7 +40,7 @@ public class TestClient {
 
 	private static Logger LOG = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
-	private static final int WS_PORT = 8080;
+	private static final int WS_PORT = 9090;
 	private static final int DEVICE_ID = 120;
 	private static final int AUTH_ID = 1;
 	private int interMessageId = 0;
@@ -99,6 +99,7 @@ public class TestClient {
 			public void onIndication(T_UnitDataIndication arg0, Object arg1) {
 
 				LOG.debug("message T_unitDataIndication");
+				System.out.println("response received!");
 				ASDU receivedRequest = testClient.getServiceFromBody(arg0.getData().getBody());
 				// Dummy Handling of a ReadPropertyAck
 				if (receivedRequest instanceof ComplexACK) {
@@ -135,7 +136,7 @@ public class TestClient {
 		return this.requestSendingTime;
 	}
 
-	public synchronized void waitForSignal() {
+	public void waitForSignal() {
 		if (!signal) {
 			try {
 				wait();
@@ -146,7 +147,7 @@ public class TestClient {
 		}
 	}
 
-	public synchronized void signal() {
+	public void signal() {
 		notify();
 		signal = true;
 	}
@@ -205,11 +206,11 @@ public class TestClient {
 		public void run() {
 			
 			try {
-				aseService.connect(new URI("ws://139.30.33.199:8080"));
+				aseService.connect(new URI("ws://127.0.0.1:1080"));
 				Thread.sleep(3000);
 				for (int j = 0; j < 5000; j++) {
 					setTimeStamp(System.nanoTime());
-					sendReadPropertyRequest(new URI("ws://139.30.33.199:8080"), new BACnetEID(DEVICE_ID),
+					sendReadPropertyRequest(new URI("ws://127.0.0.1:1080"), new BACnetEID(DEVICE_ID),
 							new BACnetEID(AUTH_ID), aseService);
 					waitForSignal();
 				}

@@ -84,16 +84,17 @@ public class WritePropertyRequest extends ConfirmedRequestService {
         writeContextTag(queue, TYPE_ID, false);
         writeContextTag(queue, SERVICE_ID, false);
     }
-
-    public WritePropertyRequest(final ByteQueue queue) throws BACnetException {
-        queue.pop();
+    
+   public WritePropertyRequest(ByteQueue queue) throws BACnetException {
+	   	queue.pop();
         objectIdentifier = read(queue, BACnetObjectIdentifier.class, 0);
         propertyIdentifier = read(queue, BACnetPropertyIdentifier.class, 1);
         propertyArrayIndex = readOptional(queue, UnsignedInteger.class, 2);
-        propertyValue = readEncodable(queue, objectIdentifier.getObjectType(),
-                propertyIdentifier, propertyArrayIndex, 3);
+        propertyValue = readEncodable(queue, objectIdentifier.getObjectType(), propertyIdentifier, propertyArrayIndex,
+                3);
         priority = readOptional(queue, UnsignedInteger.class, 4);
     }
+
 
     // @Override
     // public AcknowledgementService handle(LocalDevice localDevice, Address
