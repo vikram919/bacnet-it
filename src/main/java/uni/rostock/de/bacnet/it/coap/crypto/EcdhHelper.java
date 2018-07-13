@@ -118,4 +118,10 @@ public class EcdhHelper implements EcdhHelperTasks {
 		}
 		return oobPswdIdBA;
 	}
+
+	@Override
+	public byte[] getSalt() {
+		//TODO: return 8 random octets
+		return null;
+	}
 }

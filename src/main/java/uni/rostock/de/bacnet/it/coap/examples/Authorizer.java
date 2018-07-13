@@ -46,8 +46,8 @@ import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequ
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import io.netty.util.internal.SystemPropertyUtil;
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
-import uni.rostock.de.bacnet.it.coap.messageType.Dh1Message;
-import uni.rostock.de.bacnet.it.coap.messageType.Dh2Message;
+import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
+import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 import uni.rostock.de.bacnet.it.coap.messageType.OOBProtocol;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
@@ -193,11 +193,11 @@ public class Authorizer {
 				byte[] msg = exchange.getRequestPayload();
 				if (msg[0] == OOBProtocol.DH1_MESSAGE.getValue()) {
 					LOG.info("authorizer recevived Dh1Message from device");
-					Dh1Message oobDhMessage = new Dh1Message(msg);
+					DeviceKeyExchange oobDhMessage = new DeviceKeyExchange(msg);
 					byte[] devicePubKey = oobDhMessage.getPublicKeyBA();
 					ecdhHelper.computeSharedSecret(devicePubKey);
 					LOG.info("derived shared secret on auth side");
-					Dh2Message dh2Message = new Dh2Message(AUTH_ID, DEVICE_ID, ecdhHelper);
+					ServerKeyExchange dh2Message = new ServerKeyExchange(AUTH_ID, DEVICE_ID, ecdhHelper);
 					exchange.respond(ResponseCode.CHANGED, dh2Message.getBA(), 0);
 					LOG.info("authorizer responds with DH2Message to device with public key bytes");
 				} else if (msg[0] == OOBProtocol.FINISH_MESSAGE.getValue()) {

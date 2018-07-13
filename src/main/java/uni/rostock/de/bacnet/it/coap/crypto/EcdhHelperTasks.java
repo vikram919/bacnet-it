@@ -7,5 +7,7 @@ public interface EcdhHelperTasks {
 	public byte[] getPubKeyBytes();
 
 	public void computeSharedSecret(byte[] foreignPubKeyBA);
+	
+	public byte[] getSalt();
 
 }

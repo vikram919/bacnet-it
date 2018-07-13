@@ -53,8 +53,8 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
-import uni.rostock.de.bacnet.it.coap.messageType.Dh1Message;
-import uni.rostock.de.bacnet.it.coap.messageType.Dh2Message;
+import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
+import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 import uni.rostock.de.bacnet.it.coap.messageType.OOBProtocol;
 import uni.rostock.de.bacnet.it.coap.messageType.OobFinalMessage;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
@@ -237,7 +237,7 @@ public class Switch {
 			public void onLoad(CoapResponse response) {
 				byte[] msg = response.getPayload();
 				if (msg[0] == OOBProtocol.DH2_MESSAGE.getValue()) {
-					Dh2Message dh2Message = new Dh2Message(msg);
+					ServerKeyExchange dh2Message = new ServerKeyExchange(msg);
 					LOG.info("Dh2Message message received from authorizer with publicKey: {}",
 							ByteArrayUtils.toHex(dh2Message.getPublicKeyBA()));
 					LOG.info("received deviceId: " + dh2Message.getDeviceId());
