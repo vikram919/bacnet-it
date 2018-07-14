@@ -10,11 +10,10 @@ import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 public class DeviceKeyExchange {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DeviceKeyExchange.class);
-	private static final int MESSAGE_TYPE = OOBProtocol.DH1_MESSAGE.getValue();
+	private static final int MESSAGE_TYPE = OOBProtocol.DEVICE_KEY_EXCHANGE.getValue();
 	private final byte[] oobPswdIdBA;
 	private final byte[] saltBA;
 	private final byte[] publicKeyBA;
-	private final byte[] macData;
 	private final byte[] finalMessage;
 
 	public DeviceKeyExchange(EcdhHelper ecdhHelper) {
@@ -26,23 +25,34 @@ public class DeviceKeyExchange {
 		writer.writeBytes(oobPswdIdBA);
 		writer.writeBytes(saltBA);
 		writer.writeBytes(publicKeyBA);
-		macData = ecdhHelper.getMac(writer.toByteArray());
+		byte[] macData = ecdhHelper.getMac(writer.toByteArray());
 		writer.writeBytes(macData);
 		finalMessage = writer.toByteArray();
 		LOG.debug("message serilaized to BA");
 	}
 
-	public DeviceKeyExchange(byte[] finalBA) {
+	public DeviceKeyExchange(EcdhHelper ecdhHelper, byte[] finalBA) {
 		DatagramReader reader = new DatagramReader(finalBA);
 		int messageType = reader.read(3);
 		if (messageType != MESSAGE_TYPE) {
-			// throw received unknown message
+			LOG.info("DeviceKeyExchange authentication failed, wrong messagetype received expected {} but received {1}",
+					MESSAGE_TYPE, messageType);
 		}
 		finalMessage = finalBA;
 		oobPswdIdBA = reader.readBytes(OOBProtocol.OOB_PSWD_KEY_LENGTH.getValue());
 		saltBA = reader.readBytes(8);
 		publicKeyBA = reader.readBytes(OOBProtocol.PUBLIC_KEY_BYTES.getValue());
-		macData = reader.readBytesLeft();
+		byte[] receivedMac = reader.readBytesLeft();
+		/* construct mac from received message */
+		DatagramWriter writer = new DatagramWriter();
+		writer.write(MESSAGE_TYPE, 3);
+		writer.writeBytes(oobPswdIdBA);
+		writer.writeBytes(saltBA);
+		writer.writeBytes(publicKeyBA);
+		byte[] constructedMac = ecdhHelper.getMac(writer.toByteArray());
+		if (!receivedMac.equals(constructedMac)) {
+			LOG.debug("DeviceKeyExchange authentication failed, MAC verification failed");
+		}
 		// TODO: verify the mac, if failed discard the message
 		LOG.debug("message deserialized");
 	}
@@ -57,9 +67,5 @@ public class DeviceKeyExchange {
 
 	public byte[] getOobPswdIdBA() {
 		return this.oobPswdIdBA;
-	}
-
-	public byte[] getMacData() {
-		return this.macData;
 	}
 }

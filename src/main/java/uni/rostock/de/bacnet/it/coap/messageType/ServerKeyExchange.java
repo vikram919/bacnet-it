@@ -1,80 +1,55 @@
 package uni.rostock.de.bacnet.it.coap.messageType;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
+import org.eclipse.californium.elements.util.DatagramReader;
+import org.eclipse.californium.elements.util.DatagramWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 
 public class ServerKeyExchange {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(ServerKeyExchange.class);
-	private static final int MESSAGE_ID = OOBProtocol.DH2_MESSAGE.getValue();
+	private static final int MESSAGE_TYPE = OOBProtocol.SERVER_KEY_EXCHANGE.getValue();
+	private final byte[] serverNonceBA;
 	private final byte[] oobPswdIdBA;
-	private final int authId;
 	private final int deviceId;
 	private final byte[] publicKeyBA;
-	private final byte[] macData;
 	private final byte[] finalMessage;
 
 	public ServerKeyExchange(int authId, int deviceId, EcdhHelper ecdhHelper) {
-		this.oobPswdIdBA = ecdhHelper.getOObPswdKeyIdentifier();
-		this.publicKeyBA = ecdhHelper.getPubKeyBytes();
-		this.authId = authId;
+		serverNonceBA = ecdhHelper.getSalt();
+		oobPswdIdBA = ecdhHelper.getOObPswdKeyIdentifier();
+		publicKeyBA = ecdhHelper.getPubKeyBytes();
 		this.deviceId = deviceId;
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		try {
-			bos.write(MESSAGE_ID);
-			bos.write(oobPswdIdBA);
-			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(authId).array());
-			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(deviceId).array());
-			bos.write(publicKeyBA);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		this.macData = ecdhHelper.getMac(bos.toByteArray());
-		this.finalMessage = serilaizeToBA();
-		LOG.debug("message serialized");
+		DatagramWriter writer = new DatagramWriter();
+		writer.write(MESSAGE_TYPE, 3);
+		writer.writeBytes(serverNonceBA);
+		writer.writeBytes(oobPswdIdBA);
+		writer.write(deviceId, 32);
+		writer.writeBytes(publicKeyBA);
+		byte[] macData = calculateMac(ecdhHelper);
+		writer.writeBytes(macData);
+		this.finalMessage = writer.toByteArray();
+		LOG.debug("ServerKeyExchange message serialized");
 	}
 
-	public ServerKeyExchange(byte[] finalBA) {
+	public ServerKeyExchange(EcdhHelper ecdhHelper, byte[] finalBA) {
+		DatagramReader reader = new DatagramReader(finalBA);
+		int messageType = reader.read(3);
+		if (messageType != MESSAGE_TYPE) {
+			LOG.debug("ServerKeyExchange authentication failed, wrong messageType received");
+		}
 		this.finalMessage = finalBA;
-		int count = 1;
-		oobPswdIdBA = new byte[OOBProtocol.OOB_PSWD_KEY_LENGTH.getValue()];
-		System.arraycopy(finalBA, count, oobPswdIdBA, 0, oobPswdIdBA.length);
-		count += 4;
-		byte[] authIdBA = new byte[Integer.BYTES];
-		System.arraycopy(finalBA, count, authIdBA, 0, authIdBA.length);
-		this.authId = ByteBuffer.wrap(authIdBA).getInt();
-		count+=4;
-		byte[] deviceIdBA = new byte[Integer.BYTES];
-		System.arraycopy(finalBA, count, deviceIdBA, 0, deviceIdBA.length);
-		this.deviceId = ByteBuffer.wrap(deviceIdBA).getInt();
-		count+=4;
+		serverNonceBA = reader.readBytes(OOBProtocol.NONCE_LENGTH.getValue());
+		oobPswdIdBA = reader.readBytes(OOBProtocol.OOB_PSWD_KEY_ID_LENGTH.getValue());
+		deviceId = reader.read(OOBProtocol.DEVICE_ID_LENGTH.getValue());
 		publicKeyBA = new byte[OOBProtocol.PUBLIC_KEY_BYTES.getValue()];
-		System.arraycopy(finalBA, count, publicKeyBA, 0, publicKeyBA.length);
-		count += publicKeyBA.length;
-		this.macData = new byte[finalBA.length - count];
-		System.arraycopy(finalBA, count, macData, 0, macData.length);
-	}
-
-	private byte[] serilaizeToBA() {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		try {
-			bos.write(MESSAGE_ID);
-			bos.write(oobPswdIdBA);
-			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(authId).array());
-			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(deviceId).array());
-			bos.write(publicKeyBA);
-			bos.write(macData);
-		} catch (IOException e) {
-			e.printStackTrace();
+		byte[] receviedMac = reader.readBytesLeft();
+		byte[] calculatedMac = calculateMac(ecdhHelper);
+		if (!calculatedMac.equals(receviedMac)) {
+			LOG.debug("ServerKeyExchange authentication failed, MAC verfication failed");
 		}
-		return bos.toByteArray();
 	}
 
 	public byte[] getPublicKeyBA() {
@@ -93,11 +68,13 @@ public class ServerKeyExchange {
 		return this.deviceId;
 	}
 
-	public int getAuthId() {
-		return this.authId;
-	}
-	
-	public byte[] getMacData() {
-		return this.macData;
+	private byte[] calculateMac(EcdhHelper ecdhHelper) {
+		DatagramWriter writer = new DatagramWriter();
+		writer.write(MESSAGE_TYPE, 3);
+		writer.writeBytes(serverNonceBA);
+		writer.writeBytes(oobPswdIdBA);
+		writer.write(deviceId, 32);
+		writer.writeBytes(publicKeyBA);
+		return ecdhHelper.getMac(writer.toByteArray());
 	}
 }

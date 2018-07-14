@@ -1,16 +1,12 @@
 package uni.rostock.de.bacnet.it.coap.examples;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
-
-import javax.swing.plaf.synth.SynthSplitPaneUI;
 
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
@@ -26,7 +22,6 @@ import ch.fhnw.bacnetit.ase.application.service.api.ASEServices;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelConfiguration;
 import ch.fhnw.bacnetit.ase.application.service.api.ChannelFactory;
 import ch.fhnw.bacnetit.ase.application.transaction.api.ChannelListener;
-import ch.fhnw.bacnetit.ase.encoding._ByteQueue;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
 import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
@@ -46,17 +41,13 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.CharacterString;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.OctetString;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Primitive;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.Real;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
-import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
-import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 import uni.rostock.de.bacnet.it.coap.messageType.OOBProtocol;
-import uni.rostock.de.bacnet.it.coap.messageType.OobFinalMessage;
+import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
 public class Switch {
@@ -236,8 +227,8 @@ public class Switch {
 			@Override
 			public void onLoad(CoapResponse response) {
 				byte[] msg = response.getPayload();
-				if (msg[0] == OOBProtocol.DH2_MESSAGE.getValue()) {
-					ServerKeyExchange dh2Message = new ServerKeyExchange(msg);
+				if (msg[0] == OOBProtocol.SERVER_KEY_EXCHANGE.getValue()) {
+					ServerKeyExchange dh2Message = new ServerKeyExchange(ecdhHelper, msg);
 					LOG.info("Dh2Message message received from authorizer with publicKey: {}",
 							ByteArrayUtils.toHex(dh2Message.getPublicKeyBA()));
 					LOG.info("received deviceId: " + dh2Message.getDeviceId());

@@ -6,11 +6,13 @@ public enum OOBProtocol {
 
 	ADD_DEVICE_REQUEST(1),
 	
-	DH1_MESSAGE(2),
+	DEVICE_KEY_EXCHANGE(2),
 
-	DH2_MESSAGE(3),
+	SERVER_KEY_EXCHANGE(3),
 
 	FINISH_MESSAGE(4),
+	
+	OOB_STATUS(5),
 
 	/* Default as spcecified in IEEE 802.15.6-2012 */
 	CURVE_secp256r1(1),
@@ -30,6 +32,10 @@ public enum OOBProtocol {
 	OOB_PSWD_KEY_ID_LENGTH(4),
 
 	DERIVED_KEYS_LENGTH(48),
+	
+	NONCE_LENGTH(32), // Bytes
+	
+	DEVICE_ID_LENGTH(32), // bits
 
 	/* Authentication success (random value feel free to change) */
 	AUTHENTICATION_SUCCESS(201), // try to put the value < 256
