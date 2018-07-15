@@ -5,7 +5,7 @@ import org.eclipse.californium.elements.util.DatagramWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
+import uni.rostock.de.bacnet.it.coap.crypto.OobAuthSession;
 
 public class ServerKeyExchange {
 
@@ -16,11 +16,12 @@ public class ServerKeyExchange {
 	private final int deviceId;
 	private final byte[] publicKeyBA;
 	private final byte[] finalMessage;
+	private boolean isMacVerified = false;
 
-	public ServerKeyExchange(int authId, int deviceId, EcdhHelper ecdhHelper) {
-		serverNonceBA = ecdhHelper.getSalt();
-		oobPswdIdBA = ecdhHelper.getOObPswdKeyIdentifier();
-		publicKeyBA = ecdhHelper.getPubKeyBytes();
+	public ServerKeyExchange(int deviceId, byte[] serverPubKey, OobAuthSession session) {
+		serverNonceBA = session.getServerNonce();
+		oobPswdIdBA = session.getOobPswdId();
+		publicKeyBA = serverPubKey;
 		this.deviceId = deviceId;
 		DatagramWriter writer = new DatagramWriter();
 		writer.write(MESSAGE_TYPE, 3);
@@ -28,13 +29,13 @@ public class ServerKeyExchange {
 		writer.writeBytes(oobPswdIdBA);
 		writer.write(deviceId, 32);
 		writer.writeBytes(publicKeyBA);
-		byte[] macData = calculateMac(ecdhHelper);
+		byte[] macData = calculateMac(session);
 		writer.writeBytes(macData);
 		this.finalMessage = writer.toByteArray();
 		LOG.debug("ServerKeyExchange message serialized");
 	}
 
-	public ServerKeyExchange(EcdhHelper ecdhHelper, byte[] finalBA) {
+	public ServerKeyExchange(OobAuthSession session, byte[] finalBA) {
 		DatagramReader reader = new DatagramReader(finalBA);
 		int messageType = reader.read(3);
 		if (messageType != MESSAGE_TYPE) {
@@ -42,12 +43,14 @@ public class ServerKeyExchange {
 		}
 		this.finalMessage = finalBA;
 		serverNonceBA = reader.readBytes(OOBProtocol.NONCE_LENGTH.getValue());
-		oobPswdIdBA = reader.readBytes(OOBProtocol.OOB_PSWD_KEY_ID_LENGTH.getValue());
+		oobPswdIdBA = reader.readBytes(OOBProtocol.OOB_PSWD_ID_LENGTH.getValue());
 		deviceId = reader.read(OOBProtocol.DEVICE_ID_LENGTH.getValue());
 		publicKeyBA = new byte[OOBProtocol.PUBLIC_KEY_BYTES.getValue()];
 		byte[] receviedMac = reader.readBytesLeft();
-		byte[] calculatedMac = calculateMac(ecdhHelper);
-		if (!calculatedMac.equals(receviedMac)) {
+		byte[] calculatedMac = calculateMac(session);
+		if (calculatedMac.equals(receviedMac)) {
+			setMacVerified(true);
+		} else {
 			LOG.debug("ServerKeyExchange authentication failed, MAC verfication failed");
 		}
 	}
@@ -68,13 +71,21 @@ public class ServerKeyExchange {
 		return this.deviceId;
 	}
 
-	private byte[] calculateMac(EcdhHelper ecdhHelper) {
+	private byte[] calculateMac(OobAuthSession session) {
 		DatagramWriter writer = new DatagramWriter();
 		writer.write(MESSAGE_TYPE, 3);
 		writer.writeBytes(serverNonceBA);
 		writer.writeBytes(oobPswdIdBA);
 		writer.write(deviceId, 32);
 		writer.writeBytes(publicKeyBA);
-		return ecdhHelper.getMac(writer.toByteArray());
+		return session.getMac(writer.toByteArray());
+	}
+
+	public boolean isMacVerified() {
+		return isMacVerified;
+	}
+
+	public void setMacVerified(boolean isMacVerified) {
+		this.isMacVerified = isMacVerified;
 	}
 }

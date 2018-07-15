@@ -29,11 +29,13 @@ public enum OOBProtocol {
 
 	OOB_PSWD_KEY_LENGTH(16),
 
-	OOB_PSWD_KEY_ID_LENGTH(4),
+	OOB_PSWD_ID_LENGTH(4),
 
 	DERIVED_KEYS_LENGTH(48),
 	
-	NONCE_LENGTH(32), // Bytes
+	NONCE_LENGTH(8), // Bytes
+	
+	SALT_LENGTH(8), // Bytes
 	
 	DEVICE_ID_LENGTH(32), // bits
 

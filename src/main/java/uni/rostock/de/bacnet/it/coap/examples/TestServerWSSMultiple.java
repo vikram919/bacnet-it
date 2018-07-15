@@ -47,7 +47,7 @@ public class TestServerWSSMultiple {
 
 	private static Logger LOG = (Logger) LoggerFactory.getLogger(TestServer.class);
 
-	private static final int WSS_PORT = 1080;
+	private static final int WSS_PORT = 9090;
 	private ASEServices aseService;
 	private static final int DEVICE_ID = 120;
 	private static final int AUTH_ID = 1;
@@ -55,8 +55,10 @@ public class TestServerWSSMultiple {
 			"operationaldevcert");
 	private static final TruststoreConfig truststoreConfig = new TruststoreConfig("dummyKeystores/trustStore.jks",
 			"123456", "installer.ch", "installer.net");
+	static int MESSAGES_COUNT;
 
 	public static void main(String[] args) {
+		MESSAGES_COUNT = Integer.parseInt(args[0]);
 
 		TestServerWSSMultiple testServer = new TestServerWSSMultiple();
 		/**
@@ -113,7 +115,7 @@ public class TestServerWSSMultiple {
 				final ByteQueue byteQueue = new ByteQueue();
 				SequenceOf<ReadAccessResult> listOfReadAccessResults = new SequenceOf<>();
 				SequenceOf<Result> listOfResults = new SequenceOf<>();
-				for (int i = 0; i < 100; i++) {
+				for (int i = 0; i < MESSAGES_COUNT; i++) {
 					listOfResults.add(new Result(BACnetPropertyIdentifier.presentValue, new UnsignedInteger(1),
 							new Real(System.nanoTime())));
 				}

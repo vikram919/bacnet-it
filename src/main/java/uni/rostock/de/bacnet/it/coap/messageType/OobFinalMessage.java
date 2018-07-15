@@ -1,82 +1,85 @@
 package uni.rostock.de.bacnet.it.coap.messageType;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import org.eclipse.californium.elements.util.DatagramReader;
+import org.eclipse.californium.elements.util.DatagramWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
+import uni.rostock.de.bacnet.it.coap.crypto.OobAuthSession;
 
 public class OobFinalMessage {
 
-	private final int messageId = OOBProtocol.FINISH_MESSAGE.getValue();
-	private int deviceId;
-	private int authId;
-	private final byte[] message;
-	private final byte[] macData;
-	private byte[] finalBA;
+	private static final Logger LOG = LoggerFactory.getLogger(OobFinalMessage.class.getCanonicalName());
+	private static final int MESSAGE_TYPE = OOBProtocol.FINISH_MESSAGE.getValue();
+	private final byte[] oobPswdIdBA;
+	private final byte[] serverNonceBA;
+	private final byte[] deviceNonceBA;
+	private final byte[] finalMessageBA;
+	private boolean isMacVerified = false;
 
-	public OobFinalMessage(int deviceId, int authId, EcdhHelper ecdhHelper) {
-		this.deviceId = deviceId;
-		this.authId = authId;
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		try {
-			bos.write(messageId);
-			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(deviceId).array());
-			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(authId).array());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		this.message = bos.toByteArray();
-		this.macData = ecdhHelper.getMac(message);
-		ByteArrayOutputStream finalMessage = new ByteArrayOutputStream();
-		try {
-			finalMessage.write(message);
-			finalMessage.write(macData);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		this.finalBA = finalMessage.toByteArray();
+	public OobFinalMessage(OobAuthSession session) {
+		this.oobPswdIdBA = session.getOobPswdId();
+		this.serverNonceBA = session.getServerNonce();
+		this.deviceNonceBA = session.getdeviceNonce();
+		DatagramWriter writer = new DatagramWriter();
+		writer.write(MESSAGE_TYPE, 3);
+		writer.writeBytes(oobPswdIdBA);
+		writer.writeBytes(serverNonceBA);
+		writer.writeBytes(deviceNonceBA);
+		byte[] macData = calculateMac(session);
+		writer.writeBytes(macData);
+		this.finalMessageBA = writer.toByteArray();
 	}
 
-	public OobFinalMessage(byte[] finalBA) {
-		int counter = 1;
-		byte[] deviceIdBA = new byte[Integer.BYTES];
-		System.arraycopy(finalBA, counter, deviceIdBA, 0, deviceIdBA.length);
-		this.deviceId = ByteBuffer.wrap(deviceIdBA).getInt();
-		counter += 4;
-		byte[] authIdBA = new byte[Integer.BYTES];
-		System.arraycopy(finalBA, counter, authIdBA, 0, authIdBA.length);
-		this.authId = ByteBuffer.wrap(authIdBA).getInt();
-		counter += 4;
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		try {
-			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(authId).array());
-			bos.write(ByteBuffer.allocate(Integer.BYTES).putInt(deviceId).array());
-		} catch (IOException e) {
-			e.printStackTrace();
+	public OobFinalMessage(OobAuthSession session, byte[] finalBA) {
+		DatagramReader reader = new DatagramReader(finalBA);
+		int messageType = reader.read(3);
+		if (messageType != MESSAGE_TYPE) {
+			LOG.debug("ServerKeyExchange authentication failed, wrong messageType received");
 		}
-		this.message = bos.toByteArray();
-		this.macData = new byte[finalBA.length - counter];
-		System.arraycopy(finalBA, counter, macData, 0, macData.length);
+		this.finalMessageBA = finalBA;
+		oobPswdIdBA = reader.readBytes(OOBProtocol.OOB_PSWD_ID_LENGTH.getValue());
+		serverNonceBA = reader.readBytes(OOBProtocol.NONCE_LENGTH.getValue());
+		deviceNonceBA = reader.readBytes(OOBProtocol.NONCE_LENGTH.getValue());
+		byte[] receviedMac = reader.readBytesLeft();
+		byte[] calculatedMac = calculateMac(session);
+		if (calculatedMac.equals(receviedMac)) {
+			setMacVerified(true);
+		} else {
+			LOG.debug("ServerKeyExchange authentication failed, MAC verfication failed");
+		}
 	}
 
 	public byte[] getBA() {
-		return this.finalBA;
+		return this.finalMessageBA;
 	}
 
-	public int getDeviceId() {
-		return this.deviceId;
+	public byte[] getServerNonce() {
+		return this.serverNonceBA;
 	}
 
-	public int getAuthId() {
-		return this.authId;
+	public byte[] getDeviceNonce() {
+		return this.deviceNonceBA;
 	}
 
-	public byte[] getMacData() {
-		return this.macData;
+	public byte[] getOobPswdIdBA() {
+		return this.oobPswdIdBA;
 	}
 
-	public byte[] getMessage() {
-		return this.message;
+	private byte[] calculateMac(OobAuthSession session) {
+		DatagramWriter writer = new DatagramWriter();
+		writer.write(MESSAGE_TYPE, 3);
+		writer.writeBytes(oobPswdIdBA);
+		writer.writeBytes(session.getServerNonce());
+		writer.writeBytes(session.getdeviceNonce());
+		return session.getMac(writer.toByteArray());
+	}
+
+	public boolean isMacVerified() {
+		return isMacVerified;
+	}
+
+	public void setMacVerified(boolean isMacVerified) {
+		this.isMacVerified = isMacVerified;
 	}
 }

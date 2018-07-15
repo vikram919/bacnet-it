@@ -39,7 +39,7 @@ public class TestClientDtlsPskMultiple {
 
 	private static Logger LOG = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
-	private static final int DTLS_PORT = 5685;
+	private static final int DTLS_PORT = 5684;
 	private static final int DEVICE_ID = 120;
 	private static final int AUTH_ID = 1;
 	private static String AUTH_IP;
@@ -210,7 +210,7 @@ public class TestClientDtlsPskMultiple {
 				e1.printStackTrace();
 			}
 			try {
-				for (int j = 0; j < 20; j++) {
+				for (int j = 0; j < 5000; j++) {
 					setTimeStamp(System.nanoTime());
 					sendReadPropertyMultipleRequest(new URI("coaps://"+AUTH_IP+":5684"), new BACnetEID(DEVICE_ID),
 							new BACnetEID(AUTH_ID), aseService);
@@ -220,7 +220,6 @@ public class TestClientDtlsPskMultiple {
 				System.err.print(e);
 			}
 		}
-
 	}
 
 }

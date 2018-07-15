@@ -56,8 +56,11 @@ public class TestClientWSSMultiple {
 			"operationaldevcert");
 	private static final TruststoreConfig truststoreConfig = new TruststoreConfig("dummyKeystores/trustStore.jks",
 			"123456", "installer.ch", "installer.net");
+	static String AUTH_IP;
 
 	public static void main(String[] args) {
+		
+		AUTH_IP = args[0];
 
 		TestClientWSSMultiple testClient = new TestClientWSSMultiple();
 
@@ -221,11 +224,11 @@ public class TestClientWSSMultiple {
 		public void run() {
 
 			try {
-				aseService.connect(new URI("wss://127.0.0.1:1080"));
+				aseService.connect(new URI("wss://"+AUTH_IP+":9090"));
 				Thread.sleep(3000);
-				for (int j = 0; j < 10; j++) {
+				for (int j = 0; j < 5000; j++) {
 					setTimeStamp(System.nanoTime());
-					sendReadPropertyMultipleRequest(new URI("wss://127.0.0.1:1080"), new BACnetEID(DEVICE_ID),
+					sendReadPropertyMultipleRequest(new URI("wss://"+AUTH_IP+":9090"), new BACnetEID(DEVICE_ID),
 							new BACnetEID(AUTH_ID), aseService);
 					waitForSignal();
 				}
@@ -233,9 +236,5 @@ public class TestClientWSSMultiple {
 				System.err.print(e);
 			}
 		}
-
 	}
-	// 0EEE0C008000011E09551FEF0F
-	// 0C008000011E09551F
-	// 0ECE0C008000011955CF0F
 }

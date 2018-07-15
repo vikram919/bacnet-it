@@ -40,7 +40,7 @@ import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
 public class TestServerDtlsPskMultiple {
 
-	private static Logger LOG = (Logger) LoggerFactory.getLogger(TestServer.class);
+	private static Logger LOG = LoggerFactory.getLogger(TestServer.class);
 
 	private static final int DTLS_PORT = 5684;
 	private ASEServices aseService;

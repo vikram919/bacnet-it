@@ -26,22 +26,16 @@ import uni.rostock.de.bacnet.it.coap.messageType.OOBProtocol;
 public class EcdhHelper implements EcdhHelperTasks {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EcdhHelper.class);
-	byte[] privateKeyBA = new byte[OOBProtocol.PRIVATE_KEY_BYTES.getValue()];
-	byte[] publicKeyBA = new byte[OOBProtocol.PUBLIC_KEY_BYTES.getValue()];
-	private byte[] sharedSecretBA = new byte[OOBProtocol.SECRET_KEY_BYTES.getValue()];
-	byte[] macKeyBA = new byte[OOBProtocol.MAC_KEY_BYTES.getValue()];
-	final static String COMMON_SALT = "out of band authentication";
-	SecureRandom random;
-	private final int curveType;
-	private final String oobPswdKeyString;
-	private byte[] oobPswdIdBA = new byte[OOBProtocol.OOB_PSWD_KEY_ID_LENGTH.getValue()];
+	private byte[] privateKeyBA = new byte[OOBProtocol.PRIVATE_KEY_BYTES.getValue()];
+	private byte[] publicKeyBA = new byte[OOBProtocol.PUBLIC_KEY_BYTES.getValue()];
+	private final SecureRandom random;
 
-	public EcdhHelper(int curveType, String oobPswdArray) {
+	private final int curveType;
+
+	public EcdhHelper(int curveType) {
 		this.curveType = curveType;
-		this.oobPswdKeyString = oobPswdArray;
 		random = new SecureRandom();
 		genereateAsymmetricKeys();
-		deriveKeyFromPswd();
 	}
 
 	private void genereateAsymmetricKeys() {
@@ -49,38 +43,22 @@ public class EcdhHelper implements EcdhHelperTasks {
 		X25519.scalarMultBase(privateKeyBA, 0, publicKeyBA, 0);
 	}
 
-	public int getOOBPswdKeySt2Int() {
-		int value = Integer.valueOf(oobPswdKeyString, 2);
-		return value;
-	}
-
-	private void deriveKeyFromPswd() {
-		int oobPswdAsInt = getOOBPswdKeySt2Int();
-		/* idea adapted from sebastian unger oob protocol for DPWS */
-		byte[] oobPswdAsBA = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; /* ouch... */
-		oobPswdAsBA[15] = (byte) (oobPswdAsInt & 0xFF);
-		oobPswdAsBA[14] = (byte) ((oobPswdAsInt >> 8) & 0xFF);
-		oobPswdAsBA[13] = (byte) ((oobPswdAsInt >> 16) & 0xFF);
-		Digest digest = new SHA256Digest();
-		HKDFBytesGenerator hkdf = new HKDFBytesGenerator(digest);
-		CBORObject info = CBORObject.NewArray();
-		info.Add(CBORObject.FromObject("passwordKey"));
-		info.Add(OOBProtocol.OOB_PSWD_KEY_LENGTH);
-		DerivationParameters param = new HKDFParameters(oobPswdAsBA, COMMON_SALT.getBytes(), info.EncodeToBytes());
-		hkdf.init(param);
-		hkdf.generateBytes(macKeyBA, 0, macKeyBA.length);
-	}
-
 	public int getCurveType() {
 		return this.curveType;
 	}
 
 	@Override
-	public byte[] getMac(byte[] data) {
+	public byte[] getMac(byte[] oobPswdKey, byte[] data) {
+		if (oobPswdKey == null) {
+			throw new NullPointerException("oob password key cannot be null");
+		}
+		if (data == null) {
+			throw new NullPointerException("data to be maced cannot be null");
+		}
 		byte[] macData = null;
 		try {
 			Mac mac = Mac.getInstance("HmacSHA256");
-			SecretKey macKey = new SecretKeySpec(macKeyBA, "HmacSHA256");
+			SecretKey macKey = new SecretKeySpec(oobPswdKey, "HmacSHA256");
 			mac.init(macKey);
 			macData = mac.doFinal(data);
 		} catch (NoSuchAlgorithmException | InvalidKeyException e) {
@@ -95,33 +73,18 @@ public class EcdhHelper implements EcdhHelperTasks {
 	}
 
 	@Override
-	public void computeSharedSecret(byte[] foreignPubKeyBA) {
+	public byte[] computeSharedSecret(byte[] foreignPubKeyBA) {
 		LOG.info("foreign public key bytes: " + ByteArrayUtils.toHex(foreignPubKeyBA));
 		LOG.info("auth private key bytes: " + ByteArrayUtils.toHex(privateKeyBA));
+		byte[] sharedSecretBA = new byte[OOBProtocol.SECRET_KEY_BYTES.getValue()];
 		X25519.scalarMult(privateKeyBA, 0, foreignPubKeyBA, 0, sharedSecretBA, 0);
-	}
-
-	public byte[] getSharedSecret() {
 		return sharedSecretBA;
 	}
 
-	public byte[] getOObPswdKeyIdentifier() {
-		try {
-			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			digest.update(oobPswdKeyString.getBytes());
-			byte[] hash = digest.digest();
-			for (int i = 0; i < 4; i++) {
-				oobPswdIdBA[i] = hash[i];
-			}
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		return oobPswdIdBA;
-	}
-
 	@Override
-	public byte[] getSalt() {
-		//TODO: return 8 random octets
-		return null;
+	public byte[] getRandomBytes(int bytes) {
+		byte[] randomBytes = new byte[bytes];
+		random.nextBytes(randomBytes);
+		return randomBytes;
 	}
 }
