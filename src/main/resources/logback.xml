@@ -2,7 +2,7 @@
 <configuration>
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">                                                                                                                                                                        
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>OFF</level>
+            <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
@@ -21,7 +21,7 @@
             <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] [%thread] %logger{10} [%file:%line] %msg%n</pattern> 
         </encoder> 
     </appender>                                                                                                                                                                         
-  <root level="OFF">                                                                                                                                                                                                               
+  <root level="DEBUG">                                                                                                                                                                                                               
     <appender-ref ref="STDOUT" /> 
     <appender-ref ref="STDERR"/>                                                                                                                                                                                                            
   </root>                                                                                                                                                                                                                                     

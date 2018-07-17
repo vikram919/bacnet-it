@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class OobStatus {
 	private static final Logger LOG = LoggerFactory.getLogger(AddDeviceRequest.class);
-	private static final int MESSAGE_TYPE = OOBProtocol.OOB_STATUS.getValue();
+	private static final int MESSAGE_TYPE = OobProtocol.OOB_STATUS;
 	/*
 	 * Sequence number for identifying no. of devices the mobile has authenticated
 	 */

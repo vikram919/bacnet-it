@@ -1,17 +1,20 @@
 package uni.rostock.de.bacnet.it.coap.crypto;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import org.bouncycastle.crypto.DerivationParameters;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
 import org.bouncycastle.crypto.params.HKDFParameters;
+import org.eclipse.californium.elements.util.DatagramWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.upokecenter.cbor.CBORObject;
 
-import uni.rostock.de.bacnet.it.coap.messageType.OOBProtocol;
+import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
+import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
 
 /**
  * class OobAuthSession is implemented to have separate auth session between
@@ -23,6 +26,7 @@ import uni.rostock.de.bacnet.it.coap.messageType.OOBProtocol;
  */
 public class OobAuthSession {
 
+	private static Logger LOG = LoggerFactory.getLogger(OobAuthSession.class.getCanonicalName());
 	private final EcdhHelper ecdhHelper;
 	private final String oobPswdString;
 	private byte[] oobPswdKey = null;
@@ -59,7 +63,7 @@ public class OobAuthSession {
 		return this.oobPswdSalt;
 	}
 
-	public byte[] deriveOobPswdKey(byte[] salt) {
+	public void deriveOobPswdKey(byte[] salt) {
 		if (salt == null) {
 			throw new NullPointerException("salt cannot be null");
 		}
@@ -73,12 +77,11 @@ public class OobAuthSession {
 		HKDFBytesGenerator hkdf = new HKDFBytesGenerator(digest);
 		CBORObject info = CBORObject.NewArray();
 		info.Add(CBORObject.FromObject("out of band authentication password"));
-		info.Add(OOBProtocol.OOB_PSWD_KEY_LENGTH);
+		info.Add(OobProtocol.OOB_PSWD_KEY_LENGTH);
 		DerivationParameters param = new HKDFParameters(oobPswdAsBA, salt, info.EncodeToBytes());
 		hkdf.init(param);
-		byte[] oobPswdKey = new byte[OOBProtocol.OOB_PSWD_KEY_LENGTH.getValue()];
+		this.oobPswdKey = new byte[OobProtocol.OOB_PSWD_KEY_LENGTH];
 		hkdf.generateBytes(oobPswdKey, 0, oobPswdKey.length);
-		return oobPswdKey;
 	}
 
 	private int getOOBPswdString2Int() {
@@ -87,18 +90,7 @@ public class OobAuthSession {
 	}
 
 	public byte[] getOobPswdId() {
-		byte[] oobPswdIdBA = new byte[OOBProtocol.OOB_PSWD_ID_LENGTH.getValue()];
-		try {
-			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			digest.update(oobPswdString.getBytes());
-			byte[] hash = digest.digest();
-			for (int i = 0; i < 8; i++) {
-				oobPswdIdBA[i] = hash[i];
-			}
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		return oobPswdIdBA;
+		return ecdhHelper.getOobPswdId(oobPswdString);
 	}
 
 	public byte[] getMac(byte[] data) {
@@ -107,5 +99,23 @@ public class OobAuthSession {
 					"oobPswdKey cannot be null, consider calling deriveOobKey method for current OobAuthSession");
 		}
 		return ecdhHelper.getMac(oobPswdKey, data);
+	}
+
+	public boolean isDeviceKeyExchangeMessageAuthenticated(DeviceKeyExchange deviceKeyExchange) {
+		deriveOobPswdKey(deviceKeyExchange.getSalt());
+		boolean val = Arrays.equals(calculateDeviceKeyExchangeMac(deviceKeyExchange),
+				deviceKeyExchange.getMessageMac());
+		LOG.debug("mac verification result: " + val);
+		return val;
+	}
+
+	private byte[] calculateDeviceKeyExchangeMac(DeviceKeyExchange deviceKeyExchange) {
+		DatagramWriter writer = new DatagramWriter();
+		writer.write(OobProtocol.DEVICE_KEY_EXCHANGE, 3);
+		writer.writeBytes(deviceKeyExchange.getOobPswdIdBA());
+		writer.writeBytes(deviceKeyExchange.getSalt());
+		writer.writeBytes(deviceKeyExchange.getDeviceNonce());
+		writer.writeBytes(deviceKeyExchange.getPublicKeyBA());
+		return getMac(writer.toByteArray());
 	}
 }

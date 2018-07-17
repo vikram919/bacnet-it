@@ -44,7 +44,7 @@ import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequ
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
-import uni.rostock.de.bacnet.it.coap.messageType.OOBProtocol;
+import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
 import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
@@ -126,7 +126,7 @@ public class Authorizer {
 					byte[] msg = queue.peek(15, queue.size() - 21);
 					System.out.println(new String(msg));
 
-					if (msg[0] == OOBProtocol.ADD_DEVICE_REQUEST.getValue()) {
+					if (msg[0] == OobProtocol.ADD_DEVICE_REQUEST.getValue()) {
 						LOG.info("Auth received add device request from mobile!!");
 						for (int i = 0; i < 20; i++) {
 							oobKeyPswd += random.nextInt(2);
@@ -188,7 +188,7 @@ public class Authorizer {
 			@Override
 			public void handlePOST(CoapExchange exchange) {
 				byte[] msg = exchange.getRequestPayload();
-				if (msg[0] == OOBProtocol.DEVICE_KEY_EXCHANGE.getValue()) {
+				if (msg[0] == OobProtocol.DEVICE_KEY_EXCHANGE.getValue()) {
 					LOG.info("authorizer recevived Dh1Message from device");
 					DeviceKeyExchange oobDhMessage = new DeviceKeyExchange(ecdhHelper, msg);
 					byte[] devicePubKey = oobDhMessage.getPublicKeyBA();
@@ -197,7 +197,7 @@ public class Authorizer {
 					ServerKeyExchange dh2Message = new ServerKeyExchange(AUTH_ID, DEVICE_ID, ecdhHelper);
 					exchange.respond(ResponseCode.CHANGED, dh2Message.getBA(), 0);
 					LOG.info("authorizer responds with DH2Message to device with public key bytes");
-				} else if (msg[0] == OOBProtocol.FINISH_MESSAGE.getValue()) {
+				} else if (msg[0] == OobProtocol.FINISH_MESSAGE.getValue()) {
 					LOG.info("received final Message from device");
 					LOG.info("handshake successful on authorizer side");
 					/* adding the master secret to InMemoryPreSharedKeyStore */

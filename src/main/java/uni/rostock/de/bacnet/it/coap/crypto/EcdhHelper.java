@@ -9,25 +9,18 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.bouncycastle.crypto.DerivationParameters;
-import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.digests.SHA256Digest;
-import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
-import org.bouncycastle.crypto.params.HKDFParameters;
 import org.bouncycastle.math.ec.rfc7748.X25519;
 import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.upokecenter.cbor.CBORObject;
-
-import uni.rostock.de.bacnet.it.coap.messageType.OOBProtocol;
+import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
 
 public class EcdhHelper implements EcdhHelperTasks {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EcdhHelper.class);
-	private byte[] privateKeyBA = new byte[OOBProtocol.PRIVATE_KEY_BYTES.getValue()];
-	private byte[] publicKeyBA = new byte[OOBProtocol.PUBLIC_KEY_BYTES.getValue()];
+	private byte[] privateKeyBA = new byte[OobProtocol.PRIVATE_KEY_BYTES];
+	private byte[] publicKeyBA = new byte[OobProtocol.PUBLIC_KEY_BYTES];
 	private final SecureRandom random;
 
 	private final int curveType;
@@ -76,7 +69,7 @@ public class EcdhHelper implements EcdhHelperTasks {
 	public byte[] computeSharedSecret(byte[] foreignPubKeyBA) {
 		LOG.info("foreign public key bytes: " + ByteArrayUtils.toHex(foreignPubKeyBA));
 		LOG.info("auth private key bytes: " + ByteArrayUtils.toHex(privateKeyBA));
-		byte[] sharedSecretBA = new byte[OOBProtocol.SECRET_KEY_BYTES.getValue()];
+		byte[] sharedSecretBA = new byte[OobProtocol.SECRET_KEY_BYTES];
 		X25519.scalarMult(privateKeyBA, 0, foreignPubKeyBA, 0, sharedSecretBA, 0);
 		return sharedSecretBA;
 	}
@@ -86,5 +79,21 @@ public class EcdhHelper implements EcdhHelperTasks {
 		byte[] randomBytes = new byte[bytes];
 		random.nextBytes(randomBytes);
 		return randomBytes;
+	}
+	
+	@Override
+	public byte[] getOobPswdId(String oobPswdString) {
+		byte[] oobPswdIdBA = new byte[OobProtocol.OOB_PSWD_ID_LENGTH];
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			digest.update(oobPswdString.getBytes());
+			byte[] hash = digest.digest();
+			for (int i = 0; i < 8; i++) {
+				oobPswdIdBA[i] = hash[i];
+			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return oobPswdIdBA;
 	}
 }

@@ -46,7 +46,7 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
-import uni.rostock.de.bacnet.it.coap.messageType.OOBProtocol;
+import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
 import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
@@ -227,7 +227,7 @@ public class Switch {
 			@Override
 			public void onLoad(CoapResponse response) {
 				byte[] msg = response.getPayload();
-				if (msg[0] == OOBProtocol.SERVER_KEY_EXCHANGE.getValue()) {
+				if (msg[0] == OobProtocol.SERVER_KEY_EXCHANGE.getValue()) {
 					ServerKeyExchange dh2Message = new ServerKeyExchange(ecdhHelper, msg);
 					LOG.info("Dh2Message message received from authorizer with publicKey: {}",
 							ByteArrayUtils.toHex(dh2Message.getPublicKeyBA()));

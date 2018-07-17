@@ -9,5 +9,7 @@ public interface EcdhHelperTasks {
 	public byte[] computeSharedSecret(byte[] foreignPubKeyBA);
 
 	public byte[] getRandomBytes(int bytes);
+	
+	public byte[] getOobPswdId(String oobPswdString);
 
 }

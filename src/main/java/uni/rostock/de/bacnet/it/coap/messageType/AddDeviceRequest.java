@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 public class AddDeviceRequest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddDeviceRequest.class);
-	private static final int MESSAGE_TYPE = OOBProtocol.ADD_DEVICE_REQUEST.getValue();
+	private static final int MESSAGE_TYPE = OobProtocol.ADD_DEVICE_REQUEST;
 	/*
 	 * Sequence number for identifying no. of devices the mobile has authenticated
 	 */

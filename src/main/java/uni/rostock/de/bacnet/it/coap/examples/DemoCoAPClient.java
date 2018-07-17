@@ -1,9 +1,13 @@
 package uni.rostock.de.bacnet.it.coap.examples;
 
 import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.CoAP.Code;
 import org.eclipse.californium.core.coap.Request;
+
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.DeviceObjectPropertyValue;
+import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
 
 public class DemoCoAPClient {
 
@@ -11,17 +15,27 @@ public class DemoCoAPClient {
 		
 		CoapClient client = new CoapClient("coap://localhost:5683/light");
 //		client.putIfNoneMatch("hello", MediaTypeRegistry.TEXT_PLAIN);
-		Request request = new Request(Code.GET);
-		request.getOptions().setIfNoneMatch(true);
-		// etag of last received data
-		byte[] etag = "dummy tag".getBytes();
+		client.post(new CoapHandler() {
+			
+			@Override
+			public void onLoad(CoapResponse response) {
+				System.out.println(response.getResponseText());
+				
+			}
+			
+			@Override
+			public void onError() {
+				// TODO Auto-generated method stub
+				
+			}
+		}, "Hello".getBytes(), 0);
 		
-		request.getOptions().addETag(etag);
-		CoapResponse response = client.advanced(request);
-		if(response!=null) {
-			System.out.println(response.getCode());
-			System.out.println(new String(response.getOptions().getETags().get(0)));
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+		client.get();
 
 	}
 

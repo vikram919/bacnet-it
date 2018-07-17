@@ -10,7 +10,7 @@ import uni.rostock.de.bacnet.it.coap.crypto.OobAuthSession;
 public class OobFinalMessage {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OobFinalMessage.class.getCanonicalName());
-	private static final int MESSAGE_TYPE = OOBProtocol.FINISH_MESSAGE.getValue();
+	private static final int MESSAGE_TYPE = OobProtocol.FINISH_MESSAGE;
 	private final byte[] oobPswdIdBA;
 	private final byte[] serverNonceBA;
 	private final byte[] deviceNonceBA;
@@ -38,9 +38,9 @@ public class OobFinalMessage {
 			LOG.debug("ServerKeyExchange authentication failed, wrong messageType received");
 		}
 		this.finalMessageBA = finalBA;
-		oobPswdIdBA = reader.readBytes(OOBProtocol.OOB_PSWD_ID_LENGTH.getValue());
-		serverNonceBA = reader.readBytes(OOBProtocol.NONCE_LENGTH.getValue());
-		deviceNonceBA = reader.readBytes(OOBProtocol.NONCE_LENGTH.getValue());
+		oobPswdIdBA = reader.readBytes(OobProtocol.OOB_PSWD_ID_LENGTH);
+		serverNonceBA = reader.readBytes(OobProtocol.NONCE_LENGTH);
+		deviceNonceBA = reader.readBytes(OobProtocol.NONCE_LENGTH);
 		byte[] receviedMac = reader.readBytesLeft();
 		byte[] calculatedMac = calculateMac(session);
 		if (calculatedMac.equals(receviedMac)) {
