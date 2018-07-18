@@ -46,9 +46,8 @@ public class OobTestServer {
 							exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE, serverKeyExchange.getBA());
 						}
 					}
-
 					break;
-				case 4:
+				case OobProtocol.FINISH_MESSAGE:
 					break;
 				}
 				if (firstByte >> 5 == OobProtocol.DEVICE_KEY_EXCHANGE) {

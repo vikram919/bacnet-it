@@ -21,9 +21,6 @@ import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
  * class OobAuthSession is implemented to have separate auth session between
  * devices, where as ecdhHelper class will be only one supporting cryptographic
  * operations.
- * 
- * @author vik
- *
  */
 public class OobAuthSession {
 
@@ -34,6 +31,7 @@ public class OobAuthSession {
 	private byte[] oobPswdSalt = null;
 	private byte[] deviceNonce = null;
 	private byte[] serverNonce = null;
+	private int deviceId;
 
 	public OobAuthSession(EcdhHelper ecdhHelper, String oobPswdString) {
 		this.ecdhHelper = ecdhHelper;
@@ -62,6 +60,14 @@ public class OobAuthSession {
 
 	public byte[] getOobPswdSalt() {
 		return this.oobPswdSalt;
+	}
+
+	public Integer getDeviceId() {
+		return this.deviceId;
+	}
+
+	public void setDeviceId(int deviceId) {
+		this.deviceId = deviceId;
 	}
 
 	public void deriveOobPswdKey(byte[] salt) {

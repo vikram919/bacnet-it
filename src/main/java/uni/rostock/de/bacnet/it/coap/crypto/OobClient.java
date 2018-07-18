@@ -3,11 +3,11 @@ package uni.rostock.de.bacnet.it.coap.crypto;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
-import org.eclipse.californium.elements.util.DatagramReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
+import uni.rostock.de.bacnet.it.coap.messageType.OobFinalMessage;
 import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
 import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 
@@ -34,6 +34,7 @@ public class OobClient extends CoapClient {
 	class OobAuthHandler implements Runnable {
 
 		Listener clientKeyExchangelistener = new Listener();
+		Listener oobFinalMessageListener = new Listener();
 
 		@Override
 		public void run() {
@@ -59,12 +60,16 @@ public class OobClient extends CoapClient {
 				// // blink the led indicating the failure of oob authentication
 				// }
 			}
-			// OobFinalMessage oobFinalMessage = new OobFinalMessage(session);
-			// sendOobHandShakeMessage(oobFinalMessageListener, oobFinalMessage.getBA());
-			// while () {
-			//
-			// }
-			// TODO: send the OobFinalMessage
+			OobFinalMessage oobFinalMessage = new OobFinalMessage(session);
+			sendOobHandShakeMessage(oobFinalMessageListener, oobFinalMessage.getBA());
+			while (!oobFinalMessageListener.isDone()) {
+
+			}
+			//TODO: derive the secret key
+			//TODO: add the secret key to dtls connector
+			//TODO: add throttling on device side
+			//TODO: add throttling on server side
+
 		}
 	}
 
@@ -75,19 +80,22 @@ public class OobClient extends CoapClient {
 			public void onLoad(CoapResponse response) {
 				LOG.info("device received a message");
 				byte[] messageBA = response.getPayload();
-				int firstByte = messageBA[0];
-				switch (firstByte >> 5) {
-				case OobProtocol.SERVER_KEY_EXCHANGE:
-					LOG.info("device received ServerKeyExchange message");
-					ServerKeyExchange serverKeyExchange = new ServerKeyExchange(session, messageBA);
-					if (session.isServerKeyExchangeMessageAuthenticated(serverKeyExchange)) {
-						ecdhHelper.computeSharedSecret(serverKeyExchange.getPublicKeyBA());
-						LOG.info("server key message has been authenticated");
-						listener.onResponse(true);
+				if (response.isSuccess()) {
+					int firstByte = messageBA[0];
+					if ((firstByte >> 5) == OobProtocol.SERVER_KEY_EXCHANGE) {
+						LOG.info("device received ServerKeyExchange message");
+						ServerKeyExchange serverKeyExchange = new ServerKeyExchange(session, messageBA);
+						if (session.isServerKeyExchangeMessageAuthenticated(serverKeyExchange)) {
+							ecdhHelper.computeSharedSecret(serverKeyExchange.getPublicKeyBA());
+							LOG.info("server key message has been authenticated");
+							listener.onResponse(true);
+						} else {
+							LOG.info("authenticating server key message failed");
+						}
 					} else {
-						LOG.info("authenticating server key message failed");
+						LOG.info("success response received for OobFinalMessage from server");
+						listener.onResponse(true);
 					}
-					break;
 				}
 			}
 

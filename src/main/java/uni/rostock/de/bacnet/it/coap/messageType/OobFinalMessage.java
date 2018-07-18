@@ -12,22 +12,38 @@ public class OobFinalMessage {
 	private static final Logger LOG = LoggerFactory.getLogger(OobFinalMessage.class.getCanonicalName());
 	private static final int MESSAGE_TYPE = OobProtocol.FINISH_MESSAGE;
 	private final byte[] oobPswdIdBA;
+	private final int deviceId;
 	private final byte[] serverNonceBA;
 	private final byte[] deviceNonceBA;
+	private final byte[] messageMac;
 	private final byte[] finalMessageBA;
 	private boolean isMacVerified = false;
 
 	public OobFinalMessage(OobAuthSession session) {
+		if (session.getOobPswdId() == null) {
+			throw new NullPointerException("password id cannot be null");
+		}
 		this.oobPswdIdBA = session.getOobPswdId();
-		this.serverNonceBA = session.getServerNonce();
-		this.deviceNonceBA = session.getdeviceNonce();
+		if (session.getDeviceId() == null) {
+			throw new NullPointerException("deviceId cannot be null");
+		}
+		deviceId = session.getDeviceId();
+		if (session.getServerNonce() == null) {
+			throw new NullPointerException("server nonce cannot be null");
+		}
+		serverNonceBA = session.getServerNonce();
+		if (session.getdeviceNonce() == null) {
+			throw new NullPointerException("device nonce cannot be null");
+		}
+		deviceNonceBA = session.getdeviceNonce();
 		DatagramWriter writer = new DatagramWriter();
 		writer.write(MESSAGE_TYPE, 3);
 		writer.writeBytes(oobPswdIdBA);
+		writer.write(deviceId, 32);
 		writer.writeBytes(serverNonceBA);
 		writer.writeBytes(deviceNonceBA);
-		byte[] macData = calculateMac(session);
-		writer.writeBytes(macData);
+		messageMac = calculateMac(session);
+		writer.writeBytes(messageMac);
 		this.finalMessageBA = writer.toByteArray();
 	}
 
@@ -35,19 +51,15 @@ public class OobFinalMessage {
 		DatagramReader reader = new DatagramReader(finalBA);
 		int messageType = reader.read(3);
 		if (messageType != MESSAGE_TYPE) {
-			LOG.debug("ServerKeyExchange authentication failed, wrong messageType received");
+			LOG.debug("oobFinalMessage authentication failed, wrong messageType received");
 		}
 		this.finalMessageBA = finalBA;
 		oobPswdIdBA = reader.readBytes(OobProtocol.OOB_PSWD_ID_LENGTH);
+		deviceId = reader.read(32);
 		serverNonceBA = reader.readBytes(OobProtocol.NONCE_LENGTH);
 		deviceNonceBA = reader.readBytes(OobProtocol.NONCE_LENGTH);
-		byte[] receviedMac = reader.readBytesLeft();
-		byte[] calculatedMac = calculateMac(session);
-		if (calculatedMac.equals(receviedMac)) {
-			setMacVerified(true);
-		} else {
-			LOG.debug("ServerKeyExchange authentication failed, MAC verfication failed");
-		}
+		messageMac = reader.readBytesLeft();
+		LOG.info("OobFinalMessage successfully de-serialized");
 	}
 
 	public byte[] getBA() {
