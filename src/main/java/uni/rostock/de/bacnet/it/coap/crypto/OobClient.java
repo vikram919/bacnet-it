@@ -34,7 +34,6 @@ public class OobClient extends CoapClient {
 	class OobAuthHandler implements Runnable {
 
 		Listener clientKeyExchangelistener = new Listener();
-		Listener oobFinalMessageListener = new Listener();
 
 		@Override
 		public void run() {
@@ -48,6 +47,11 @@ public class OobClient extends CoapClient {
 				// TODO: check whether there is an error message
 				if (clientKeyExchangelistener.receivedError()) {
 					// TODO: resend the clientKeyExchange message
+				}
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 				// TODO: check whether the oob key life time is expired
 				// if (isMessageLifeExpired()) {
@@ -70,15 +74,20 @@ public class OobClient extends CoapClient {
 			@Override
 			public void onLoad(CoapResponse response) {
 				LOG.info("device received a message");
-				listener.onResult(true);
 				byte[] messageBA = response.getPayload();
-				DatagramReader reader = new DatagramReader(messageBA);
-				if (reader.read(3) == OobProtocol.SERVER_KEY_EXCHANGE) {
+				int firstByte = messageBA[0];
+				switch (firstByte >> 5) {
+				case OobProtocol.SERVER_KEY_EXCHANGE:
+					LOG.info("device received ServerKeyExchange message");
 					ServerKeyExchange serverKeyExchange = new ServerKeyExchange(session, messageBA);
-					if (serverKeyExchange.isMacVerified()) {
+					if (session.isServerKeyExchangeMessageAuthenticated(serverKeyExchange)) {
 						ecdhHelper.computeSharedSecret(serverKeyExchange.getPublicKeyBA());
-						listener.isDone();
+						LOG.info("server key message has been authenticated");
+						listener.onResponse(true);
+					} else {
+						LOG.info("authenticating server key message failed");
 					}
+					break;
 				}
 			}
 
@@ -90,13 +99,14 @@ public class OobClient extends CoapClient {
 		// setMessageSentTime();
 	}
 
-	private static class Listener {
+	private class Listener {
+
 		private Integer result;
-		private boolean done = false;
+		private boolean done;
 		private byte[] messageReceived;
 		private boolean receivedError = false;
 
-		public void onResult(boolean val) {
+		public void onResponse(boolean val) {
 			this.done = val;
 		}
 
@@ -109,6 +119,7 @@ public class OobClient extends CoapClient {
 		}
 
 		public boolean isDone() {
+			// LOG.info(this.done+" ");
 			return done;
 		}
 

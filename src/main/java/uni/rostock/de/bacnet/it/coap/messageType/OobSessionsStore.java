@@ -51,4 +51,12 @@ public class OobSessionsStore {
 	public byte[] getPubKey() {
 		return ecdhHelper.getPubKeyBytes();
 	}
+
+	public byte[] getServerNonce() {
+		return ecdhHelper.getRandomBytes(8);
+	}
+
+	public byte[] getClientNonce() {
+		return ecdhHelper.getRandomBytes(8);
+	}
 }

@@ -1,7 +1,10 @@
 package uni.rostock.de.bacnet.it.coap.messageType;
 
+import java.util.Arrays;
+
 import org.eclipse.californium.elements.util.DatagramReader;
 import org.eclipse.californium.elements.util.DatagramWriter;
+import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,26 +14,35 @@ public class ServerKeyExchange {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ServerKeyExchange.class);
 	private static final int MESSAGE_TYPE = OobProtocol.SERVER_KEY_EXCHANGE;
-	private final byte[] serverNonceBA;
 	private final byte[] oobPswdIdBA;
 	private final int deviceId;
+	private final byte[] serverNonceBA;
 	private final byte[] publicKeyBA;
 	private final byte[] finalMessage;
-	private boolean isMacVerified = false;
+	private final byte[] messageMac;
 
 	public ServerKeyExchange(int deviceId, byte[] serverPubKey, OobAuthSession session) {
+		if (session.getServerNonce() == null) {
+			throw new NullPointerException("server nonce cannot be null");
+		}
+		if (session.getOobPswdId() == null) {
+			throw new NullPointerException("oobPswdId cannot be null");
+		}
+		if (serverPubKey == null) {
+			throw new NullPointerException("serverPubKey cannot be null");
+		}
 		serverNonceBA = session.getServerNonce();
 		oobPswdIdBA = session.getOobPswdId();
 		publicKeyBA = serverPubKey;
 		this.deviceId = deviceId;
 		DatagramWriter writer = new DatagramWriter();
 		writer.write(MESSAGE_TYPE, 3);
-		writer.writeBytes(serverNonceBA);
 		writer.writeBytes(oobPswdIdBA);
+		writer.writeBytes(serverNonceBA);
 		writer.write(deviceId, 32);
 		writer.writeBytes(publicKeyBA);
-		byte[] macData = calculateMac(session);
-		writer.writeBytes(macData);
+		this.messageMac = calculateMac(session);
+		writer.writeBytes(messageMac);
 		this.finalMessage = writer.toByteArray();
 		LOG.debug("ServerKeyExchange message serialized");
 	}
@@ -42,17 +54,12 @@ public class ServerKeyExchange {
 			LOG.debug("ServerKeyExchange authentication failed, wrong messageType received");
 		}
 		this.finalMessage = finalBA;
-		serverNonceBA = reader.readBytes(OobProtocol.NONCE_LENGTH);
 		oobPswdIdBA = reader.readBytes(OobProtocol.OOB_PSWD_ID_LENGTH);
+		serverNonceBA = reader.readBytes(OobProtocol.NONCE_LENGTH);
 		deviceId = reader.read(OobProtocol.DEVICE_ID_LENGTH);
-		publicKeyBA = new byte[OobProtocol.PUBLIC_KEY_BYTES];
-		byte[] receviedMac = reader.readBytesLeft();
-		byte[] calculatedMac = calculateMac(session);
-		if (calculatedMac.equals(receviedMac)) {
-			setMacVerified(true);
-		} else {
-			LOG.debug("ServerKeyExchange authentication failed, MAC verfication failed");
-		}
+		publicKeyBA = reader.readBytes(OobProtocol.PUBLIC_KEY_BYTES);
+		messageMac = reader.readBytesLeft();
+		LOG.info("server messsage successfully de-serailized");
 	}
 
 	public byte[] getPublicKeyBA() {
@@ -74,18 +81,19 @@ public class ServerKeyExchange {
 	private byte[] calculateMac(OobAuthSession session) {
 		DatagramWriter writer = new DatagramWriter();
 		writer.write(MESSAGE_TYPE, 3);
-		writer.writeBytes(serverNonceBA);
 		writer.writeBytes(oobPswdIdBA);
+		writer.writeBytes(serverNonceBA);
+		writer.writeBytes(session.getdeviceNonce());
 		writer.write(deviceId, 32);
 		writer.writeBytes(publicKeyBA);
 		return session.getMac(writer.toByteArray());
 	}
 
-	public boolean isMacVerified() {
-		return isMacVerified;
+	public byte[] getMessageMac() {
+		return messageMac;
 	}
-
-	public void setMacVerified(boolean isMacVerified) {
-		this.isMacVerified = isMacVerified;
+	
+	public byte[] getServerNonce() {
+		return serverNonceBA;
 	}
 }

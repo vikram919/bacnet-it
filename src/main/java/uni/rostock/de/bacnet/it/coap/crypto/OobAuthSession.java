@@ -15,6 +15,7 @@ import com.upokecenter.cbor.CBORObject;
 
 import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
 import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
+import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 
 /**
  * class OobAuthSession is implemented to have separate auth session between
@@ -116,6 +117,25 @@ public class OobAuthSession {
 		writer.writeBytes(deviceKeyExchange.getSalt());
 		writer.writeBytes(deviceKeyExchange.getDeviceNonce());
 		writer.writeBytes(deviceKeyExchange.getPublicKeyBA());
+		return getMac(writer.toByteArray());
+	}
+
+	public boolean isServerKeyExchangeMessageAuthenticated(ServerKeyExchange serverKeyExchange) {
+		setServerNonce(serverKeyExchange.getServerNonce());
+		boolean val = Arrays.equals(caluclateServerKeyExchangeMac(serverKeyExchange),
+				serverKeyExchange.getMessageMac());
+		LOG.info("mac verification result: " + val);
+		return val;
+	}
+
+	private byte[] caluclateServerKeyExchangeMac(ServerKeyExchange serverKeyExchange) {
+		DatagramWriter writer = new DatagramWriter();
+		writer.write(OobProtocol.SERVER_KEY_EXCHANGE, 3);
+		writer.writeBytes(serverKeyExchange.getOobPswdIdBA());
+		writer.writeBytes(serverKeyExchange.getServerNonce());
+		writer.writeBytes(getdeviceNonce());
+		writer.write(serverKeyExchange.getDeviceId(), 32);
+		writer.writeBytes(serverKeyExchange.getPublicKeyBA());
 		return getMac(writer.toByteArray());
 	}
 }

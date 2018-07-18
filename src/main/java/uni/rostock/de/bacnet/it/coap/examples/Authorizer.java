@@ -43,6 +43,7 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
+import uni.rostock.de.bacnet.it.coap.crypto.OobAuthSession;
 import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
 import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
 import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
@@ -182,7 +183,7 @@ public class Authorizer {
 		return request;
 	}
 
-	public void createCoapServer(int serverPort) {
+	public void createCoapServer(int serverPort) { 
 		CoapServer server = new CoapServer(serverPort);
 		server.add(new CoapResource("auth") {
 			@Override

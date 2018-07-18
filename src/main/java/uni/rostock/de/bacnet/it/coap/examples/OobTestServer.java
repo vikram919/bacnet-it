@@ -39,6 +39,8 @@ public class OobTestServer {
 						if (oobTestServer.oobAuthSession.isDeviceKeyExchangeMessageAuthenticated(deviceKeyExchange)) {
 							LOG.info("device is authenticated");
 							LOG.info("sending server key exchange message to the device");
+							oobTestServer.oobAuthSession.setServerNonce(deviceSessionsMap.getServerNonce());
+							oobTestServer.oobAuthSession.setClientNonce(deviceKeyExchange.getDeviceNonce());
 							ServerKeyExchange serverKeyExchange = new ServerKeyExchange(200,
 									deviceSessionsMap.getPubKey(), oobTestServer.oobAuthSession);
 							exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE, serverKeyExchange.getBA());
