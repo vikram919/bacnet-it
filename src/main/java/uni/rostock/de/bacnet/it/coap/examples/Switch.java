@@ -46,6 +46,7 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
+import uni.rostock.de.bacnet.it.coap.crypto.OobAuthClient;
 import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
 import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
@@ -67,11 +68,7 @@ public class Switch {
 	private static final BACnetEID AUTH_EID = new BACnetEID(AUTH_ID);
 
 	/* we assume OOB password is known to both */
-	private String oobPswdKey = "10101111010100101010";
-	EcdhHelper ecdhHelper;
-	private boolean signal = false;
-
-	private CoapClient client;
+	private static String OOB_PSWD_STRING = "10101110010101101011";
 
 	public static void main(String[] args) {
 
@@ -87,31 +84,12 @@ public class Switch {
 			e1.printStackTrace();
 		}
 		device.hostAddress();
-//		PushButtonJob pushButtonJob = new PushButtonJob();
-//		pushButtonJob.start();
-//		device.ecdhHelper = new EcdhHelper(OOBProtocol.X25519.getValue(), pushButtonJob.getOOBKeyAsString());
-		/* creates a plain coap client for initial DH authenticaiton stage */
-//		device.createCoapClient();
-		/* device sends Dh1Message to Authorizer */
-//		Dh1Message dh1Message = new Dh1Message(device.ecdhHelper);
-//		device.sendMessage(dh1Message.getBA(), AUTH_URL);
-//		LOG.info("device sent Dh1Messag to authorizer with publickey: {}",
-//				ByteArrayUtils.toHex(device.ecdhHelper.getPubKeyBytes()));
-//		LOG.info("device is waiting for Dh2Message from authorizer");
-//		device.waitForSignal();
-//		LOG.info("Dh2Message message received, waiting finished");
-//		LOG.info("derived shared secret on device side: {}", ByteArrayUtils.toHex(device.ecdhHelper.getSharedSecret()));
-		/* device sends final message to authorizer */
-//		OobFinalMessage oobFinalMessage = new OobFinalMessage(device.getDeviceId(), AUTH_ID, device.ecdhHelper);
-//		device.sendMessage(oobFinalMessage.getBA(), AUTH_URL);
-//		LOG.info("final message sent from device");
-//		LOG.info("handshake successfull on device side");
-//		try {
-//			device.bindingConfiguration.addPSK(new String(device.ecdhHelper.getOObPswdKeyIdentifier()),
-//					device.ecdhHelper.getSharedSecret(), new InetSocketAddress(InetAddress.getByName(AUTH_IP), 5684));
-//		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		}
+		PushButtonJob pushButtonJob = new PushButtonJob();
+		pushButtonJob.start();
+//		 pushButtonJob.getOOBKeyAsString();
+		OobAuthClient oobClient = new OobAuthClient(OOB_PSWD_STRING, "coap://localhost:5683/authentication",
+				device.bindingConfiguration);
+		oobClient.startHandShake();
 		device.start();
 		try {
 			device.sendWritePropertRequest(new URI("coaps://localhost:5684"));
@@ -171,7 +149,8 @@ public class Switch {
 		try {
 			final WritePropertyRequest readRequest = new WritePropertyRequest(
 					new BACnetObjectIdentifier(BACnetObjectType.analogValue, 1), BACnetPropertyIdentifier.presentValue,
-					new UnsignedInteger(55), new OctetString("hello server".getBytes(StandardCharsets.UTF_8)), new UnsignedInteger(1));
+					new UnsignedInteger(55), new OctetString("hello server".getBytes(StandardCharsets.UTF_8)),
+					new UnsignedInteger(1));
 			final ByteQueue byteQueue = new ByteQueue();
 			readRequest.write(byteQueue);
 			byte[] body = byteQueue.popAll();
@@ -212,67 +191,6 @@ public class Switch {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void createCoapClient() {
-		this.client = new CoapClient();
-	}
-
-	public void sendMessage(byte[] msg, String destinatonUrl) {
-
-		Request request = new Request(Code.POST);
-		request.setURI(destinatonUrl);
-		request.setPayload(msg);
-		CoapHandler messageHandler = new CoapHandler() {
-			@Override
-			public void onLoad(CoapResponse response) {
-				byte[] msg = response.getPayload();
-				if (msg[0] == OobProtocol.SERVER_KEY_EXCHANGE.getValue()) {
-					ServerKeyExchange dh2Message = new ServerKeyExchange(ecdhHelper, msg);
-					LOG.info("Dh2Message message received from authorizer with publicKey: {}",
-							ByteArrayUtils.toHex(dh2Message.getPublicKeyBA()));
-					LOG.info("received deviceId: " + dh2Message.getDeviceId());
-					setDeviceId(dh2Message.getDeviceId());
-					ecdhHelper.computeSharedSecret(dh2Message.getPublicKeyBA());
-					setSignal(true);
-				}
-			}
-
-			@Override
-			public void onError() {
-
-			}
-		};
-		client.advanced(messageHandler, request);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public synchronized void setSignal(boolean value) {
-		signal = value;
-		notifyAll();
-	}
-
-	public synchronized void waitForSignal() {
-		while (signal != true) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			setSignal(false);
-		}
-	}
-
-	public void setDeviceId(int deviceId) {
-		this.deviceId = deviceId;
-	}
-
-	public int getDeviceId() {
-		return this.deviceId;
 	}
 
 	public void hostAddress() {

@@ -1,5 +1,11 @@
 package uni.rostock.de.bacnet.it.coap.crypto;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
@@ -10,17 +16,20 @@ import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
 import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
 import uni.rostock.de.bacnet.it.coap.messageType.OobProtocolException;
 import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
+import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
-public class OobClient extends CoapClient {
+public class OobAuthClient extends CoapClient {
 
-	private static Logger LOG = LoggerFactory.getLogger(OobClient.class.getCanonicalName());
+	private static Logger LOG = LoggerFactory.getLogger(OobAuthClient.class.getCanonicalName());
 	private static final int ALLOWED_FAIL_ATTEMPTS = 2;
 
 	private final EcdhHelper ecdhHelper = new EcdhHelper(0);
 	private final OobAuthSession session;
+	private final TransportDTLSCoapBinding bindingConfiguration;
 
-	public OobClient(String oobPswdString, String uri) {
+	public OobAuthClient(String oobPswdString, String uri, TransportDTLSCoapBinding bindingConfiguration) {
 		super(uri);
+		this.bindingConfiguration = bindingConfiguration;
 		session = new OobAuthSession(ecdhHelper, oobPswdString);
 	}
 
@@ -63,11 +72,14 @@ public class OobClient extends CoapClient {
 				}
 			}
 			LOG.info("device successfully authenticated ServerKeyExchange message from server");
-			ecdhHelper.computeSharedSecret(session.getForeignPublicKey());
-			LOG.info("device have established a secret key with server");
-			// TODO: add throttling on server side
-			// TODO: add the secret key to dtls connector
-
+			byte[] sharedSecret = ecdhHelper.computeSharedSecret(session.getForeignPublicKey());
+			try {
+				bindingConfiguration.addPSK(Integer.toString(session.getDeviceId()), sharedSecret,
+						new InetSocketAddress(InetAddress.getByName(new URI(getURI()).getHost()), 5684));
+			} catch (UnknownHostException | URISyntaxException e) {
+				e.printStackTrace();
+			}
+			LOG.info("device have established a secret key with server, and is added to InMemoryPSKStore");
 		}
 	}
 
