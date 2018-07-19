@@ -8,11 +8,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 
-import org.eclipse.californium.core.CoapClient;
-import org.eclipse.californium.core.CoapHandler;
-import org.eclipse.californium.core.CoapResponse;
-import org.eclipse.californium.core.coap.CoAP.Code;
-import org.eclipse.californium.core.coap.Request;
 import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +40,7 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInte
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
-import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 import uni.rostock.de.bacnet.it.coap.crypto.OobAuthClient;
-import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
-import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
 public class Switch {
@@ -57,15 +49,13 @@ public class Switch {
 
 	private TransportDTLSCoapBinding bindingConfiguration = new TransportDTLSCoapBinding();
 	ASEServices aseServiceChannel;
-	private int deviceId;
 	private static final int AUTH_ID = 1;
 	private static final String AUTH_IP = "139.30.202.56:";
 	private String hostAddress;
-	private static final String PLAIN_SCHEME = "coap://";
 	private static final String SECURE_SCHEME = "coaps://";
-	private static final String AUTH_URL = PLAIN_SCHEME + AUTH_IP + "5683/auth";
 	private static final int DTLS_PORT = 5685;
 	private static final BACnetEID AUTH_EID = new BACnetEID(AUTH_ID);
+	private OobAuthClient oobClient;
 
 	/* we assume OOB password is known to both */
 	private static String OOB_PSWD_STRING = "10101110010101101011";
@@ -86,10 +76,10 @@ public class Switch {
 		device.hostAddress();
 		PushButtonJob pushButtonJob = new PushButtonJob();
 		pushButtonJob.start();
-//		 pushButtonJob.getOOBKeyAsString();
-		OobAuthClient oobClient = new OobAuthClient(OOB_PSWD_STRING, "coap://localhost:5683/authentication",
+		// pushButtonJob.getOOBKeyAsString();
+		device.oobClient = new OobAuthClient(OOB_PSWD_STRING, "coap://localhost:5683/authentication",
 				device.bindingConfiguration);
-		oobClient.startHandShake();
+		device.oobClient.startHandShake();
 		device.start();
 		try {
 			device.sendWritePropertRequest(new URI("coaps://localhost:5684"));
@@ -108,7 +98,7 @@ public class Switch {
 		bindingConfiguration.init();
 		channelConfigure.setASEService((ASEService) bindingConfiguration);
 
-		channelConfigure.registerChannelListener(new ChannelListener(new BACnetEID(getDeviceId())) {
+		channelConfigure.registerChannelListener(new ChannelListener(new BACnetEID(oobClient.getDeviceId())) {
 
 			@Override
 			public void onIndication(T_UnitDataIndication arg0, Object arg1) {
@@ -184,7 +174,7 @@ public class Switch {
 		try {
 			ByteQueue queue = new ByteQueue();
 			queue = new ByteQueue(performRegisterOverBds(new URI(SECURE_SCHEME + getHostAddress() + DTLS_PORT)));
-			final TPDU tpdu = new TPDU(new BACnetEID(getDeviceId()), AUTH_EID, queue.popAll());
+			final TPDU tpdu = new TPDU(new BACnetEID(oobClient.getDeviceId()), AUTH_EID, queue.popAll());
 			final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(new URI(SECURE_SCHEME + AUTH_IP + 5684),
 					tpdu, 1, null);
 			aseServiceChannel.doRequest(unitDataRequest);

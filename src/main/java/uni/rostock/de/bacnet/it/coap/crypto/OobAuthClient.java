@@ -34,53 +34,42 @@ public class OobAuthClient extends CoapClient {
 	}
 
 	public void startHandShake() {
-		Thread handShakeThread = new Thread(new OobAuthHandler());
-		handShakeThread.start();
-	}
-
-	class OobAuthHandler implements Runnable {
-
 		Listener clientKeyExchangelistener = new Listener();
-		Listener oobFinalMessageListener = new Listener();
+		session.setClientNonce(ecdhHelper.getRandomBytes(OobProtocol.NONCE_LENGTH));
+		session.setSalt(ecdhHelper.getRandomBytes(OobProtocol.SALT_LENGTH));
+		session.deriveOobPswdKey(session.getOobPswdSalt());
+		DeviceKeyExchange deviceKeyExchange = new DeviceKeyExchange(session, ecdhHelper.getPubKeyBytes());
+		byte[] deviceKeyExchangeMessageBA = deviceKeyExchange.getBA();
+		sendOobHandShakeMessage(clientKeyExchangelistener, deviceKeyExchangeMessageBA);
+		while (!clientKeyExchangelistener.isDone()) {
 
-		@Override
-		public void run() {
-			session.setClientNonce(ecdhHelper.getRandomBytes(OobProtocol.NONCE_LENGTH));
-			session.setSalt(ecdhHelper.getRandomBytes(OobProtocol.SALT_LENGTH));
-			session.deriveOobPswdKey(session.getOobPswdSalt());
-			DeviceKeyExchange deviceKeyExchange = new DeviceKeyExchange(session, ecdhHelper.getPubKeyBytes());
-			byte[] deviceKeyExchangeMessageBA = deviceKeyExchange.getBA();
-			sendOobHandShakeMessage(clientKeyExchangelistener, deviceKeyExchangeMessageBA);
-			while (!clientKeyExchangelistener.isDone()) {
-
-				if (clientKeyExchangelistener.receivedError()) {
-					sendOobHandShakeMessage(clientKeyExchangelistener, deviceKeyExchangeMessageBA);
-				}
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				if (isOobPswdLifeExpired()) {
-					try {
-						throw new OobProtocolException(
-								"OobPswd life time expired, device state needs to be switched to initial state");
-					} catch (OobProtocolException e) {
-						e.printStackTrace();
-					}
-					break;
-				}
+			if (clientKeyExchangelistener.receivedError()) {
+				sendOobHandShakeMessage(clientKeyExchangelistener, deviceKeyExchangeMessageBA);
 			}
-			LOG.info("device successfully authenticated ServerKeyExchange message from server");
-			byte[] sharedSecret = ecdhHelper.computeSharedSecret(session.getForeignPublicKey());
 			try {
-				bindingConfiguration.addPSK(Integer.toString(session.getDeviceId()), sharedSecret,
-						new InetSocketAddress(InetAddress.getByName(new URI(getURI()).getHost()), 5684));
-			} catch (UnknownHostException | URISyntaxException e) {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			LOG.info("device have established a secret key with server, and is added to InMemoryPSKStore");
+			if (isOobPswdLifeExpired()) {
+				try {
+					throw new OobProtocolException(
+							"OobPswd life time expired, device state needs to be switched to initial state");
+				} catch (OobProtocolException e) {
+					e.printStackTrace();
+				}
+				break;
+			}
 		}
+		LOG.info("device successfully authenticated ServerKeyExchange message from server");
+		byte[] sharedSecret = ecdhHelper.computeSharedSecret(session.getForeignPublicKey());
+		try {
+			bindingConfiguration.addPSK(Integer.toString(session.getDeviceId()), sharedSecret,
+					new InetSocketAddress(InetAddress.getByName(new URI(getURI()).getHost()), 5684));
+		} catch (UnknownHostException | URISyntaxException e) {
+			e.printStackTrace();
+		}
+		LOG.info("device have established a secret key with server, and is added to InMemoryPSKStore");
 	}
 
 	private void sendOobHandShakeMessage(Listener listener, byte[] payload) {
@@ -178,5 +167,9 @@ public class OobAuthClient extends CoapClient {
 			session.setThrottlingInitTime(System.nanoTime());
 			LOG.info("authenticating server key message failed");
 		}
+	}
+
+	public int getDeviceId() {
+		return session.getDeviceId();
 	}
 }
