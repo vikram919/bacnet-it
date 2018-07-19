@@ -9,8 +9,6 @@ public class OobProtocol {
 	public static final int DEVICE_KEY_EXCHANGE = 2;
 
 	public static final int SERVER_KEY_EXCHANGE = 3;
-
-	public static final int FINISH_MESSAGE = 4;
 	
 	public static final int OOB_STATUS = 5;
 

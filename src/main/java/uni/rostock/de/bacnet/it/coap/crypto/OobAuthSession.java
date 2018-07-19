@@ -31,11 +31,21 @@ public class OobAuthSession {
 	private byte[] oobPswdSalt = null;
 	private byte[] deviceNonce = null;
 	private byte[] serverNonce = null;
+	private byte[] foreignPubKey = null;
+	private double oobPswdCreatedTime;
+	private double throttlingInitTime;
 	private int deviceId;
+
+	/**
+	 * to know no of times sever key exchange message authentication failed to
+	 * impose throttling.
+	 */
+	private int timesFailedAuth = 0;
 
 	public OobAuthSession(EcdhHelper ecdhHelper, String oobPswdString) {
 		this.ecdhHelper = ecdhHelper;
 		this.oobPswdString = oobPswdString;
+		oobPswdCreatedTime = System.nanoTime();
 	}
 
 	public void setSalt(byte[] oobPswdSalt) {
@@ -144,4 +154,33 @@ public class OobAuthSession {
 		writer.writeBytes(serverKeyExchange.getPublicKeyBA());
 		return getMac(writer.toByteArray());
 	}
+
+	public double getOobPswdCreatedTime() {
+		return oobPswdCreatedTime;
+	}
+
+	public void setThrottlingInitTime(double initTime) {
+		throttlingInitTime = initTime;
+	}
+
+	public double getThrottlingInitTime() {
+		return throttlingInitTime;
+	}
+
+	public void setForeignPublicKey(byte[] foreignPubKey) {
+		this.foreignPubKey = foreignPubKey;
+	}
+
+	public byte[] getForeignPublicKey() {
+		return foreignPubKey;
+	}
+
+	public void incrementFailedAuthAttempts() {
+		timesFailedAuth++;
+	}
+
+	public int getFailedAuthAttempts() {
+		return timesFailedAuth;
+	}
+
 }

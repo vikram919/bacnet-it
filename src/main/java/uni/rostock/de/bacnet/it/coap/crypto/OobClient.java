@@ -7,19 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
-import uni.rostock.de.bacnet.it.coap.messageType.OobFinalMessage;
 import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
+import uni.rostock.de.bacnet.it.coap.messageType.OobProtocolException;
 import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 
 public class OobClient extends CoapClient {
 
 	private static Logger LOG = LoggerFactory.getLogger(OobClient.class.getCanonicalName());
+	private static final int ALLOWED_FAIL_ATTEMPTS = 2;
+
 	private final EcdhHelper ecdhHelper = new EcdhHelper(0);
 	private final OobAuthSession session;
-	private int ClientKeyExchangeStatus;
-	private int isClientKeyExchangeSuccess;
-	private double messageSentTimeStamp;
-	private int delay;
 
 	public OobClient(String oobPswdString, String uri) {
 		super(uri);
@@ -45,30 +43,30 @@ public class OobClient extends CoapClient {
 			byte[] deviceKeyExchangeMessageBA = deviceKeyExchange.getBA();
 			sendOobHandShakeMessage(clientKeyExchangelistener, deviceKeyExchangeMessageBA);
 			while (!clientKeyExchangelistener.isDone()) {
-				// TODO: check whether there is an error message
+
 				if (clientKeyExchangelistener.receivedError()) {
-					// TODO: resend the clientKeyExchange message
+					sendOobHandShakeMessage(clientKeyExchangelistener, deviceKeyExchangeMessageBA);
 				}
 				try {
 					Thread.sleep(1);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				// TODO: check whether the oob key life time is expired
-				// if (isMessageLifeExpired()) {
-				// // TODO: throw exception oob key for the given server expired
-				// // blink the led indicating the failure of oob authentication
-				// }
+				if (isOobPswdLifeExpired()) {
+					try {
+						throw new OobProtocolException(
+								"OobPswd life time expired, device state needs to be switched to initial state");
+					} catch (OobProtocolException e) {
+						e.printStackTrace();
+					}
+					break;
+				}
 			}
-			OobFinalMessage oobFinalMessage = new OobFinalMessage(session);
-			sendOobHandShakeMessage(oobFinalMessageListener, oobFinalMessage.getBA());
-			while (!oobFinalMessageListener.isDone()) {
-
-			}
-			//TODO: derive the secret key
-			//TODO: add the secret key to dtls connector
-			//TODO: add throttling on device side
-			//TODO: add throttling on server side
+			LOG.info("device successfully authenticated ServerKeyExchange message from server");
+			ecdhHelper.computeSharedSecret(session.getForeignPublicKey());
+			LOG.info("device have established a secret key with server");
+			// TODO: add throttling on server side
+			// TODO: add the secret key to dtls connector
 
 		}
 	}
@@ -79,39 +77,47 @@ public class OobClient extends CoapClient {
 			@Override
 			public void onLoad(CoapResponse response) {
 				LOG.info("device received a message");
-				byte[] messageBA = response.getPayload();
 				if (response.isSuccess()) {
+					LOG.info("received message has payload and carries success response code");
+					byte[] messageBA = response.getPayload();
 					int firstByte = messageBA[0];
-					if ((firstByte >> 5) == OobProtocol.SERVER_KEY_EXCHANGE) {
-						LOG.info("device received ServerKeyExchange message");
-						ServerKeyExchange serverKeyExchange = new ServerKeyExchange(session, messageBA);
-						if (session.isServerKeyExchangeMessageAuthenticated(serverKeyExchange)) {
-							ecdhHelper.computeSharedSecret(serverKeyExchange.getPublicKeyBA());
-							LOG.info("server key message has been authenticated");
-							listener.onResponse(true);
-						} else {
-							LOG.info("authenticating server key message failed");
+					int first3Bits = firstByte >> 5;
+					LOG.info("received message type: " + first3Bits);
+					// LSB 3 bits of firstByte defines the type of message received
+					if (first3Bits == OobProtocol.SERVER_KEY_EXCHANGE) {
+						LOG.info("received ServerKeyExchange message");
+						if (session.getFailedAuthAttempts() < ALLOWED_FAIL_ATTEMPTS) {
+							LOG.info("ServerKeyExchange message received is within allowed fail attempts");
+							processingSKEMessage(listener, messageBA);
+						}
+						if (session.getFailedAuthAttempts() > ALLOWED_FAIL_ATTEMPTS) {
+							LOG.info("ServerKeyExchange message received is after allowed fail attempts");
+							if (isThortlingTimeFinished()) {
+								LOG.info("Throttling time is finished, device processing ServerKeyExchange message");
+								processingSKEMessage(listener, messageBA);
+							} else {
+								LOG.info("ServerkeyExchange message discarded due to throttling effect");
+							}
 						}
 					} else {
-						LOG.info("success response received for OobFinalMessage from server");
-						listener.onResponse(true);
+						LOG.info("discarding unknown message received");
 					}
+				} else {
+					LOG.info("received response does not carry success code, resending the message");
+					listener.setReceivedError();
 				}
 			}
 
 			@Override
 			public void onError() {
-				listener.isDone();
+				listener.setReceivedError();
 			}
 		}, payload, 0);
-		// setMessageSentTime();
 	}
 
 	private class Listener {
 
-		private Integer result;
 		private boolean done;
-		private byte[] messageReceived;
 		private boolean receivedError = false;
 
 		public void onResponse(boolean val) {
@@ -119,11 +125,7 @@ public class OobClient extends CoapClient {
 		}
 
 		public void setReceivedError() {
-			this.receivedError = true;
-		}
-
-		public void setMessageReceived(byte[] message) {
-			this.messageReceived = message;
+			receivedError = true;
 		}
 
 		public boolean isDone() {
@@ -131,30 +133,38 @@ public class OobClient extends CoapClient {
 			return done;
 		}
 
-		public Integer getResult() {
-			return result;
-		}
-
 		public boolean receivedError() {
 			return receivedError;
 		}
+	}
 
-		public byte[] getReceivedMessage() {
-			return messageReceived;
+	private boolean isOobPswdLifeExpired() {
+		int delay = (int) ((System.nanoTime() - session.getOobPswdCreatedTime()) / 1000000000);
+		if (delay > 360) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isThortlingTimeFinished() {
+		int delay = (int) ((System.nanoTime() - session.getThrottlingInitTime()) / 1000000000);
+		if (delay > Math.pow(2, session.getFailedAuthAttempts())) {
+			return true;
+		}
+		return false;
+	}
+
+	private void processingSKEMessage(Listener listener, byte[] messageBA) {
+		LOG.info("device received ServerKeyExchange message");
+		ServerKeyExchange serverKeyExchange = new ServerKeyExchange(session, messageBA);
+		if (session.isServerKeyExchangeMessageAuthenticated(serverKeyExchange)) {
+			session.setForeignPublicKey(serverKeyExchange.getPublicKeyBA());
+			LOG.info("server key message has been authenticated");
+			listener.onResponse(true);
+		} else {
+			session.incrementFailedAuthAttempts();
+			session.setThrottlingInitTime(System.nanoTime());
+			LOG.info("authenticating server key message failed");
 		}
 	}
-
-	private void setMessageSentTime() {
-		this.messageSentTimeStamp = System.nanoTime();
-	}
-
-	// private boolean isMessageLifeExpired() {
-	// int delay = (int) ((System.nanoTime() - this.messageSentTimeStamp) /
-	// 1000000000);
-	// if (delay < 180) {
-	// return true;
-	// } else {
-	// return false;
-	// }
-	// }
 }
