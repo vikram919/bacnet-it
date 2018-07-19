@@ -59,4 +59,8 @@ public class OobSessionsStore {
 	public byte[] getClientNonce() {
 		return ecdhHelper.getRandomBytes(8);
 	}
+
+	public byte[] computeSharedSecret(byte[] foreignPubKey) {
+		return ecdhHelper.computeSharedSecret(foreignPubKey);
+	}
 }

@@ -10,6 +10,7 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.eclipse.californium.elements.util.DatagramReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +47,7 @@ import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 import uni.rostock.de.bacnet.it.coap.crypto.OobAuthSession;
 import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
 import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
+import uni.rostock.de.bacnet.it.coap.messageType.OobSessionsStore;
 import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
@@ -65,7 +67,9 @@ public class Authorizer {
 	private TransportDTLSCoapBinding coapDtlsbindingConfig;
 	private static final int GROUP1_ID = 445;
 	private String oobKeyPswd = "";
-	EcdhHelper ecdhHelper;
+	private static final int ALLOWED_FAIL_ATTEMPTS = 2;
+	private static String OOB_PSWD_STRING = "10101110010101101011";
+	private static OobSessionsStore deviceSessionsMap = OobSessionsStore.getInstance();
 
 	public static void main(String[] args) {
 
@@ -127,7 +131,7 @@ public class Authorizer {
 					byte[] msg = queue.peek(15, queue.size() - 21);
 					System.out.println(new String(msg));
 
-					if (msg[0] == OobProtocol.ADD_DEVICE_REQUEST.getValue()) {
+					if (msg[0] == OobProtocol.ADD_DEVICE_REQUEST) {
 						LOG.info("Auth received add device request from mobile!!");
 						for (int i = 0; i < 20; i++) {
 							oobKeyPswd += random.nextInt(2);
@@ -183,33 +187,41 @@ public class Authorizer {
 		return request;
 	}
 
-	public void createCoapServer(int serverPort) { 
-		CoapServer server = new CoapServer(serverPort);
-		server.add(new CoapResource("auth") {
+	public void createCoapServer(int serverPort) {
+		CoapServer oobAuthServer = new CoapServer(5683);
+		deviceSessionsMap.addDeviceoobPswd(OOB_PSWD_STRING);
+		oobAuthServer.add(new CoapResource("authentication") {
 			@Override
 			public void handlePOST(CoapExchange exchange) {
 				byte[] msg = exchange.getRequestPayload();
-				if (msg[0] == OobProtocol.DEVICE_KEY_EXCHANGE.getValue()) {
-					LOG.info("authorizer recevived Dh1Message from device");
-					DeviceKeyExchange oobDhMessage = new DeviceKeyExchange(ecdhHelper, msg);
-					byte[] devicePubKey = oobDhMessage.getPublicKeyBA();
-					ecdhHelper.computeSharedSecret(devicePubKey);
-					LOG.info("derived shared secret on auth side");
-					ServerKeyExchange dh2Message = new ServerKeyExchange(AUTH_ID, DEVICE_ID, ecdhHelper);
-					exchange.respond(ResponseCode.CHANGED, dh2Message.getBA(), 0);
-					LOG.info("authorizer responds with DH2Message to device with public key bytes");
-				} else if (msg[0] == OobProtocol.FINISH_MESSAGE.getValue()) {
-					LOG.info("received final Message from device");
-					LOG.info("handshake successful on authorizer side");
-					/* adding the master secret to InMemoryPreSharedKeyStore */
-					coapDtlsbindingConfig.addPSK(new String(ecdhHelper.getOObPswdKeyIdentifier()),
-							ecdhHelper.getSharedSecret(),
-							new InetSocketAddress(exchange.getSourceAddress(), DTLS_SOCKET));
+				DatagramReader reader = new DatagramReader(msg);
+				int first3Bits = reader.read(3);
+				LOG.info("authorizer recevived message from device of type: {}", first3Bits);
+				if (first3Bits == OobProtocol.DEVICE_KEY_EXCHANGE) {
+					DeviceKeyExchange deviceKeyExchange = new DeviceKeyExchange(msg);
+					if (deviceSessionsMap.hasOobPswdId(deviceKeyExchange.getOobPswdIdBA())) {
+						OobAuthSession oobAuthSession = deviceSessionsMap
+								.getAuthSession(deviceKeyExchange.getOobPswdIdBA());
+						if (oobAuthSession.getFailedAuthAttempts() < ALLOWED_FAIL_ATTEMPTS) {
+							LOG.info("DeviceKeyExchange message received is within allowed fail attempts");
+							processDKEMessage(oobAuthSession, deviceKeyExchange, exchange);
+						}
+						if (oobAuthSession.getFailedAuthAttempts() > ALLOWED_FAIL_ATTEMPTS) {
+							LOG.info("DeviceKeyExchange message received is after allowed fail attempts");
+							if (isThortlingTimeFinished(oobAuthSession)) {
+								LOG.info("Throttling time is finished, device processing DeviceKeyExchange message");
+								processDKEMessage(oobAuthSession, deviceKeyExchange, exchange);
+							} else {
+								LOG.info("DevicekeyExchange message discarded due to throttling effect");
+							}
+						}
+					} else {
+						LOG.info("no OobAuthSession exists for the received OobPswdId");
+					}
 				}
 			}
 		});
-
-		server.start();
+		oobAuthServer.start();
 	}
 
 	public void sendWritePropertyRequest(byte[] message, int toDeviceId, String context) {
@@ -238,5 +250,35 @@ public class Authorizer {
 
 	public String getOobPswdKeyString() {
 		return this.oobKeyPswd;
+	}
+
+	private void processDKEMessage(OobAuthSession session, DeviceKeyExchange deviceKeyExchange, CoapExchange exchange) {
+		LOG.info("DeviceKeyExchange message received is within allowed fail attempts");
+		if (session.isDeviceKeyExchangeMessageAuthenticated(deviceKeyExchange)) {
+			LOG.info("device is authenticated");
+			LOG.info("sending server key exchange message to the device");
+			session.setServerNonce(deviceSessionsMap.getServerNonce());
+			session.setClientNonce(deviceKeyExchange.getDeviceNonce());
+			session.setDeviceId(200);
+			ServerKeyExchange serverKeyExchange = new ServerKeyExchange(session.getDeviceId(),
+					deviceSessionsMap.getPubKey(), session);
+			byte[] sharedSecret = deviceSessionsMap.computeSharedSecret(session.getForeignPublicKey());
+			/* adding the master secret to InMemoryPreSharedKeyStore */
+			coapDtlsbindingConfig.addPSK(new String(Integer.toString(session.getDeviceId())), sharedSecret,
+					new InetSocketAddress(exchange.getSourceAddress(), DTLS_SOCKET));
+			exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE, serverKeyExchange.getBA());
+		} else {
+			session.incrementFailedAuthAttempts();
+			session.setThrottlingInitTime(System.nanoTime());
+			LOG.info("authenticating device key message failed");
+		}
+	}
+
+	private boolean isThortlingTimeFinished(OobAuthSession session) {
+		int delay = (int) ((System.nanoTime() - session.getThrottlingInitTime()) / 1000000000);
+		if (delay > Math.pow(2, session.getFailedAuthAttempts())) {
+			return true;
+		}
+		return false;
 	}
 }
