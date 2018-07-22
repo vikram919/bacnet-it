@@ -28,6 +28,7 @@ import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetPropertyIdentifi
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ASDU;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ConfirmedRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.IncomingRequestParser;
+import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.SimpleACK;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
@@ -37,9 +38,11 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInte
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
+import uni.rostock.de.bacnet.it.coap.oobAuth.AddDeviceRequest;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobAuthServer;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobProtocol;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobSessionsStore;
+import uni.rostock.de.bacnet.it.coap.transportbinding.ResponseCallback;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
 public class Authorizer {
@@ -59,12 +62,11 @@ public class Authorizer {
 
 		Authorizer authorizer = new Authorizer();
 		authorizer.start();
-		
-		OobAuthServer oobAuthServer = new OobAuthServer(authorizer.coapDtlsbindingConfig, 
-				authorizer.deviceSessionsMap);
+
+		OobAuthServer oobAuthServer = new OobAuthServer(authorizer.coapDtlsbindingConfig, authorizer.deviceSessionsMap);
 		oobAuthServer.startAuthServer(CoAP.DEFAULT_COAP_PORT);
 		authorizer.deviceSessionsMap.addDeviceoobPswd(OOB_PSWD_STRING);
-		
+
 		try {
 			DiscoveryConfig ds = new DiscoveryConfig("DNSSD", "1.1.1.1", "itb.bacnet.ch.", "bds._sub._bacnet._udp.",
 					"auth._sub._bacnet._udp.", "authservice._sub._bacnet._udp.", false);
@@ -106,34 +108,22 @@ public class Authorizer {
 					LOG.debug("authorizer received a WritePropertyRequest!");
 					ByteQueue queue = new ByteQueue(arg0.getData().getBody());
 					byte[] msg = queue.peek(15, queue.size() - 21);
-					System.out.println(new String(msg));
-
-					if (msg[0] == OobProtocol.ADD_DEVICE_REQUEST) {
-
+					if (msg[0] >> 5 == OobProtocol.ADD_DEVICE_REQUEST) {
+						LOG.info("authorizer received AddDeviceRequest from mobile");
+						AddDeviceRequest addDeviceRequest = new AddDeviceRequest(msg);
+						/*
+						 * Authorizer adds the received oob password key from AddDeviceRequest to its
+						 * DeviceSessionstore
+						 */
+						deviceSessionsMap.addDeviceoobPswd(addDeviceRequest.getBitKeyString());
 					}
-				} else if (receivedRequest instanceof ConfirmedRequest
-						&& ((ConfirmedRequest) receivedRequest).getServiceRequest() instanceof AddListElementRequest) {
-
-					SequenceOf<?> charcterStrings = ((AddListElementRequest) ((ConfirmedRequest) receivedRequest)
-							.getServiceRequest()).getListOfElements();
-					LOG.info("BDS got an AddListElementRequest from device: "
-							+ arg0.getData().getSourceEID().getIdentifierAsString());
-					for (Encodable cs : charcterStrings) {
-						try {
-							DirectoryService.getInstance().register(arg0.getData().getSourceEID(),
-									new URI(cs.toString()), false, false);
-							if (arg0.getData().getSourceEID().equals(new BACnetEID(DEVICE_ID))) {
-								sendWritePropertyRequest("Hi this is Authorizer!".getBytes(), DEVICE_ID,
-										"test message");
-							}
-						} catch (URISyntaxException e) {
-							e.printStackTrace();
-						}
-					}
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					if (arg0.getDataExpectingReply()) {
+						final int serviceAckChoice = ((ConfirmedRequest) receivedRequest).getServiceRequest().getChoiceId();
+						ByteQueue byteQueue = new ByteQueue();
+						new SimpleACK(serviceAckChoice).write(byteQueue);
+						ResponseCallback responseCallback = (ResponseCallback) arg1;
+						TPDU tpdu = new TPDU(new BACnetEID(AUTH_ID), new BACnetEID(DEVICE_ID), byteQueue.popAll());
+						responseCallback.sendResponse(tpdu);
 					}
 				}
 			}

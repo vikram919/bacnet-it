@@ -40,7 +40,7 @@ public class AddDeviceRequest {
 		}
 		this.finalMessage = finalMessage;
 		this.sequenceId = (short) reader.read(16);
-		this.bitKeyString = new String(reader.readBytesLeft());
+		this.bitKeyString = new String(reader.readBytesLeft(), StandardCharsets.UTF_8);
 	}
 
 	public int getSequenceId() {
