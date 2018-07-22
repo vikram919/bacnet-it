@@ -55,8 +55,7 @@ public class ASEChannel implements ch.fhnw.bacnetit.ase.application.service.api.
 	@Override
 	public void onIndication(final TPDU msg, final SocketAddress remoteSocketAddress,
 			ResponseCallback responseCallback) {
-		T_UnitDataIndication indicationUnit = null;
-		indicationUnit = new T_UnitDataIndication(remoteSocketAddress, msg, msg.getPriority());
+		T_UnitDataIndication indicationUnit = new T_UnitDataIndication(remoteSocketAddress, msg, msg.getPriority());
 
 		// transactionManager.createInboundTransaction(indicationUnit);
 
@@ -64,7 +63,6 @@ public class ASEChannel implements ch.fhnw.bacnetit.ase.application.service.api.
 			System.err.println("No channel listener is registered");
 			return;
 		}
-
 		for (final ChannelListener l : this.channelListeners) {
 			if (l.getEID().equals(msg.getDestinationEID())) {
 				l.onIndication(indicationUnit, responseCallback);

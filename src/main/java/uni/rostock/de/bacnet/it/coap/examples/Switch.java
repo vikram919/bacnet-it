@@ -1,14 +1,9 @@
 package uni.rostock.de.bacnet.it.coap.examples;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
 
-import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +27,10 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ASDU;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ConfirmedRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.IncomingRequestParser;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.CharacterString;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.OctetString;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
-import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobAuthClient;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
@@ -50,9 +42,8 @@ public class Switch {
 	private TransportDTLSCoapBinding bindingConfiguration = new TransportDTLSCoapBinding();
 	ASEServices aseServiceChannel;
 	private static final int AUTH_ID = 1;
-	private static final String AUTH_IP = "139.30.202.56:";
-	private String hostAddress;
-	private static final String SECURE_SCHEME = "coaps://";
+//	private static final String AUTH_IP = "139.30.202.56:";
+//	private static final String SECURE_SCHEME = "coaps://";
 	private static final int DTLS_PORT = 5685;
 	private static final BACnetEID AUTH_EID = new BACnetEID(AUTH_ID);
 	private OobAuthClient oobClient;
@@ -81,11 +72,11 @@ public class Switch {
 				device.bindingConfiguration);
 		device.oobClient.startHandShake();
 		device.start();
-//		try {
-//			device.sendWritePropertRequest(new URI("coaps://localhost:5684"));
-//		} catch (URISyntaxException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			device.sendWritePropertRequest(new URI("coaps://localhost:5684"));
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void start() {
@@ -111,6 +102,8 @@ public class Switch {
 					ByteQueue queue = new ByteQueue(arg0.getData().getBody());
 					byte[] msg = queue.peek(15, queue.size() - 21);
 					LOG.info("Message from authorizer: " + new String(msg));
+				} else {
+					LOG.debug("Device received a ack message");
 				}
 			}
 
@@ -146,69 +139,13 @@ public class Switch {
 			byte[] body = byteQueue.popAll();
 			ByteQueue testQueue = new ByteQueue();
 			readRequest.getPropertyValue().write(testQueue);
-			System.out.println(ByteArrayUtils.toHex(testQueue.popAll()));
-			final TPDU tpdu = new TPDU(new BACnetEID(120), new BACnetEID(1), body);
+			final TPDU tpdu = new TPDU(new BACnetEID(oobClient.getDeviceId()), AUTH_EID, body);
 			final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(uri, tpdu, 1, null);
 			aseServiceChannel.doRequest(unitDataRequest);
-			LOG.debug("request sent");
+			LOG.debug("WritePropertyRequest sent");
 
 		} catch (Exception e) {
 			System.err.print(e);
 		}
-	}
-
-	public byte[] performRegisterOverBds(URI location) {
-		final SequenceOf<CharacterString> uriChars = new SequenceOf<CharacterString>();
-		uriChars.add(new CharacterString(location.toString()));
-		// TODO: change BACnetObjectType to group and instance to 11
-		// TODO: change BACnetProperty to listOfGroupMembers
-		final AddListElementRequest request = new AddListElementRequest(
-				new BACnetObjectIdentifier(BACnetObjectType.multiStateInput, 1), BACnetPropertyIdentifier.stateText,
-				null, uriChars);
-		final ByteQueue byteQueue = new ByteQueue();
-		request.write(byteQueue);
-		return byteQueue.popAll();
-	}
-
-	public void sendBacnetRegisterMessage() {
-		try {
-			ByteQueue queue = new ByteQueue();
-			queue = new ByteQueue(performRegisterOverBds(new URI(SECURE_SCHEME + getHostAddress() + DTLS_PORT)));
-			final TPDU tpdu = new TPDU(new BACnetEID(oobClient.getDeviceId()), AUTH_EID, queue.popAll());
-			final T_UnitDataRequest unitDataRequest = new T_UnitDataRequest(new URI(SECURE_SCHEME + AUTH_IP + 5684),
-					tpdu, 1, null);
-			aseServiceChannel.doRequest(unitDataRequest);
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void hostAddress() {
-		try {
-			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-			while (interfaces.hasMoreElements()) {
-				NetworkInterface i = interfaces.nextElement();
-				if (i != null) {
-					Enumeration<InetAddress> addresses = i.getInetAddresses();
-					while (addresses.hasMoreElements()) {
-						InetAddress address = addresses.nextElement();
-						String hostAddr = address.getHostAddress();
-						if (hostAddr.indexOf("139.") == 0) {
-							setHostAddress(hostAddr);
-						}
-					}
-				}
-			}
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void setHostAddress(String hostAddress) {
-		this.hostAddress = hostAddress;
-	}
-
-	public String getHostAddress() {
-		return this.hostAddress + ":";
 	}
 }

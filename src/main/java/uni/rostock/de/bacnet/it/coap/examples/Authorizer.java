@@ -1,7 +1,5 @@
 package uni.rostock.de.bacnet.it.coap.examples;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import org.eclipse.californium.core.coap.CoAP;
@@ -30,13 +28,10 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ConfirmedRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.IncomingRequestParser;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.SimpleACK;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.Encodable;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.SequenceOf;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.OctetString;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
-import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import uni.rostock.de.bacnet.it.coap.oobAuth.AddDeviceRequest;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobAuthServer;
@@ -49,11 +44,8 @@ public class Authorizer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Authorizer.class);
 	private static final int AUTH_ID = 1;
-	private static final int DEVICE_ID = 120;
-	private static final String AUTH_IP = "139.30.202.56:";
 	private ASEServices aseServices;
 	private ApplicationService aseService;
-	private static final String SECURE_SCHEME = "coaps://";
 	private TransportDTLSCoapBinding coapDtlsbindingConfig;
 	private static String OOB_PSWD_STRING = "10101110010101101011";
 	private OobSessionsStore deviceSessionsMap = OobSessionsStore.getInstance();
@@ -72,9 +64,6 @@ public class Authorizer {
 					"auth._sub._bacnet._udp.", "authservice._sub._bacnet._udp.", false);
 			DirectoryService.init();
 			DirectoryService.getInstance().setDNSBinding(new DNSSD(ds));
-			DirectoryService.getInstance().register(new BACnetEID(AUTH_ID),
-					new URI(SECURE_SCHEME + AUTH_IP + +CoAP.DEFAULT_COAP_SECURE_PORT), true, false);
-			LOG.info("This device is registered as BDS !");
 		} catch (final Exception e1) {
 			e1.printStackTrace();
 		}
@@ -118,11 +107,13 @@ public class Authorizer {
 						deviceSessionsMap.addDeviceoobPswd(addDeviceRequest.getBitKeyString());
 					}
 					if (arg0.getDataExpectingReply()) {
-						final int serviceAckChoice = ((ConfirmedRequest) receivedRequest).getServiceRequest().getChoiceId();
+						final int serviceAckChoice = ((ConfirmedRequest) receivedRequest).getServiceRequest()
+								.getChoiceId();
 						ByteQueue byteQueue = new ByteQueue();
 						new SimpleACK(serviceAckChoice).write(byteQueue);
 						ResponseCallback responseCallback = (ResponseCallback) arg1;
-						TPDU tpdu = new TPDU(new BACnetEID(AUTH_ID), new BACnetEID(DEVICE_ID), byteQueue.popAll());
+						TPDU tpdu = new TPDU(new BACnetEID(AUTH_ID),
+								new BACnetEID(arg0.getData().getSourceEID().getIdentifier()), byteQueue.popAll());
 						responseCallback.sendResponse(tpdu);
 					}
 				}
