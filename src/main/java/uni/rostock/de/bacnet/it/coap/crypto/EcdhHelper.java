@@ -14,7 +14,7 @@ import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
+import uni.rostock.de.bacnet.it.coap.oobAuth.OobProtocol;
 
 public class EcdhHelper implements EcdhHelperTasks {
 

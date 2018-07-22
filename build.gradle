@@ -29,9 +29,9 @@ dependencies {
 	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.4'
 	
 	compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.59'
-	compile group: 'org.eclipse.californium', name: 'californium-core', version: '2.0.0-M10'
-	compile group: 'org.eclipse.californium', name: 'scandium', version: '2.0.0-M10'
-	compile group: 'org.eclipse.californium', name: 'demo-certs', version: '2.0.0-M10'	
+	compile group: 'org.eclipse.californium', name: 'californium-core', version: '2.0.0-M11'
+	compile group: 'org.eclipse.californium', name: 'scandium', version: '2.0.0-M11'
+	compile group: 'org.eclipse.californium', name: 'demo-certs', version: '2.0.0-M11'	
 	compile group: 'com.augustcellars.cose', name: 'cose-java', version: '0.9.6'
 	compile group: 'com.upokecenter', name: 'cbor', version: '3.0.3'
     compile 'dnsjava:dnsjava:2.1.7'

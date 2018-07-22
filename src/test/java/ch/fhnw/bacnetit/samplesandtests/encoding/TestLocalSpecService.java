@@ -356,6 +356,7 @@ public class TestLocalSpecService {
 		final TPDU tpdu = new TPDU(devLocal11, devLocal21, b.popAll());
 		final T_UnitDataRequest dDataRequest = new T_UnitDataRequest(hostLocal2NoTls, tpdu, 1, null);
 		final byte[] before = dDataRequest.getData().getBody();
+		appService1.connect(hostLocal2NoTls);
 		appService1.doRequest(dDataRequest);
 		while (indicationTodevLocal21 == null) {
 		}
@@ -374,6 +375,7 @@ public class TestLocalSpecService {
 		final TPDU tpdu = new TPDU(devLocal11, devLocal21, b.popAll());
 		final T_UnitDataRequest dDataRequest = new T_UnitDataRequest(hostLocal2NoTls, tpdu, 1, null);
 		final byte[] before = dDataRequest.getData().getBody();
+		appService1.connect(hostLocal2NoTls);
 		appService1.doRequest(dDataRequest);
 		while (indicationTodevLocal21 == null) {
 		}
@@ -392,6 +394,7 @@ public class TestLocalSpecService {
 		final TPDU tpdu = new TPDU(devLocal11, devLocal21, b.popAll());
 		final T_UnitDataRequest dDataRequest = new T_UnitDataRequest(hostLocal2NoTls, tpdu, 1, null);
 		final byte[] before = dDataRequest.getData().getBody();
+		appService1.connect(hostLocal2NoTls);
 		appService1.doRequest(dDataRequest);
 
 		while (indicationTodevLocal21 == null) {
@@ -415,8 +418,8 @@ public class TestLocalSpecService {
 		final TPDU tpdu = new TPDU(devLocal11, devLocal21, b.popAll());
 		final T_UnitDataRequest dDataRequest = new T_UnitDataRequest(hostLocal2NoTls, tpdu, 1, null);
 		final byte[] before = dDataRequest.getData().getBody();
+		appService1.connect(hostLocal2NoTls);
 		appService1.doRequest(dDataRequest);
-
 		while (indicationTodevLocal21 == null) {
 		}
 
@@ -438,6 +441,7 @@ public class TestLocalSpecService {
 		final TPDU tpdu = new TPDU(devLocal11, devLocal21, b.popAll());
 		final T_UnitDataRequest dDataRequest = new T_UnitDataRequest(hostLocal2NoTls, tpdu, 1, null);
 		final byte[] before = dDataRequest.getData().getBody();
+		appService1.connect(hostLocal2NoTls);
 		appService1.doRequest(dDataRequest);
 		while (indicationTodevLocal21 == null) {
 		}
@@ -455,6 +459,7 @@ public class TestLocalSpecService {
 		final TPDU tpdu = new TPDU(devLocal11, devLocal21, b.popAll());
 		final T_UnitDataRequest dDataRequest = new T_UnitDataRequest(hostLocal2NoTls, tpdu, 1, null);
 		final byte[] before = dDataRequest.getData().getBody();
+		appService1.connect(hostLocal2NoTls);
 		appService1.doRequest(dDataRequest);
 		while (indicationTodevLocal21 == null) {
 		}
@@ -470,7 +475,7 @@ public class TestLocalSpecService {
 		final TPDU tpdu = new TPDU(devLocal11, devLocal12, b.popAll());
 		final T_UnitDataRequest dDataRequest = new T_UnitDataRequest(hostLocal1NoTls, tpdu, 1, null);
 		final byte[] before = dDataRequest.getData().getBody();
-
+		appService2.connect(hostLocal1NoTls);
 		appService2.doRequest(dDataRequest);
 		while (indicationTodevLocal12 == null) {
 		}
@@ -487,7 +492,7 @@ public class TestLocalSpecService {
 		final TPDU tpdu = new TPDU(devLocal21, devLocal11, b.popAll());
 		final T_UnitDataRequest dDataRequest = new T_UnitDataRequest(hostLocal1NoTls, tpdu, 1, null);
 		final byte[] before = dDataRequest.getData().getBody();
-
+		appService2.connect(hostLocal1NoTls);
 		appService2.doRequest(dDataRequest);
 		while (indicationTodevLocal11 == null) {
 		}

@@ -40,7 +40,7 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInte
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.AddListElementRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
-import uni.rostock.de.bacnet.it.coap.crypto.OobAuthClient;
+import uni.rostock.de.bacnet.it.coap.oobAuth.OobAuthClient;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
 public class Switch {
@@ -73,19 +73,19 @@ public class Switch {
 		} catch (final Exception e1) {
 			e1.printStackTrace();
 		}
-		device.hostAddress();
-		PushButtonJob pushButtonJob = new PushButtonJob();
-		pushButtonJob.start();
+//		device.hostAddress();
+//		PushButtonJob pushButtonJob = new PushButtonJob();
+//		pushButtonJob.start();
 		// pushButtonJob.getOOBKeyAsString();
 		device.oobClient = new OobAuthClient(OOB_PSWD_STRING, "coap://localhost:5683/authentication",
 				device.bindingConfiguration);
 		device.oobClient.startHandShake();
 		device.start();
-		try {
-			device.sendWritePropertRequest(new URI("coaps://localhost:5684"));
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			device.sendWritePropertRequest(new URI("coaps://localhost:5684"));
+//		} catch (URISyntaxException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	public void start() {

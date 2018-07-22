@@ -1,4 +1,4 @@
-package uni.rostock.de.bacnet.it.coap.crypto;
+package uni.rostock.de.bacnet.it.coap.oobAuth;
 
 import java.util.Arrays;
 
@@ -13,9 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.upokecenter.cbor.CBORObject;
 
-import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
-import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
-import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
+import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 
 /**
  * class OobAuthSession is implemented to have separate auth session between

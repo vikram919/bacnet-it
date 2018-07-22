@@ -1,12 +1,10 @@
-package uni.rostock.de.bacnet.it.coap.messageType;
+package uni.rostock.de.bacnet.it.coap.oobAuth;
 
 import org.eclipse.californium.elements.util.DatagramReader;
 import org.eclipse.californium.elements.util.DatagramWriter;
 import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import uni.rostock.de.bacnet.it.coap.crypto.OobAuthSession;
 
 public class DeviceKeyExchange {
 

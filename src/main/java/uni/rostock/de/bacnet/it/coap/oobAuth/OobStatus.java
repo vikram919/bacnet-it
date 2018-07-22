@@ -1,4 +1,4 @@
-package uni.rostock.de.bacnet.it.coap.messageType;
+package uni.rostock.de.bacnet.it.coap.oobAuth;
 
 import org.eclipse.californium.elements.util.DatagramReader;
 import org.eclipse.californium.elements.util.DatagramWriter;

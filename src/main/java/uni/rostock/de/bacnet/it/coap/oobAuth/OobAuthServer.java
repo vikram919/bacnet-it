@@ -1,29 +1,32 @@
-package uni.rostock.de.bacnet.it.coap.examples;
+package uni.rostock.de.bacnet.it.coap.oobAuth;
+
+import java.net.InetSocketAddress;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
+import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.elements.util.DatagramReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uni.rostock.de.bacnet.it.coap.oobAuth.DeviceKeyExchange;
-import uni.rostock.de.bacnet.it.coap.oobAuth.OobAuthSession;
-import uni.rostock.de.bacnet.it.coap.oobAuth.OobProtocol;
-import uni.rostock.de.bacnet.it.coap.oobAuth.OobSessionsStore;
-import uni.rostock.de.bacnet.it.coap.oobAuth.ServerKeyExchange;
+import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
-public class OobTestServer {
-	private static Logger LOG = LoggerFactory.getLogger(OobTestServer.class.getCanonicalName());
+public class OobAuthServer {
+
+	private static final Logger LOG = LoggerFactory.getLogger(OobAuthServer.class.getCanonicalName());
 	private static final int ALLOWED_FAIL_ATTEMPTS = 2;
-	private static String OOB_PSWD_STRING = "10101110010101101011";
-	private static OobSessionsStore deviceSessionsMap = OobSessionsStore.getInstance();
+	private final OobSessionsStore deviceSessionsMap;
+	private final TransportDTLSCoapBinding coapDtlsbindingConfig;
 
-	public static void main(String[] args) {
-		OobTestServer oobTestServer = new OobTestServer();
+	public OobAuthServer(TransportDTLSCoapBinding coapDtlsbindingConfig, OobSessionsStore deviceSessionsMap) {
+		this.coapDtlsbindingConfig = coapDtlsbindingConfig;
+		this.deviceSessionsMap = deviceSessionsMap;
+	}
+
+	public void startAuthServer(int serverPort) {
 		CoapServer oobAuthServer = new CoapServer(5683);
-		deviceSessionsMap.addDeviceoobPswd(OOB_PSWD_STRING);
 		oobAuthServer.add(new CoapResource("authentication") {
 			@Override
 			public void handlePOST(CoapExchange exchange) {
@@ -38,13 +41,13 @@ public class OobTestServer {
 								.getAuthSession(deviceKeyExchange.getOobPswdIdBA());
 						if (oobAuthSession.getFailedAuthAttempts() < ALLOWED_FAIL_ATTEMPTS) {
 							LOG.info("DeviceKeyExchange message received is within allowed fail attempts");
-							oobTestServer.processDKEMessage(oobAuthSession, deviceKeyExchange, exchange);
+							processDKEMessage(oobAuthSession, deviceKeyExchange, exchange);
 						}
 						if (oobAuthSession.getFailedAuthAttempts() > ALLOWED_FAIL_ATTEMPTS) {
 							LOG.info("DeviceKeyExchange message received is after allowed fail attempts");
-							if (oobTestServer.isThortlingTimeFinished(oobAuthSession)) {
+							if (isThortlingTimeFinished(oobAuthSession)) {
 								LOG.info("Throttling time is finished, device processing DeviceKeyExchange message");
-								oobTestServer.processDKEMessage(oobAuthSession, deviceKeyExchange, exchange);
+								processDKEMessage(oobAuthSession, deviceKeyExchange, exchange);
 							} else {
 								LOG.info("DevicekeyExchange message discarded due to throttling effect");
 							}
@@ -65,7 +68,14 @@ public class OobTestServer {
 			LOG.info("sending server key exchange message to the device");
 			session.setServerNonce(deviceSessionsMap.getServerNonce());
 			session.setClientNonce(deviceKeyExchange.getDeviceNonce());
-			ServerKeyExchange serverKeyExchange = new ServerKeyExchange(200, deviceSessionsMap.getPubKey(), session);
+			session.setForeignPublicKey(deviceKeyExchange.getPublicKeyBA());
+			session.setDeviceId(200);
+			ServerKeyExchange serverKeyExchange = new ServerKeyExchange(session.getDeviceId(),
+					deviceSessionsMap.getPubKey(), session);
+			byte[] sharedSecret = deviceSessionsMap.computeSharedSecret(session.getForeignPublicKey());
+			/* adding the master secret to InMemoryPreSharedKeyStore */
+			coapDtlsbindingConfig.addPSK(new String(Integer.toString(session.getDeviceId())), sharedSecret,
+					new InetSocketAddress(exchange.getSourceAddress(), CoAP.DEFAULT_COAP_SECURE_PORT));
 			exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE, serverKeyExchange.getBA());
 		} else {
 			session.incrementFailedAuthAttempts();

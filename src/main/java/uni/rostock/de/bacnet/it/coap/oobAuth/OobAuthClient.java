@@ -1,4 +1,4 @@
-package uni.rostock.de.bacnet.it.coap.crypto;
+package uni.rostock.de.bacnet.it.coap.oobAuth;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -12,10 +12,7 @@ import org.eclipse.californium.core.CoapResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uni.rostock.de.bacnet.it.coap.messageType.DeviceKeyExchange;
-import uni.rostock.de.bacnet.it.coap.messageType.OobProtocol;
-import uni.rostock.de.bacnet.it.coap.messageType.OobProtocolException;
-import uni.rostock.de.bacnet.it.coap.messageType.ServerKeyExchange;
+import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
 public class OobAuthClient extends CoapClient {

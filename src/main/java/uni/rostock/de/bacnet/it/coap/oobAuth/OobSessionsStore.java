@@ -1,4 +1,4 @@
-package uni.rostock.de.bacnet.it.coap.messageType;
+package uni.rostock.de.bacnet.it.coap.oobAuth;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
-import uni.rostock.de.bacnet.it.coap.crypto.OobAuthSession;
 
 public class OobSessionsStore {
 

@@ -1,4 +1,4 @@
-package uni.rostock.de.bacnet.it.coap.messageType;
+package uni.rostock.de.bacnet.it.coap.oobAuth;
 
 import java.nio.charset.StandardCharsets;
 
