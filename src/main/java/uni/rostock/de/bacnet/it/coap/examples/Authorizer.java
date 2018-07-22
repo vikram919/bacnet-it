@@ -1,7 +1,5 @@
 package uni.rostock.de.bacnet.it.coap.examples;
 
-import java.net.UnknownHostException;
-
 import org.eclipse.californium.core.coap.CoAP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,24 +14,16 @@ import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import ch.fhnw.bacnetit.ase.encoding.api.TPDU;
 import ch.fhnw.bacnetit.ase.encoding.api.T_ReportIndication;
 import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataIndication;
-import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataRequest;
 import ch.fhnw.bacnetit.ase.network.directory.api.DirectoryService;
 import ch.fhnw.bacnetit.ase.transportbinding.service.api.ASEService;
 import ch.fhnw.bacnetit.directorybinding.dnssd.api.DNSSD;
-import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectIdentifier;
-import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetObjectType;
-import ch.fhnw.bacnetit.samplesandtests.api.deviceobjects.BACnetPropertyIdentifier;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ASDU;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ConfirmedRequest;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.IncomingRequestParser;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.SimpleACK;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.exception.BACnetException;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.constructed.ServicesSupported;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.OctetString;
-import ch.fhnw.bacnetit.samplesandtests.api.encoding.type.primitive.UnsignedInteger;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
 import uni.rostock.de.bacnet.it.coap.oobAuth.AddDeviceRequest;
+import uni.rostock.de.bacnet.it.coap.oobAuth.ApplicationMessages;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobAuthServer;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobProtocol;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobSessionsStore;
@@ -91,7 +81,7 @@ public class Authorizer {
 			public void onIndication(T_UnitDataIndication arg0, Object arg1) {
 
 				LOG.debug("message T_unitDataIndication");
-				ASDU receivedRequest = getServiceFromBody(arg0.getData().getBody());
+				ASDU receivedRequest = ApplicationMessages.getServiceFromBody(arg0.getData().getBody());
 				if (receivedRequest instanceof ConfirmedRequest
 						&& ((ConfirmedRequest) receivedRequest).getServiceRequest() instanceof WritePropertyRequest) {
 					LOG.debug("authorizer received a WritePropertyRequest!");
@@ -125,39 +115,5 @@ public class Authorizer {
 						new Object[] { tReportIndication.getDestinationAddress(), cause });
 			}
 		});
-	}
-
-	public ASDU getServiceFromBody(byte[] body) {
-		ASDU request = null;
-		try {
-			ByteQueue queue = new ByteQueue(body);
-			ServicesSupported servicesSupported = new ServicesSupported();
-			servicesSupported.setAll(true);
-			IncomingRequestParser requestParser = new IncomingRequestParser(servicesSupported, queue);
-			request = requestParser.parse();
-		} catch (BACnetException e) {
-			e.printStackTrace();
-		}
-		return request;
-	}
-
-	public void sendWritePropertyRequest(byte[] message, int toDeviceId, String context) {
-		WritePropertyRequest writePropertyRequest = new WritePropertyRequest(
-				new BACnetObjectIdentifier(BACnetObjectType.analogValue, 1), BACnetPropertyIdentifier.presentValue,
-				new UnsignedInteger(55), new OctetString(message), new UnsignedInteger(1));
-		final ByteQueue byteQueue = new ByteQueue();
-		writePropertyRequest.write(byteQueue);
-
-		final TPDU tpdu = new TPDU(new BACnetEID(AUTH_ID), new BACnetEID(toDeviceId), byteQueue.popAll());
-
-		T_UnitDataRequest unitDataRequest = null;
-		try {
-			unitDataRequest = new T_UnitDataRequest(DirectoryService.getInstance().resolve(new BACnetEID(toDeviceId)),
-					tpdu, 1, context);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-
-		aseService.doRequest(unitDataRequest);
 	}
 }
