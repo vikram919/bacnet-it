@@ -29,7 +29,7 @@ public class Switch {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Switch.class);
 
-	private TransportDTLSCoapBinding bindingConfiguration = new TransportDTLSCoapBinding();
+	private TransportDTLSCoapBinding bindingConfiguration;
 	ASEServices aseServiceChannel;
 	private static final int AUTH_ID = 1;
 	// private static final String AUTH_IP = "139.30.202.56:";
@@ -71,6 +71,7 @@ public class Switch {
 
 		aseServiceChannel = ChannelFactory.getInstance();
 		ChannelConfiguration channelConfigure = aseServiceChannel;
+		bindingConfiguration = new TransportDTLSCoapBinding();
 		bindingConfiguration.setPskMode();
 		bindingConfiguration.createSecureCoapClient();
 		bindingConfiguration.createSecureCoapServer(DTLS_PORT);

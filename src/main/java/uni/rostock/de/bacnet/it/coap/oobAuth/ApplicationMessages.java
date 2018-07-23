@@ -51,7 +51,9 @@ public class ApplicationMessages {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-
+		if(aseService == null) {
+			throw new NullPointerException("aseService cannot be null");
+		}
 		aseService.doRequest(unitDataRequest);
 	}
 

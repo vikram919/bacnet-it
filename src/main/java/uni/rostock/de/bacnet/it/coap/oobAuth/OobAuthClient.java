@@ -67,6 +67,12 @@ public class OobAuthClient extends CoapClient {
 			e.printStackTrace();
 		}
 		LOG.info("device have established a secret key with server, and is added to InMemoryPSKStore");
+		OobFinal oobFinal = new OobFinal(session);
+		Listener oobFinalListener = new Listener();
+		//TODO: encrypt the oobFinal message with shared secret
+		//TODO: if oob pswd life expires move the state of the switch to begin
+		//TODO: save the state of the device once authenticated
+		sendOobHandShakeMessage(oobFinalListener, oobFinal.getBA());
 	}
 
 	private void sendOobHandShakeMessage(Listener listener, byte[] payload) {
@@ -97,7 +103,10 @@ public class OobAuthClient extends CoapClient {
 								LOG.info("ServerkeyExchange message discarded due to throttling effect");
 							}
 						}
-					} else {
+					} if (response.isSuccess() && response.getPayload()==null) {
+						
+					}
+					else {
 						LOG.info("discarding unknown message received");
 					}
 				} else {

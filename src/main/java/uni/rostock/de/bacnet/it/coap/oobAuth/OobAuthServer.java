@@ -11,6 +11,7 @@ import org.eclipse.californium.elements.util.DatagramReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.fhnw.bacnetit.ase.application.service.api.ASEServices;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
 public class OobAuthServer {
@@ -20,7 +21,8 @@ public class OobAuthServer {
 	private final OobSessionsStore deviceSessionsMap;
 	private final TransportDTLSCoapBinding coapDtlsbindingConfig;
 
-	public OobAuthServer(TransportDTLSCoapBinding coapDtlsbindingConfig, OobSessionsStore deviceSessionsMap) {
+	public OobAuthServer(TransportDTLSCoapBinding coapDtlsbindingConfig, OobSessionsStore deviceSessionsMap,
+			ASEServices aseServices) {
 		this.coapDtlsbindingConfig = coapDtlsbindingConfig;
 		this.deviceSessionsMap = deviceSessionsMap;
 	}

@@ -45,7 +45,8 @@ public class Authorizer {
 		Authorizer authorizer = new Authorizer();
 		authorizer.start();
 
-		OobAuthServer oobAuthServer = new OobAuthServer(authorizer.coapDtlsbindingConfig, authorizer.deviceSessionsMap);
+		OobAuthServer oobAuthServer = new OobAuthServer(authorizer.coapDtlsbindingConfig, 
+				authorizer.deviceSessionsMap, authorizer.aseServices);
 		oobAuthServer.startAuthServer(CoAP.DEFAULT_COAP_PORT);
 		authorizer.deviceSessionsMap.addDeviceoobPswd(OOB_PSWD_STRING);
 
