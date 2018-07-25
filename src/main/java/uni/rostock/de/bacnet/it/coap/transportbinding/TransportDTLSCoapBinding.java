@@ -116,7 +116,7 @@ public class TransportDTLSCoapBinding implements ASEService {
 					}
 				};
 				TPDU tpdu = byteArrayToTPDU(msg);
-				transportBindingService.onIndication(tpdu, null, responseCallback);
+				transportBindingService.onIndication(tpdu, new InetSocketAddress(exchange.getSourceAddress(), exchange.getSourcePort()), responseCallback);
 				if (!tpdu.isConfirmedRequest()) {
 					exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE);
 				}
@@ -148,7 +148,6 @@ public class TransportDTLSCoapBinding implements ASEService {
 
 				@Override
 				public void onLoad(CoapResponse response) {
-					LOG.debug("Device received response");
 					TPDU tpdu = byteArrayToTPDU(response.getPayload());
 					transportBindingService.onIndication(tpdu, null, null);
 				}

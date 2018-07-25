@@ -1,5 +1,7 @@
 package uni.rostock.de.bacnet.it.coap.oobAuth;
 
+import java.net.InetSocketAddress;
+import java.net.URI;
 import java.util.Arrays;
 
 import org.bouncycastle.crypto.DerivationParameters;
@@ -30,6 +32,7 @@ public class OobAuthSession {
 	private byte[] deviceNonce = null;
 	private byte[] serverNonce = null;
 	private byte[] foreignPubKey = null;
+	private InetSocketAddress mobileSocketAddress = null;
 	private double oobPswdCreatedTime;
 	private double throttlingInitTime;
 	private int deviceId;
@@ -181,4 +184,11 @@ public class OobAuthSession {
 		return timesFailedAuth;
 	}
 
+	public void setMobileAddress(InetSocketAddress inetSocketAddress) {
+		mobileSocketAddress = inetSocketAddress;
+	}
+
+	public InetSocketAddress getMobileAddress() {
+		return mobileSocketAddress;
+	}
 }

@@ -8,10 +8,7 @@ import org.slf4j.LoggerFactory;
 public class OobStatus {
 	private static final Logger LOG = LoggerFactory.getLogger(AddDeviceRequest.class);
 	private static final int MESSAGE_TYPE = OobProtocol.OOB_STATUS;
-	/*
-	 * Sequence number for identifying no. of devices the mobile has authenticated
-	 */
-	private final short sequenceId;
+	private final byte[] oobPswdId;
 
 	/* authentication status of the device */
 	private final int oobStatus;
@@ -19,8 +16,8 @@ public class OobStatus {
 	/* serialized byte array of the AddDeviceRequest */
 	private byte[] finalMessage;
 
-	public OobStatus(short sequenceId, boolean oobStatus) {
-		this.sequenceId = sequenceId;
+	public OobStatus(byte[] oobPswdId, boolean oobStatus) {
+		this.oobPswdId = oobPswdId;
 		if (oobStatus) {
 			this.oobStatus = 1;
 		} else {
@@ -28,7 +25,7 @@ public class OobStatus {
 		}
 		DatagramWriter writer = new DatagramWriter();
 		writer.write(MESSAGE_TYPE, 3);
-		writer.write(sequenceId, 16);
+		writer.writeBytes(oobPswdId);
 		writer.write(this.oobStatus, 1);
 		finalMessage = writer.toByteArray();
 		LOG.debug("OobStatus serialized to byte array");
@@ -41,12 +38,12 @@ public class OobStatus {
 			LOG.info("OobStatus wrong message type received, expected {} but received {}", MESSAGE_TYPE, messageType);
 		}
 		this.finalMessage = finalMessage;
-		this.sequenceId = (short) reader.read(16);
+		this.oobPswdId = reader.readBytes(OobProtocol.OOB_PSWD_ID_LENGTH);
 		this.oobStatus = reader.read(1);
 	}
 
-	public int getSequenceId() {
-		return this.sequenceId;
+	public byte[] getOobPswdId() {
+		return this.oobPswdId;
 	}
 
 	public boolean getOobStatus() {

@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.CoAP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,18 +62,13 @@ public class OobAuthClient extends CoapClient {
 		LOG.info("device successfully authenticated ServerKeyExchange message from server");
 		byte[] sharedSecret = ecdhHelper.computeSharedSecret(session.getForeignPublicKey());
 		try {
-			bindingConfiguration.addPSK(Integer.toString(session.getDeviceId()), sharedSecret,
-					new InetSocketAddress(InetAddress.getByName(new URI(getURI()).getHost()), 5684));
+			int deviceId = session.getDeviceId();
+			bindingConfiguration.addPSK(Integer.toString(deviceId), sharedSecret,
+					new InetSocketAddress(InetAddress.getByName(new URI(getURI()).getHost()), CoAP.DEFAULT_COAP_SECURE_PORT));
 		} catch (UnknownHostException | URISyntaxException e) {
 			e.printStackTrace();
 		}
 		LOG.info("device have established a secret key with server, and is added to InMemoryPSKStore");
-		OobFinal oobFinal = new OobFinal(session);
-		Listener oobFinalListener = new Listener();
-		//TODO: encrypt the oobFinal message with shared secret
-		//TODO: if oob pswd life expires move the state of the switch to begin
-		//TODO: save the state of the device once authenticated
-		sendOobHandShakeMessage(oobFinalListener, oobFinal.getBA());
 	}
 
 	private void sendOobHandShakeMessage(Listener listener, byte[] payload) {
@@ -103,10 +99,7 @@ public class OobAuthClient extends CoapClient {
 								LOG.info("ServerkeyExchange message discarded due to throttling effect");
 							}
 						}
-					} if (response.isSuccess() && response.getPayload()==null) {
-						
-					}
-					else {
+					} else {
 						LOG.info("discarding unknown message received");
 					}
 				} else {

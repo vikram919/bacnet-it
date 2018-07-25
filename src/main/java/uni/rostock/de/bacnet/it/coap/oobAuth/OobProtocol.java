@@ -10,9 +10,7 @@ public class OobProtocol {
 
 	public static final int SERVER_KEY_EXCHANGE = 3;
 	
-	public static final int OOB_FINAL = 4;
-	
-	public static final int OOB_STATUS = 5;
+	public static final int OOB_STATUS = 4;
 
 	/* Default as spcecified in IEEE 802.15.6-2012 */
 	public static final int CURVE_secp256r1 = 1;

@@ -11,21 +11,15 @@ public class AddDeviceRequest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddDeviceRequest.class);
 	private static final int MESSAGE_TYPE = OobProtocol.ADD_DEVICE_REQUEST;
-	/*
-	 * Sequence number for identifying no. of devices the mobile has authenticated
-	 */
-	private final short sequenceId;
 	/* bits in string representation */
 	private final String bitKeyString;
 	/* serialized byte array of the AddDeviceRequest */
 	private byte[] finalMessage;
 
-	public AddDeviceRequest(short sequenceId, String bitKeyString) {
-		this.sequenceId = sequenceId;
+	public AddDeviceRequest(String bitKeyString) {
 		this.bitKeyString = bitKeyString;
 		DatagramWriter writer = new DatagramWriter();
 		writer.write(MESSAGE_TYPE, 3);
-		writer.write(sequenceId, 16);
 		writer.writeBytes(bitKeyString.getBytes(StandardCharsets.UTF_8));
 		finalMessage = writer.toByteArray();
 		LOG.debug("AddDeviceRequest serialized to byte array");
@@ -39,12 +33,7 @@ public class AddDeviceRequest {
 					messageType);
 		}
 		this.finalMessage = finalMessage;
-		this.sequenceId = (short) reader.read(16);
 		this.bitKeyString = new String(reader.readBytesLeft(), StandardCharsets.UTF_8);
-	}
-
-	public int getSequenceId() {
-		return this.sequenceId;
 	}
 
 	public String getBitKeyString() {

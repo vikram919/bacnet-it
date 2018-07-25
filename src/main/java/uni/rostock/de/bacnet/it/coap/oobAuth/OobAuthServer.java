@@ -1,6 +1,7 @@
 package uni.rostock.de.bacnet.it.coap.oobAuth;
 
 import java.net.InetSocketAddress;
+import java.net.URI;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
@@ -12,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.fhnw.bacnetit.ase.application.service.api.ASEServices;
+import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
+import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataRequest;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
 public class OobAuthServer {
@@ -19,12 +22,14 @@ public class OobAuthServer {
 	private static final Logger LOG = LoggerFactory.getLogger(OobAuthServer.class.getCanonicalName());
 	private static final int ALLOWED_FAIL_ATTEMPTS = 2;
 	private final OobSessionsStore deviceSessionsMap;
+	private final ASEServices aseServices;
 	private final TransportDTLSCoapBinding coapDtlsbindingConfig;
 
 	public OobAuthServer(TransportDTLSCoapBinding coapDtlsbindingConfig, OobSessionsStore deviceSessionsMap,
 			ASEServices aseServices) {
 		this.coapDtlsbindingConfig = coapDtlsbindingConfig;
 		this.deviceSessionsMap = deviceSessionsMap;
+		this.aseServices = aseServices;
 	}
 
 	public void startAuthServer(int serverPort) {
@@ -78,6 +83,14 @@ public class OobAuthServer {
 			/* adding the master secret to InMemoryPreSharedKeyStore */
 			coapDtlsbindingConfig.addPSK(new String(Integer.toString(session.getDeviceId())), sharedSecret,
 					new InetSocketAddress(exchange.getSourceAddress(), CoAP.DEFAULT_COAP_SECURE_PORT));
+			// delete the OobAuthsession and remove the OOb password
+			deviceSessionsMap.deleteSession(deviceKeyExchange.getOobPswdIdBA());
+			LOG.debug("OobAuthSession deleted on server side");
+			String mobileAddress = "coaps://"+session.getMobileAddress().getAddress()+":"+CoAP.DEFAULT_COAP_SECURE_PORT;
+			OobStatus oobStatus = new OobStatus(session.getOobPswdId(), true);
+			// TODO: add oobpswd id to oobstatus and add device request.
+			ApplicationMessages.sendWritePropertyRequest(aseServices, oobStatus.getBA(), new BACnetEID(2),
+					new BACnetEID(1), mobileAddress);
 			exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE, serverKeyExchange.getBA());
 		} else {
 			session.incrementFailedAuthAttempts();

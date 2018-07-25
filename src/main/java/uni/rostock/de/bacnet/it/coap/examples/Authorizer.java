@@ -1,5 +1,9 @@
 package uni.rostock.de.bacnet.it.coap.examples;
 
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.eclipse.californium.core.coap.CoAP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +29,7 @@ import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyReque
 import uni.rostock.de.bacnet.it.coap.oobAuth.AddDeviceRequest;
 import uni.rostock.de.bacnet.it.coap.oobAuth.ApplicationMessages;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobAuthServer;
+import uni.rostock.de.bacnet.it.coap.oobAuth.OobAuthSession;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobProtocol;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobSessionsStore;
 import uni.rostock.de.bacnet.it.coap.transportbinding.ResponseCallback;
@@ -95,7 +100,12 @@ public class Authorizer {
 						 * Authorizer adds the received oob password key from AddDeviceRequest to its
 						 * DeviceSessionstore
 						 */
-						deviceSessionsMap.addDeviceoobPswd(addDeviceRequest.getBitKeyString());
+						String oobPswdString = addDeviceRequest.getBitKeyString();
+						deviceSessionsMap.addDeviceoobPswd(oobPswdString);
+						byte[] oobPswdId = deviceSessionsMap.extractOobStringIdFromBitString(oobPswdString);
+						OobAuthSession session = deviceSessionsMap.getAuthSession(oobPswdId);
+						LOG.debug(" registering mobile socket address: "+arg0.getSourceAddress().toString());
+						session.setMobileAddress((InetSocketAddress)arg0.getSourceAddress());
 					}
 					if (arg0.getDataExpectingReply()) {
 						final int serviceAckChoice = ((ConfirmedRequest) receivedRequest).getServiceRequest()

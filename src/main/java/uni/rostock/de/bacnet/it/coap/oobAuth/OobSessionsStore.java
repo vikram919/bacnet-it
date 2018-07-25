@@ -62,4 +62,14 @@ public class OobSessionsStore {
 	public byte[] computeSharedSecret(byte[] foreignPubKey) {
 		return ecdhHelper.computeSharedSecret(foreignPubKey);
 	}
+
+	public void deleteSession(byte[] oobPswdId) {
+		if (hasOobPswdId(oobPswdId)) {
+			deviceSessionsMap.remove(new String(oobPswdId, StandardCharsets.UTF_8));
+		}
+	}
+	
+	public byte[] extractOobStringIdFromBitString(String bitString) {
+		return ecdhHelper.getOobPswdId(bitString);
+	}
 }
