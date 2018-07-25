@@ -10,6 +10,7 @@ import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
 import org.bouncycastle.crypto.params.HKDFParameters;
 import org.eclipse.californium.elements.util.DatagramWriter;
+import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,8 @@ public class OobAuthSession {
 
 	private static Logger LOG = LoggerFactory.getLogger(OobAuthSession.class.getCanonicalName());
 	private final EcdhHelper ecdhHelper;
-	private final String oobPswdString;
+	private String oobPswdString = null;
+	private byte[] oobPswdId = null;
 	private byte[] oobPswdKey = null;
 	private byte[] oobPswdSalt = null;
 	private byte[] deviceNonce = null;
@@ -46,7 +48,12 @@ public class OobAuthSession {
 	public OobAuthSession(EcdhHelper ecdhHelper, String oobPswdString) {
 		this.ecdhHelper = ecdhHelper;
 		this.oobPswdString = oobPswdString;
+		this.oobPswdId = getOobPswdId();
 		oobPswdCreatedTime = System.nanoTime();
+	}
+
+	public OobAuthSession(EcdhHelper ecdhHelper) {
+		this.ecdhHelper = ecdhHelper;
 	}
 
 	public void setSalt(byte[] oobPswdSalt) {
@@ -103,11 +110,17 @@ public class OobAuthSession {
 	}
 
 	private int getOOBPswdString2Int() {
+		if (oobPswdString == null) {
+			throw new NullPointerException("oob password string cannot be null");
+		}
 		int value = Integer.valueOf(oobPswdString, 2);
 		return value;
 	}
 
 	public byte[] getOobPswdId() {
+		if (oobPswdString == null) {
+			throw new NullPointerException("oob password string cannot be null");
+		}
 		return ecdhHelper.getOobPswdId(oobPswdString);
 	}
 
@@ -191,4 +204,27 @@ public class OobAuthSession {
 	public InetSocketAddress getMobileAddress() {
 		return mobileSocketAddress;
 	}
+
+	public void setOobAuthPswdString(String oobPswdString) {
+		if (oobPswdString == null) {
+			throw new NullPointerException("oob password cannot be null");
+		}
+		LOG.info("received oob auth password string: "+oobPswdString);
+		this.oobPswdString = oobPswdString;
+		this.oobPswdId = getOobPswdId();
+	}
+
+	public boolean hasOobAuthPasswordId(byte[] oobPswdId) {
+		if (oobPswdId == null) {
+			throw new NullPointerException("oobPswdId cannot be null");
+		}
+		if (Arrays.equals(this.oobPswdId, oobPswdId)) {
+			return true;
+		} else {
+			LOG.info("wrong oob password id received expected {} but received {}", ByteArrayUtils.toHex(this.oobPswdId),
+					ByteArrayUtils.toHex(oobPswdId));
+			return false;
+		}
+	}
+
 }

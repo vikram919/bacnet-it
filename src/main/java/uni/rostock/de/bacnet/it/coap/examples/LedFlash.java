@@ -3,21 +3,22 @@ package uni.rostock.de.bacnet.it.coap.examples;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PushButtonJob {
+public class LedFlash {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PushButtonJob.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LedFlash.class);
 
 	/* variables realated to OOB channel (push button related) */
 	private static final String LEDDevicesBase = "/sys/class/gpio/gpio18";
 	private static final String BUTTON_PATH = "/sys/class/gpio/gpio17";
-	private Path ledValuePath;
-	private Path ButtonValuePath;
-	private long mTimestamp1;
-	private long mTimestamp2;
+	Path ledValuePath;
+	Path ButtonValuePath;
+	SecureRandom random = new SecureRandom();
+	private String totalKey = "1010101";
 	private String key = "";
 
 	public void start() {
@@ -35,39 +36,38 @@ public class PushButtonJob {
 		} else {
 			System.out.println("null path!!");
 		}
-		LOG.info("Press CTRL+c to exit");
+		for (int j = 0; j < 20; j++) {
+			int bit = random.nextInt(2);
+			key += bit;
+		}
+		totalKey+=key;
+		System.out.println("entered key: " + totalKey);
+		char[] bits = totalKey.toCharArray();
+		System.out.println("Press CTRL+c to exit");
 		try {
+
 			/* Flash led so it is ready to take input via OOB */
 			Files.write(ledValuePath, String.valueOf(1).getBytes());
 			Thread.sleep(375);
 			Files.write(ledValuePath, String.valueOf(0).getBytes());
-			Thread.sleep(375);
-			while (i < 20) {
-				if (new String(Files.readAllBytes(ButtonValuePath)).charAt(0) != '0') {
-					System.out.println("button pressed!!!");
-					mTimestamp1 = System.nanoTime();
-					while (new String(Files.readAllBytes(ButtonValuePath)).charAt(0) != '0') {
-						// Do nothing
-					}
-					mTimestamp2 = System.nanoTime();
-					double delay = (double) ((mTimestamp2 - mTimestamp1) / 1000000000.0000);
-					System.out.println("delay: " + delay);
-					if (delay >= 0.5) {
-						key += "0";
-					} else {
-						key += "1";
-					}
-					i++;
-				}
+			while (new String(Files.readAllBytes(ButtonValuePath)).charAt(0) == '0') {
+				// wait for user initial press
 				Thread.sleep(100);
 			}
-
-			/* Flash led as an indication that input is completed!!! */
-			Files.write(ledValuePath, String.valueOf(1).getBytes());
-			Thread.sleep(375);
-			Files.write(ledValuePath, String.valueOf(0).getBytes());
-			Thread.sleep(375);
+			Thread.sleep(1000);
+			System.out.println("button pressed");
+			while (i < 27) {
+				Files.write(ledValuePath, String.valueOf(bits[i]).getBytes());
+				Thread.sleep(100);
+				Files.write(ledValuePath, String.valueOf(0).getBytes());
+				Thread.sleep(100);
+				i++;
+			}
 			System.out.println("entered key: " + key);
+			/* wait for button press to start key exchange */
+			while (new String(Files.readAllBytes(ButtonValuePath)).charAt(0) == '0') {
+				// wait for user button press
+			}
 		} catch (Exception e) {
 			System.out.println("Exception occured: " + e.getMessage());
 		}

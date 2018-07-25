@@ -1,10 +1,9 @@
 package uni.rostock.de.bacnet.it.coap.examples;
 
 import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.eclipse.californium.core.coap.CoAP;
+import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,12 +25,12 @@ import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.ConfirmedRequest;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.asdu.SimpleACK;
 import ch.fhnw.bacnetit.samplesandtests.api.encoding.util.ByteQueue;
 import ch.fhnw.bacnetit.samplesandtests.api.service.confirmed.WritePropertyRequest;
+import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 import uni.rostock.de.bacnet.it.coap.oobAuth.AddDeviceRequest;
 import uni.rostock.de.bacnet.it.coap.oobAuth.ApplicationMessages;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobAuthServer;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobAuthSession;
 import uni.rostock.de.bacnet.it.coap.oobAuth.OobProtocol;
-import uni.rostock.de.bacnet.it.coap.oobAuth.OobSessionsStore;
 import uni.rostock.de.bacnet.it.coap.transportbinding.ResponseCallback;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
@@ -39,21 +38,23 @@ public class Authorizer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Authorizer.class);
 	private static final int AUTH_ID = 1;
+//	private static final String OOB_PASSWORD_STRING = "01001110100010111001";
 	private ASEServices aseServices;
 	private ApplicationService aseService;
-	private TransportDTLSCoapBinding coapDtlsbindingConfig;
-	private static String OOB_PSWD_STRING = "10101110010101101011";
-	private OobSessionsStore deviceSessionsMap = OobSessionsStore.getInstance();
+	private TransportDTLSCoapBinding coapDtlsbindingConfig = new TransportDTLSCoapBinding();
+	private final EcdhHelper ecdhHelper = new EcdhHelper(0);
+	private final OobAuthSession oobAuthSession = new OobAuthSession(ecdhHelper);
 
 	public static void main(String[] args) {
 
 		Authorizer authorizer = new Authorizer();
 		authorizer.start();
 
-		OobAuthServer oobAuthServer = new OobAuthServer(authorizer.coapDtlsbindingConfig, 
-				authorizer.deviceSessionsMap, authorizer.aseServices);
+		OobAuthServer oobAuthServer = new OobAuthServer(authorizer.ecdhHelper, authorizer.oobAuthSession,
+				authorizer.coapDtlsbindingConfig, authorizer.aseServices);
 		oobAuthServer.startAuthServer(CoAP.DEFAULT_COAP_PORT);
-		authorizer.deviceSessionsMap.addDeviceoobPswd(OOB_PSWD_STRING);
+//		authorizer.oobAuthSession.setOobAuthPswdString(OOB_PASSWORD_STRING);
+//		System.out.println("oob password id: " + ByteArrayUtils.toHexString(authorizer.oobAuthSession.getOobPswdId()));
 
 		try {
 			DiscoveryConfig ds = new DiscoveryConfig("DNSSD", "1.1.1.1", "itb.bacnet.ch.", "bds._sub._bacnet._udp.",
@@ -72,7 +73,6 @@ public class Authorizer {
 		/* Add transport binding to ASEService by using ChannelConfiguration */
 		ChannelConfiguration channelConfigure = (ChannelConfiguration) aseService;
 		// configure transport binding to coap dtls
-		coapDtlsbindingConfig = new TransportDTLSCoapBinding();
 		coapDtlsbindingConfig.setAllModes();
 		coapDtlsbindingConfig.createSecureCoapClient();
 		coapDtlsbindingConfig.createSecureCoapServer(CoAP.DEFAULT_COAP_SECURE_PORT);
@@ -101,11 +101,10 @@ public class Authorizer {
 						 * DeviceSessionstore
 						 */
 						String oobPswdString = addDeviceRequest.getBitKeyString();
-						deviceSessionsMap.addDeviceoobPswd(oobPswdString);
-						byte[] oobPswdId = deviceSessionsMap.extractOobStringIdFromBitString(oobPswdString);
-						OobAuthSession session = deviceSessionsMap.getAuthSession(oobPswdId);
-						LOG.debug(" registering mobile socket address: "+arg0.getSourceAddress().toString());
-						session.setMobileAddress((InetSocketAddress)arg0.getSourceAddress());
+						System.out.println("received oob password from mobile: " + oobPswdString);
+						oobAuthSession.setOobAuthPswdString(oobPswdString);
+						LOG.debug(" registering mobile socket address: " + arg0.getSourceAddress().toString());
+						oobAuthSession.setMobileAddress((InetSocketAddress) arg0.getSourceAddress());
 					}
 					if (arg0.getDataExpectingReply()) {
 						final int serviceAckChoice = ((ConfirmedRequest) receivedRequest).getServiceRequest()

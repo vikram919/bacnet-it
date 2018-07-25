@@ -1,7 +1,5 @@
 package uni.rostock.de.bacnet.it.coap.examples;
 
-import java.nio.charset.StandardCharsets;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,24 +30,21 @@ public class Switch {
 	private TransportDTLSCoapBinding bindingConfiguration = new TransportDTLSCoapBinding();
 	ASEServices aseServiceChannel;
 	private static final int AUTH_ID = 1;
-	// private static final String AUTH_IP = "139.30.202.56:";
+	private static final String OOB_PASSWORD_STRING = "01001110100010111001";
+	 private static final String AUTH_IP = "139.30.202.56:";
 	// private static final String SECURE_SCHEME = "coaps://";
-	private static final int DTLS_PORT = 5685;
+	private static final int DTLS_PORT = 5684;
 	private static final BACnetEID AUTH_EID = new BACnetEID(AUTH_ID);
-
-	/* we assume OOB password is known to both */
-	private static String OOB_PSWD_STRING = "10101110010101101011";
 
 	private OobAuthClient oobAuthClient;
 
 	public static void main(String[] args) {
 
 		Switch device = new Switch();
-		// device.hostAddress();
-		// PushButtonJob pushButtonJob = new PushButtonJob();
-		// pushButtonJob.start();
-		// pushButtonJob.getOOBKeyAsString();
-		device.oobAuthClient = new OobAuthClient(OOB_PSWD_STRING, "coap://localhost:5683/authentication",
+		LedFlash pushButtonJob = new LedFlash();
+		pushButtonJob.start();
+		String oobPswdBitString = pushButtonJob.getOOBKeyAsString();
+		device.oobAuthClient = new OobAuthClient(oobPswdBitString, "coap://"+AUTH_IP+"5683/authentication",
 				device.bindingConfiguration);
 		device.oobAuthClient.startHandShake();
 		try {
@@ -61,10 +56,10 @@ public class Switch {
 		} catch (final Exception e1) {
 			e1.printStackTrace();
 		}
-		device.start();
-		byte[] message = "Hello Server".getBytes(StandardCharsets.UTF_8);
-		ApplicationMessages.sendWritePropertyRequest(device.aseServiceChannel, message,
-				new BACnetEID(device.oobAuthClient.getDeviceId()), AUTH_EID, "coaps://localhost:5684");
+		//device.start();
+//		byte[] message = "Hello Server".getBytes(StandardCharsets.UTF_8);
+//		ApplicationMessages.sendWritePropertyRequest(device.aseServiceChannel, message,
+//				new BACnetEID(device.oobAuthClient.getDeviceId()), AUTH_EID, "coaps://"+AUTH_IP+"5684");
 	}
 
 	public void start() {

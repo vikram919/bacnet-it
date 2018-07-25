@@ -1,7 +1,6 @@
 package uni.rostock.de.bacnet.it.coap.oobAuth;
 
 import java.net.InetSocketAddress;
-import java.net.URI;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
@@ -14,21 +13,23 @@ import org.slf4j.LoggerFactory;
 
 import ch.fhnw.bacnetit.ase.application.service.api.ASEServices;
 import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
-import ch.fhnw.bacnetit.ase.encoding.api.T_UnitDataRequest;
+import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
 public class OobAuthServer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OobAuthServer.class.getCanonicalName());
 	private static final int ALLOWED_FAIL_ATTEMPTS = 2;
-	private final OobSessionsStore deviceSessionsMap;
+	private final OobAuthSession oobAuthSession;
+	private final EcdhHelper ecdhHelper;
 	private final ASEServices aseServices;
 	private final TransportDTLSCoapBinding coapDtlsbindingConfig;
 
-	public OobAuthServer(TransportDTLSCoapBinding coapDtlsbindingConfig, OobSessionsStore deviceSessionsMap,
+	public OobAuthServer(EcdhHelper ecdhHelper, OobAuthSession session, TransportDTLSCoapBinding coapDtlsbindingConfig,
 			ASEServices aseServices) {
+		this.ecdhHelper = ecdhHelper;
+		this.oobAuthSession = session;
 		this.coapDtlsbindingConfig = coapDtlsbindingConfig;
-		this.deviceSessionsMap = deviceSessionsMap;
 		this.aseServices = aseServices;
 	}
 
@@ -43,9 +44,7 @@ public class OobAuthServer {
 				LOG.info("authorizer recevived message from device of type: {}", first3Bits);
 				if (first3Bits == OobProtocol.DEVICE_KEY_EXCHANGE) {
 					DeviceKeyExchange deviceKeyExchange = new DeviceKeyExchange(msg);
-					if (deviceSessionsMap.hasOobPswdId(deviceKeyExchange.getOobPswdIdBA())) {
-						OobAuthSession oobAuthSession = deviceSessionsMap
-								.getAuthSession(deviceKeyExchange.getOobPswdIdBA());
+					if (oobAuthSession.hasOobAuthPasswordId(deviceKeyExchange.getOobPswdIdBA())) {
 						if (oobAuthSession.getFailedAuthAttempts() < ALLOWED_FAIL_ATTEMPTS) {
 							LOG.info("DeviceKeyExchange message received is within allowed fail attempts");
 							processDKEMessage(oobAuthSession, deviceKeyExchange, exchange);
@@ -61,6 +60,13 @@ public class OobAuthServer {
 						}
 					} else {
 						LOG.info("no OobAuthSession exists for the received OobPswdId");
+//						String mobileAddress = "coaps://" + oobAuthSession.getMobileAddress().getAddress() + ":"
+//								+ oobAuthSession.getMobileAddress().getPort();
+//						OobStatus oobStatus = new OobStatus(oobAuthSession.getOobPswdId(), false);
+//						// TODO: add oobpswd id to oobstatus and add device request.
+//						ApplicationMessages.sendWritePropertyRequest(aseServices, oobStatus.getBA(), new BACnetEID(2),
+//								new BACnetEID(1), mobileAddress);
+						exchange.respond(ResponseCode.UNAUTHORIZED);
 					}
 				}
 			}
@@ -73,24 +79,23 @@ public class OobAuthServer {
 		if (session.isDeviceKeyExchangeMessageAuthenticated(deviceKeyExchange)) {
 			LOG.info("device is authenticated");
 			LOG.info("sending server key exchange message to the device");
-			session.setServerNonce(deviceSessionsMap.getServerNonce());
+			session.setServerNonce(ecdhHelper.getRandomBytes(OobProtocol.NONCE_LENGTH));
 			session.setClientNonce(deviceKeyExchange.getDeviceNonce());
 			session.setForeignPublicKey(deviceKeyExchange.getPublicKeyBA());
 			session.setDeviceId(200);
 			ServerKeyExchange serverKeyExchange = new ServerKeyExchange(session.getDeviceId(),
-					deviceSessionsMap.getPubKey(), session);
-			byte[] sharedSecret = deviceSessionsMap.computeSharedSecret(session.getForeignPublicKey());
+					ecdhHelper.getPubKeyBytes(), session);
+			byte[] sharedSecret = ecdhHelper.computeSharedSecret(session.getForeignPublicKey());
 			/* adding the master secret to InMemoryPreSharedKeyStore */
 			coapDtlsbindingConfig.addPSK(new String(Integer.toString(session.getDeviceId())), sharedSecret,
 					new InetSocketAddress(exchange.getSourceAddress(), CoAP.DEFAULT_COAP_SECURE_PORT));
-			// delete the OobAuthsession and remove the OOb password
-			deviceSessionsMap.deleteSession(deviceKeyExchange.getOobPswdIdBA());
-			LOG.debug("OobAuthSession deleted on server side");
-			String mobileAddress = "coaps://"+session.getMobileAddress().getAddress()+":"+CoAP.DEFAULT_COAP_SECURE_PORT;
-			OobStatus oobStatus = new OobStatus(session.getOobPswdId(), true);
-			// TODO: add oobpswd id to oobstatus and add device request.
-			ApplicationMessages.sendWritePropertyRequest(aseServices, oobStatus.getBA(), new BACnetEID(2),
-					new BACnetEID(1), mobileAddress);
+			//TODO: delete the OobAuthsession and remove the OOb password
+//			String mobileAddress = "coaps://" + session.getMobileAddress().getAddress() + ":"
+//					+ CoAP.DEFAULT_COAP_SECURE_PORT;
+//			OobStatus oobStatus = new OobStatus(session.getOobPswdId(), true);
+//			// TODO: add oobpswd id to oobstatus and add device request.
+//			ApplicationMessages.sendWritePropertyRequest(aseServices, oobStatus.getBA(), new BACnetEID(2),
+//					new BACnetEID(1), mobileAddress);
 			exchange.respond(ResponseCode._UNKNOWN_SUCCESS_CODE, serverKeyExchange.getBA());
 		} else {
 			session.incrementFailedAuthAttempts();
