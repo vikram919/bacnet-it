@@ -67,8 +67,6 @@ public class EcdhHelper implements EcdhHelperTasks {
 
 	@Override
 	public byte[] computeSharedSecret(byte[] foreignPubKeyBA) {
-		LOG.info("foreign public key bytes: " + ByteArrayUtils.toHex(foreignPubKeyBA));
-		LOG.info("auth private key bytes: " + ByteArrayUtils.toHex(privateKeyBA));
 		byte[] sharedSecretBA = new byte[OobProtocol.SECRET_KEY_BYTES];
 		X25519.scalarMult(privateKeyBA, 0, foreignPubKeyBA, 0, sharedSecretBA, 0);
 		return sharedSecretBA;
@@ -80,7 +78,7 @@ public class EcdhHelper implements EcdhHelperTasks {
 		random.nextBytes(randomBytes);
 		return randomBytes;
 	}
-	
+
 	@Override
 	public byte[] getOobPswdId(String oobPswdString) {
 		byte[] oobPswdIdBA = new byte[OobProtocol.OOB_PSWD_ID_LENGTH];

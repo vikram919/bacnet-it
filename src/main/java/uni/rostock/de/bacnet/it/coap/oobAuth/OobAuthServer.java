@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.fhnw.bacnetit.ase.application.service.api.ASEServices;
-import ch.fhnw.bacnetit.ase.encoding.api.BACnetEID;
 import uni.rostock.de.bacnet.it.coap.crypto.EcdhHelper;
 import uni.rostock.de.bacnet.it.coap.transportbinding.TransportDTLSCoapBinding;
 
@@ -34,7 +33,7 @@ public class OobAuthServer {
 	}
 
 	public void startAuthServer(int serverPort) {
-		CoapServer oobAuthServer = new CoapServer(5683);
+		CoapServer oobAuthServer = new CoapServer(CoAP.DEFAULT_COAP_PORT);
 		oobAuthServer.add(new CoapResource("authentication") {
 			@Override
 			public void handlePOST(CoapExchange exchange) {

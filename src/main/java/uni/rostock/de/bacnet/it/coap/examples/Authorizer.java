@@ -3,7 +3,6 @@ package uni.rostock.de.bacnet.it.coap.examples;
 import java.net.InetSocketAddress;
 
 import org.eclipse.californium.core.coap.CoAP;
-import org.eclipse.californium.scandium.util.ByteArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
